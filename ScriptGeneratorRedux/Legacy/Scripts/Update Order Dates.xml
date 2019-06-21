@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+      <updateType>Update_OrderDate</updateType> 
+      <description>Update Order Date</description>
+      <inputParam>
+	<inputText>Enter the Order Number</inputText><!--Question you ask-->
+	<paramDesc>Order Number</paramDesc><!--param Desc-->
+	<paramName>ORDER_NUM</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Shipment where OrderNumber = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+      <inputParam>
+	<inputText>Enter Column to Update</inputText><!--Question you ask-->
+	<paramDesc>Column being updated</paramDesc><!--param Desc-->
+	<paramName>UPDATE_COLUMN</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select Column_name as "Item" from Information_schema.columns where Table_name = 'Shipment' and data_type = 'datetime'</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter new Date in 'dd-MMM-yyyy' format</inputText><!--Question you ask-->
+	<paramDesc>New Date</paramDesc><!--param Desc-->
+	<paramName>NEW_DATE</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>Date</inputType><!--String, Int, Bool, Date-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Number of Shipments' as "Desc",'NUM_ORDERS' as "Param",convert(varchar(max),count(*)) as Val  from Shipment where OrderNumber in ({ORDER_NUM})</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Original Date' as "Desc",'ORIGINAL_DATE' as "Param",format({UPDATE_COLUMN},'dd-MMM-yyyy') as Val  from Shipment where OrderNumber in ({ORDER_NUM})</query>
+         <requiredTables />
+      </Param>
+
+
+
+   </update_param>
+
+   <update_queries>
+      <updateType>Update_OrderDate</updateType>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT OrderNumber,{UPDATE_COLUMN} FROM Shipment WHERE OrderNumber in ({ORDER_NUM})</preCheckSql>
+         <preCheckText>Confirm that {UPDATE_COLUMN} is currently set to {ORIGINAL_DATE} for order number {ORDER_NUM}.</preCheckText>
+	 <preRecordsReturned>{NUM_ORDERS}</preRecordsReturned>
+         <updateSql>UPDATE Shipment SET {UPDATE_COLUMN}  = convert(datetime,'{NEW_DATE}') WHERE OrderNumber in ({ORDER_NUM})</updateSql>
+         <updateCount>{NUM_ORDERS}</updateCount>
+         <postCheckSql>SELECT OrderNumber,{UPDATE_COLUMN} FROM Shipment WHERE OrderNumber in ({ORDER_NUM})</postCheckSql>        
+         <postCheckText>Confirm that {UPDATE_COLUMN} is set to {NEW_DATE} for order number {ORDER_NUM}.</postCheckText>
+         <postRecordsReturned>{NUM_ORDERS}</postRecordsReturned>
+    </Query>
+
+   </update_queries>
+</dcr_script>
+

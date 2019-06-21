@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+
+      <updateType>Delete_Patient</updateType> 
+      <description>Delete Patient</description>
+      <inputParam>
+	<inputText>Enter PatientCode</inputText><!--Question you ask-->
+	<paramDesc>Patient Code List</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Patients where PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <Param>
+         <query>Select 'Number of Patients' as "Desc",'NUM_PATIENTS' as "Param",convert(varchar(max),count(*)) as Val  from Patients where PatientCode in ({PATIENTCODE_CSV})</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT 'Patient ID List' as "Desc",'PATIENTID_CSV' as "Param", stuff((SELECT ',' + cast(PatientID as varchar(max))FROM Patients WHERE PatientCode in ({PATIENTCODE_CSV})FOR XML PATH('')), 1, 1, '') as "Val"</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'Patients_Deleted exists' as "Desc",'Include_Patients_Deleted' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'Patients_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'CustomData_Deleted exists' as "Desc",'Include_CustomData_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'CustomData_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'PatientHistory_Deleted exists' as "Desc",'Include_PatientHistory_Deleted' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientHistory_Deleted'</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'EDCTransfers exists' as "Desc",'Include_EDCTransfers' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'EDCTransfers'</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Num PatientHistory' as "Desc",'NUM_PATIENTHISTORY' as "Param",convert(varchar(max),count(*)) as Val  from PatientHistory WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'PatientVisits_Deleted exists' as "Desc",'Include_PatientVisits_Deleted' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientVisits_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientVisits' as "Desc",'NUM_PATIENTVISITS' as "Param",convert(varchar(max),count(*)) as Val  from PatientVisits WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'PatientExpectedVisits_Deleted exists' as "Desc",'Include_PATIENTEXPECTEDVISITS_Deleted' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PATIENTEXPECTEDVISITS_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientExpectedVisits' as "Desc",'NUM_PATIENTEXPECTEDVISITS' as "Param",convert(varchar(max),count(*)) as Val  from PATIENTEXPECTEDVISITS WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'PatientCodes_Deleted exists' as "Desc",'Include_PatientCodes_Deleted' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientCodes_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'PatientCodes exists' as "Desc",'Include_PatientCodes' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientCodes'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientCodes' as "Desc",'NUM_PATIENTCODES' as "Param",convert(varchar(max),count(*)) as Val  from PatientCodes WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables>PatientCodes</requiredTables>
+      </Param>
+
+
+      <Param>
+         <query>SELECT  'PatientCodeHistory_Deleted exists' as "Desc",'Include_PatientCodeHistory_Deleted' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientCodeHistory_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'PatientCodeHistory exists' as "Desc",'Include_PatientCodeHistory' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientCodeHistory'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientCodeHistory' as "Desc",'NUM_PATIENTCODEHISTORY' as "Param",convert(varchar(max),count(*)) as Val  from PatientCodeHistory WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables>PatientCodeHistory</requiredTables>
+      </Param>
+
+
+      <Param>
+         <query>SELECT 'Num in CustomData - Patients' as "Desc",'NUM_CUSTOMDATA_PAT' as "Param",convert(varchar(max),count(*)) Val FROM CustomData WHERE ObjectID IN (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Num in CustomData - Visits' as "Desc",'NUM_CUSTOMDATA_VIS' as "Param",convert(varchar(max),count(*)) Val FROM CustomData WHERE ObjectID IN (Select PatientVisitID From PatientVisits Where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV}))) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Num EDCTransfers' as "Desc",'NUM_EDCTRANSFERS' as "Param",convert(varchar(max),count(*)) as Val  from EDCTransfers WHERE PATIENTCODE in ({PATIENTCODE_CSV}) AND TransferStatus != -1</query>
+         <requiredTables>EDCTransfers</requiredTables>
+      </Param>
+
+      <Param>
+         <query>Select 'Num Materials' as "Desc",'NUM_MATERIALS' as "Param",convert(varchar(max),count(*)) as Val  from Materials where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>Select 'Num Randomisation' as "Desc",'NUM_RANDOMISATION' as "Param",convert(varchar(max),count(*)) as Val  from Randomisation where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+
+   <update_queries>
+    <updateType>Delete_Patient</updateType>
+    <Query>
+         <includeSql>{INCLUDE_PATIENTS_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO Patients_deleted SELECT * FROM Patients WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+         <postCheckSql>SELECT * FROM Patients_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Confirm that the following record(s) are returned: {NUM_PATIENTS}</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+
+    <updateType>Delete_Patient</updateType>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT PatientID,PatientCode FROM Patients WHERE PatientCode in ({PATIENTCODE_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned:{NUM_PATIENTS}, with the following Patient IDs: {PATIENTID_CSV}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTS}</preRecordsReturned>
+         <updateSql>DELETE Patients WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+         <postCheckSql>SELECT PatientID,PatientCode FROM Patients WHERE PatientCode in ({PATIENTCODE_CSV})</postCheckSql>
+         <postCheckText>Verify that 0 records are returned</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>{INCLUDE_CUSTOMDATA_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO CustomData_deleted SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</updateSql>
+         <updateCount>{NUM_CUSTOMDATA_PAT}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData_Deleted WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA_PAT}.</postCheckText>
+         <postRecordsReturned>{NUM_CUSTOMDATA_PAT}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>{INCLUDE_CUSTOMDATA_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO CustomData_deleted SELECT * FROM CustomData WHERE ObjectID IN (SELECT PatientVisitID FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')</updateSql>
+         <updateCount>{NUM_CUSTOMDATA_VIS}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData_Deleted WHERE ObjectID IN (SELECT PatientVisitID FROM PatientVisits_Deleted WHERE PatientID in ({PATIENTID_CSV})) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits') </postCheckSql>        
+	 <postCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA_VIS}.</postCheckText>
+         <postRecordsReturned>{NUM_CUSTOMDATA_VIS}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA_PAT}.</preCheckText>
+	 <preRecordsReturned>{NUM_CUSTOMDATA_PAT}</preRecordsReturned>
+         <updateSql>DELETE CustomData WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</updateSql>
+         <updateCount>{NUM_CUSTOMDATA_PAT}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA_PAT}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT cd.CustomDataID, cd.FieldID, pv.PatientVisitID, cd.Value, p.PatientID, p.PatientCode
+FROM CustomData cd 
+JOIN [{DESIGNDB}].[dbo].[CustomFields] cf on (cf.TableName = 'PatientVisits' AND FieldID = CustomFieldID)
+JOIN PatientVisits pv ON (cd.objectid = pv.patientVisitID)
+JOIN Patients p ON (p.patientID = pv.patientid)
+WHERE pv.PatientID IN ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA_VIS}.</preCheckText>
+	 <preRecordsReturned>{NUM_CUSTOMDATA_VIS}</preRecordsReturned>
+         <updateSql>DELETE CustomData WHERE ObjectID IN (SELECT PatientVisitID FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')</updateSql>
+         <updateCount>{NUM_CUSTOMDATA_VIS}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData WHERE ObjectID IN (SELECT PatientVisitID FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA_VIS}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>{INCLUDE_PATIENTHISTORY_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientHistory_Deleted SELECT * FROM PatientHistory WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM PatientHistory_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTHISTORY}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTHISTORY}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM PatientHistory WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTHISTORY}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTHISTORY}</preRecordsReturned>
+         <updateSql>DELETE PatientHistory WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM PatientHistory WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTHISTORY}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>{INCLUDE_PATIENTVISITS_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientVisits_Deleted SELECT * FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientVisits_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTVISITS}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTVISITS}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTVISITS}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTVISITS}</preRecordsReturned>
+         <updateSql>DELETE PatientVisits WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTVISITS}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+
+    <Query>
+         <includeSql>{INCLUDE_PATIENTEXPECTEDVISITS_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientExpectedVisits_Deleted SELECT * FROM PatientExpectedVisits WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTEXPECTEDVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientExpectedVisits_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTEXPECTEDVISITS}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTEXPECTEDVISITS}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM PatientExpectedVisits WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTEXPECTEDVISITS}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTEXPECTEDVISITS}</preRecordsReturned>
+         <updateSql>DELETE PatientExpectedVisits WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTEXPECTEDVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientExpectedVisits WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTEXPECTEDVISITS}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>{INCLUDE_PATIENTCODEHISTORY_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientCodeHistory_Deleted SELECT * FROM PatientCodeHistory WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTCODEHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM PatientCodeHistory_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODEHISTORY}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTCODEHISTORY}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>{INCLUDE_PATIENTCODEHISTORY}</includeSql>
+         <preCheckSql>SELECT * FROM PatientCodeHistory WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODEHISTORY}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTCODEHISTORY}</preRecordsReturned>
+         <updateSql>DELETE PatientCodeHistory WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTCODEHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM PatientCodeHistory WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODEHISTORY}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+
+   <Query>
+         <includeSql>{INCLUDE_PATIENTCODES_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientCodes_Deleted SELECT * FROM PatientCodes WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTCODES}</updateCount>
+         <postCheckSql>SELECT * FROM PatientCodes_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODES}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTCODES}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>{INCLUDE_PATIENTCODES}</includeSql>
+         <preCheckSql>SELECT * FROM PatientCodes WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODES}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTCODES}</preRecordsReturned>
+         <updateSql>DELETE PatientCodes WHERE PatientID in ({PATIENTID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTCODES}</updateCount>
+         <postCheckSql>SELECT * FROM PatientCodes WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODES}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM Materials WHERE PatientID IN ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that 0 records are returned. </preCheckText>
+         <preRecordsReturned>0</preRecordsReturned>
+         <updateSql></updateSql>
+         <updateCount>0</updateCount>
+         <postCheckSql></postCheckSql>
+         <postCheckText></postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM Randomisation WHERE PatientID IN ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_RANDOMISATION} records are returned. </preCheckText>
+         <preRecordsReturned>0</preRecordsReturned>
+         <updateSql></updateSql>
+         <updateCount>0</updateCount>
+         <postCheckSql></postCheckSql>
+         <postCheckText></postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>{INCLUDE_EDCTRANSFERS}</includeSql>
+         <preCheckSql>SELECT TransferID,PatientCode,TransferStatus FROM EDCTransfers WHERE PatientCode in ({PATIENTCODE_CSV}) AND TransferStatus != -1</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_EDCTRANSFERS}. Confirm that TransferStatus is not set to (-1).</preCheckText>
+	 <preRecordsReturned>{NUM_EDCTRANSFERS}</preRecordsReturned>
+         <updateSql>UPDATE EDCTransfers SET TransferStatus = -1 WHERE PatientCode in ({PATIENTCODE_CSV}) AND TransferStatus != -1</updateSql>
+         <updateCount>{NUM_EDCTRANSFERS}</updateCount>
+         <postCheckSql>SELECT TransferID,PatientCode,TransferStatus FROM EDCTransfers WHERE PatientCode in ({PATIENTCODE_CSV})</postCheckSql>
+         <postCheckText>Verify that atleast the following number of records are returned: {NUM_EDCTRANSFERS}. Confirm that TransferStatus is set to (-1) for all records.</postCheckText>
+         <postRecordsReturned>{NUM_EDCTRANSFERS}</postRecordsReturned>
+    </Query>
+
+
+   </update_queries>
+</dcr_script>
+

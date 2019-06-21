@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+      <updateType>Delete_PatientVisit</updateType> 
+      <description>Delete PatientVisit</description>
+      <inputParam>
+	<inputText>Enter PatientCode</inputText><!--Question you ask-->
+	<paramDesc>Patient Code List</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>
+SELECT *
+FROM Patients
+WHERE PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+	  
+	<inputParam>
+		<inputText>Enter the Visit Code </inputText><!--Question you ask-->
+		<paramDesc>Visit Code</paramDesc><!--param Desc-->
+		<paramName>VISITCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+		<sqlValidation>
+SELECT *
+FROM {DESIGNDB}.dbo.Visits
+WHERE Code = '{CSV_ITEM}'
+		</sqlValidation>
+		<inputType>Int</inputType><!--String, Int, Bool-->
+		<inputMethod>List</inputMethod><!--Text or List-->
+		<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+		<validItemsSQL>
+SELECT code AS "Item"
+FROM PatientVisits pv
+JOIN {DESIGNDB}.dbo.Visits v ON (pv.VisitID = v.visitID)
+WHERE PatientID IN (SELECT DISTINCT PatientID
+                    FROM Patients
+					WHERE PatientCode IN ({PATIENTCODE_CSV}))
+AND KitReplacementSequence = 0
+ORDER BY v.VisitID
+		</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+	</inputParam>
+
+	<inputParam>
+		<inputText>Enter the Visit ID </inputText><!--Question you ask-->
+		<paramDesc>Visit ID</paramDesc><!--param Desc-->
+		<paramName>VISITID_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+		<sqlValidation>
+SELECT *
+FROM {DESIGNDB}.dbo.Visits
+WHERE VisitID = '{CSV_ITEM}'
+		</sqlValidation>
+		<inputType>Int</inputType><!--String, Int, Bool-->
+		<inputMethod>List</inputMethod><!--Text or List-->
+		<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+		<validItemsSQL>
+SELECT pv.VisitID AS "Item"
+FROM PatientVisits pv
+JOIN {DESIGNDB}.dbo.Visits v ON (pv.VisitID = v.visitID)
+WHERE PatientID IN (SELECT DISTINCT PatientID
+                    FROM Patients
+					WHERE PatientCode IN ({PATIENTCODE_CSV}))
+AND Code = '{VISITCODE_CSV}'
+AND KitReplacementSequence = 0
+ORDER BY v.VisitID
+		</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+	</inputParam>
+
+	<inputParam>
+		<inputText>Select KitReplacementSequence</inputText><!--Question you ask-->
+		<paramDesc>Kit Replacement Sequence</paramDesc><!--param Desc-->
+		<paramName>KRS_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+		<sqlValidation>
+SELECT KitReplacementSequence
+FROM PatientVisits
+WHERE KitReplacementSequence = '{CSV_ITEM}'</sqlValidation>
+		<inputType>Int</inputType><!--String, Int, Bool-->
+		<inputMethod>List</inputMethod><!--Text or List-->
+		<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+		<validItemsSQL>
+SELECT pv.KitReplacementSequence AS "Item"
+FROM PatientVisits pv
+JOIN {DESIGNDB}.dbo.Visits v ON (pv.VisitID = v.visitID)
+WHERE PatientID IN (
+	SELECT PatientID
+	FROM Patients
+	WHERE PatientCode IN ({PATIENTCODE_CSV}))
+AND Code = '{VISITCODE_CSV}'
+ORDER BY pv.KitReplacementSequence</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+	</inputParam>
+
+	
+	
+	<Param>
+		<query>
+SELECT 'Number of Patients' AS "Desc",
+       'NUM_PATIENTS' AS "Param",CONVERT(VARCHAR(MAX),
+	   COUNT(*)) AS Val
+FROM Patients
+WHERE PatientCode IN ({PATIENTCODE_CSV})
+		</query>
+		<requiredTables />
+	</Param>
+
+	<Param>
+		<query>
+SELECT 'Patient ID List' AS "Desc",
+       'PATIENTID_CSV' AS "Param",
+	   STUFF((SELECT ',' + CAST(PatientID AS VARCHAR(MAX))
+	          FROM Patients
+			  WHERE PatientCode IN ({PATIENTCODE_CSV})
+       FOR XML PATH('')), 1, 1, '') AS "Val"
+		</query>
+		<requiredTables />
+	</Param>
+
+	<Param>
+		<query>
+SELECT 'Patient Visit ID List' AS "Desc",
+       'PATIENTVISITID_CSV' AS "Param",
+	   STUFF((SELECT ',' + CAST(PatientVisitID AS VARCHAR(MAX))
+	          FROM PatientVisits
+			  WHERE PatientVisitID IN (
+                  SELECT PatientVisitID
+				  FROM PatientVisits
+				  WHERE PatientID IN (
+				      SELECT PatientID
+					  FROM Patients
+					  WHERE PatientCode IN ({PATIENTCODE_CSV}))
+					  AND VisitID IN ({VISITID_CSV})
+					  AND KitReplacementSequence = {KRS_CSV})
+       FOR XML PATH('')), 1, 1, '') AS "Val"
+		</query>
+		<requiredTables />
+	</Param>
+
+
+	<Param>
+		<query>
+SELECT 'PatientVisits_Deleted exists' as "Desc",
+       'Include_PatientVisits_Deleted' as "Param",
+	   CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val
+FROM information_schema.tables
+WHERE table_name = 'PatientVisits_Deleted'
+		</query>
+		<requiredTables />
+	</Param>
+
+
+
+	<Param>
+		<query>
+SELECT 'Num PatientVisits Updating' as "Desc",
+       'NUM_PATIENTVISITS' as "Param",
+	   convert(varchar(max),count(*)) as Val
+from PatientVisits
+WHERE PATIENTVISITID in (
+    SELECT PatientVisitID
+	from PatientVisits
+	WHERE PatientID in (
+	    SELECT PatientID
+		from Patients
+		where PatientCode in ({PATIENTCODE_CSV}))
+		and VisitID in ({VISITID_CSV})
+		and KitReplacementSequence = {KRS_CSV})
+		</query>
+		<requiredTables />
+	</Param>
+
+	<Param>
+		<query>
+SELECT 'Num Visits Made' AS "Desc",
+       'NUM_VISITSMADE' AS "Param",
+	   convert(varchar(max),count(*)) AS Val
+FROM PatientVisits
+WHERE PATIENTVISITID IN (
+    SELECT PatientVisitID
+	FROM PatientVisits
+	WHERE PatientID IN (
+	    SELECT PatientID
+		FROM Patients
+		WHERE PatientCode IN ({PATIENTCODE_CSV}))
+		AND KitReplacementSequence = {KRS_CSV})
+		</query>
+		<requiredTables />
+	</Param>
+
+	<Param>
+		<query>
+SELECT 'Num PatientVisits Remaining' AS "Desc",
+       'VISITS_REMAINING' AS "Param",
+	   convert(varchar(max),count(*)) AS Val
+FROM PatientVisits
+WHERE PATIENTVISITID IN (SELECT PatientVisitID
+                         FROM PatientVisits
+						 WHERE PatientID IN (
+						     SELECT PatientID
+							 FROM Patients
+							 WHERE PatientCode IN ({PATIENTCODE_CSV}))
+							 AND VisitID NOT IN ({VISITID_CSV})
+							 AND KitReplacementSequence = {KRS_CSV})
+		</query>
+		<requiredTables />
+	</Param>
+
+
+	<Param>
+		<query>
+SELECT 'Num in CustomData' AS "Desc",
+       'NUM_CUSTOMDATA' AS "Param",
+	   convert(varchar(max),count(*)) AS Val
+FROM CustomData
+WHERE ObjectID IN (SELECT PatientVisitID
+                   FROM PatientVisits
+				   WHERE PatientID IN (
+				       SELECT PatientID
+					   FROM Patients
+					   WHERE PatientCode IN ({PATIENTCODE_CSV}))
+				   AND VisitID IN ({VISITID_CSV})
+				   AND KitReplacementSequence = {KRS_CSV})
+AND FieldID IN (
+    SELECT CustomFieldID
+    FROM [{DESIGNDB}].[dbo].[CustomFields] cf
+    WHERE cf.TableName = 'PatientVisits')
+		</query>
+		<requiredTables />
+	</Param>
+
+	<Param>
+		<query>
+SELECT 'CustomData_Deleted exists' as "Desc",
+       'Include_CustomData_Deleted' as "Param",
+	   CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val
+FROM information_schema.tables
+WHERE table_name = 'CustomData_Deleted'
+		</query>
+		<requiredTables />
+	</Param>
+
+      <Param>
+         <query>SELECT 'Num Materials' as "Desc",'NUM_MATERIALS' as "Param",convert(varchar(max),count(*)) as Val  from Materials where PatientVisitID in 
+(SELECT PatientVisitID from PatientVisits WHERE PatientID in (SELECT PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and VisitID in ({VISITID_CSV}) and KitReplacementSequence = {KRS_CSV})
+	</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Visit Description' as "Desc",'VIS_DESC' as "Param", DisplayText as 'VAL' from  {DESIGNDB}.dbo.Visits v 
+LEFT JOIN [Security_remote].[dbo].[UserTranslation] d ON d.TextID = v.NameTextID AND d.LanguageID = 1
+Where Code = '{VISITCODE_CSV}'
+	</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Visit Code List' as "Desc",'VISITCODE_CSV' as "Param", stuff((SELECT ',' + cast(Code as varchar(max))FROM {DESIGNDB}.dbo.Visits WHERE VisitID in ({VISITID_CSV})FOR XML PATH('')), 1, 1, '') as "Val"
+	</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>SELECT * from (SELECT top 1 'Last Visit' as "Desc",'IS_LAST_VIS' as "Param", cast(case when pv.visitID = {VISITID_CSV} then 'true' else 'false' end as varchar) as val  from patientVisits pv join 
+{DESIGNDB}.dbo.visits v on (v.visitID = pv.visitID)
+where PatientID IN (SELECT PatientID from Patients where PatientCode IN ({PATIENTCODE_CSV}))  and unscheduled = 0 order by patientVisitID desc) x
+	</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Original Dates' as "Desc",'ORIGINAL_DATE_CSV' as "Param", stuff((SELECT ',' + format(EnteredDate,'dd-MMM-yyyy') FROM PatientVisits WHERE VisitID IN ({VISITID_CSV}) and PatientID IN (SELECT PatientID from Patients where PatientCode IN ({PATIENTCODE_CSV}) AND KitReplacementSequence = {KRS_CSV}) FOR XML PATH('')), 1, 1, '') as "Val"
+	</query>
+         <requiredTables />
+      </Param>
+
+   </update_param>
+
+   
+   
+   <update_queries>
+    <updateType>Delete_PatientVisit</updateType>
+	
+    <Query>
+         <includeSql>{INCLUDE_PATIENTVISITS_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientVisits_deleted
+SELECT *
+FROM PatientVisits
+WHERE PatientVisitID IN ({PATIENTVISITID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+         <postCheckSql>SELECT *
+FROM PatientVisits_Deleted
+WHERE PatientVisitID IN ({PATIENTVISITID_CSV})</postCheckSql>
+         <postCheckText>Confirm that the following record(s) are returned: {NUM_PATIENTVISITS} with PatientVisitID {PATIENTVISITID_CSV}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTVISITS}</postRecordsReturned>
+    </Query>
+	
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT p.PatientID, p.PatientCode, pv.PatientVisitID, v.VisitID, v.Code, d.DisplayText AS VisitName, pv.Entereddate, pv.KitReplacementSequence
+FROM Patients p
+JOIN PatientVisits pv ON (p.PatientID = pv.PatientID) 
+JOIN {DESIGNDB}.dbo.Visits v ON (pv.VisitID = v.VisitID)
+LEFT JOIN [Security_remote].[dbo].[UserTranslation] d ON d.TextID = v.NameTextID AND d.LanguageID = 1
+WHERE p.PatientID IN (Select PatientID from Patients Where PatientCode = {PATIENTCODE_CSV}) 
+AND KitReplacementSequence = {KRS_CSV}</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_VISITSMADE}, with the following Patient IDs: {PATIENTID_CSV}. For Visit: {VIS_DESC} with Visit Codes {VISITCODE_CSV}. Confirm the following settings, PatientVisitIDs: {PATIENTVISITID_CSV}, Visit IDs: {VISITID_CSV}, Visit Date: {ORIGINAL_DATE_CSV}, KitReplacementSequence: {KRS_CSV}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTVISITS}</preRecordsReturned>
+         <updateSql>DELETE PatientVisits WHERE PatientVisitID IN ({PATIENTVISITID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+         <postCheckSql>SELECT p.PatientID, p.PatientCode, pv.PatientVisitID, v.VisitID, v.Code, d.DisplayText AS VisitName, pv.Entereddate, pv.KitReplacementSequence
+FROM Patients p
+JOIN PatientVisits pv ON (p.PatientID = pv.PatientID) 
+JOIN {DESIGNDB}.dbo.Visits v ON (pv.VisitID = v.VisitID)
+LEFT JOIN [Security_remote].[dbo].[UserTranslation] d ON d.TextID = v.NameTextID AND d.LanguageID = 1
+WHERE p.PatientCode IN ({PATIENTCODE_CSV}) 
+AND KitReplacementSequence = {KRS_CSV}</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {VISITS_REMAINING}. Verify that PatientVisitID: {PATIENTVISITID_CSV} is no longer included in the list of visits for PatientCode: {PATIENTCODE_CSV}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTVISITS}</postRecordsReturned>
+    </Query>
+
+	<Query>
+		<includeSql>true</includeSql>
+		<preCheckSql>SELECT m.*
+FROM Materials m
+WHERE m.PatientVisitID IN ({PATIENTVISITID_CSV})</preCheckSql>
+		<preCheckText>Verify that 0 materials records are returned. If not, CCO need to handle this before we delete the visit.</preCheckText>
+		<preRecordsReturned>1</preRecordsReturned>
+		<updateSql />
+		<updateCount>0</updateCount>
+		<postCheckSql />
+        <postCheckText />
+		<postRecordsReturned>0</postRecordsReturned>
+    </Query>
+	
+    <Query>
+         <includeSql>{INCLUDE_CUSTOMDATA_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO CustomData_deleted
+SELECT *
+FROM CustomData
+WHERE ObjectID IN ({PATIENTVISITID_CSV})
+AND FieldID IN (
+	SELECT CustomFieldID
+	FROM [{DESIGNDB}].[dbo].[CustomFields] cf
+	WHERE cf.TableName = 'PatientVisits')</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT *
+FROM CustomData_Deleted
+WHERE ObjectID IN ({PATIENTVISITID_CSV})
+AND FieldID IN (
+	SELECT CustomFieldID
+	FROM [{DESIGNDB}].[dbo].[CustomFields] cf
+	WHERE cf.TableName = 'PatientVisits')</postCheckSql>
+         <postCheckText>Verify that the following number of deleted records are returned: {NUM_CUSTOMDATA} with ObjectID: {PATIENTVISITID_CSV}.</postCheckText>
+         <postRecordsReturned>{NUM_CUSTOMDATA}</postRecordsReturned>
+    </Query>
+	
+	<Query>
+		<includeSql>true</includeSql>
+		<preCheckSql>SELECT *
+FROM CustomData
+WHERE ObjectID IN ({PATIENTVISITID_CSV})
+AND FieldID IN (
+	SELECT CustomFieldID
+	FROM [{DESIGNDB}].[dbo].[CustomFields] cf
+	WHERE cf.TableName = 'PatientVisits')</preCheckSql>
+		<preCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA} with ObjectID: {PATIENTVISITID_CSV}.</preCheckText>
+		<preRecordsReturned>{NUM_CUSTOMDATA}</preRecordsReturned>
+		<updateSql>DELETE CustomData
+WHERE ObjectID IN ({PATIENTVISITID_CSV})
+AND FieldID IN (
+	SELECT CustomFieldID
+	FROM [{DESIGNDB}].[dbo].[CustomFields] cf
+	WHERE cf.TableName = 'PatientVisits')</updateSql>
+		<updateCount>{NUM_CUSTOMDATA}</updateCount>
+		<postCheckSql>SELECT *
+FROM CustomData
+WHERE ObjectID IN ({PATIENTVISITID_CSV})
+AND FieldID IN (
+	SELECT CustomFieldID
+	FROM [{DESIGNDB}].[dbo].[CustomFields] cf
+	WHERE cf.TableName = 'PatientVisits')</postCheckSql>
+		<postCheckText></postCheckText>
+		<postRecordsReturned>0</postRecordsReturned>
+	</Query>
+
+   <Query>
+         <includeSql>{IS_LAST_VIS}</includeSql>
+         <preCheckSql>SELECT TOP 1 pv.VisitID
+FROM PatientVisits pv
+JOIN {DESIGNDB}.dbo.Visits v ON (v.visitID = pv.visitID)
+WHERE unscheduled = 0
+AND patientID = {PATIENTID_CSV}
+ORDER BY patientVisitID DESC</preCheckSql>
+         <preCheckText>Verify that 1 record is returned and the last VisitID is set to {VISITID_CSV}.</preCheckText>
+         <preRecordsReturned>1</preRecordsReturned>
+         <updateSql>UPDATE Patients
+SET NextVisitID = {VISITID_CSV}
+WHERE PATIENTID = {PATIENTID_CSV}</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+         <postCheckSql>SELECT PatientID, NextVisitID
+FROM Patients
+WHERE PatientID = {PATIENTID_CSV}</postCheckSql>
+         <postCheckText>Verify that 1 record is returned and that NextVisitID is set to {VISITID_CSV}.</postCheckText>
+         <postRecordsReturned>1</postRecordsReturned>
+    </Query>
+
+
+
+   </update_queries>
+</dcr_script>
+

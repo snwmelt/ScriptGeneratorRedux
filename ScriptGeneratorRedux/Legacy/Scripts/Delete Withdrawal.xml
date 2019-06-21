@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+      <updateType>Delete_Withdrawal</updateType> 
+      <description>Delete Withdrwal</description>
+      <inputParam>
+	<inputText>Enter PatientCode CSV</inputText><!--Question you ask-->
+	<paramDesc>Patient Code</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Patients where PatientCode in ('{CSV_ITEM}') and Withdrawn is not Null</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Num Patients' as "Desc",'NUM_PATIENTS' as "Param",convert(varchar(max),count(*)) as Val  from Patients WHERE PATIENTCode in ({PATIENTCODE_CSV})
+	</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'PatientHistory_Deleted exists' as "Desc",'Include_PatientHistory_Deleted' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientHistory_Deleted'</query>
+         <requiredTables />
+      </Param>
+   </update_param>
+
+   <update_queries>
+      <updateType>Delete_Withdrawal</updateType>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT Patients.PatientCode, Enumerations.EnumerationName as [Patient Status], Patients.Withdrawn, Patients.WithdrawnBy
+FROM Patients
+JOIN {DESIGNDB}.dbo.Enumerations Enumerations ON Enumerations.EnumerationGroup = 'PatientStatus' AND Enumerations.EnumerationValue = Patients.PatientStatus
+WHERE Patients.PatientCode in ({PATIENTCODE_CSV})</preCheckSql>
+         <preCheckText>Verify that Patient Status is DropOut, Withdrawn and WithdrawnBy are populated.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTS} </preRecordsReturned>
+         <updateSql>UPDATE Patients 
+SET PatientStatus = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'PatientStatus' and EnumerationName = 'Active'),
+Withdrawn = NULL, 
+WithdrawnBy = 0, 
+WithdrawalActionID = 0, 
+WithdrawalReasonID = 0, 
+WithdrawalReason = ''
+WHERE PatientID in (SELECT PatientID From Patients WHERE PatientCode in ({PATIENTCODE_CSV}))</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+
+         <postCheckSql>SELECT Patients.PatientCode, Enumerations.EnumerationName as [Patient Status], Patients.Withdrawn, Patients.WithdrawnBy,Patients.WithdrawalActionID, Patients.WithdrawalReasonID, Patients.WithdrawalReason
+FROM Patients
+JOIN {DESIGNDB}.dbo.Enumerations Enumerations ON Enumerations.EnumerationGroup = 'PatientStatus' AND Enumerations.EnumerationValue = Patients.PatientStatus
+WHERE Patients.PatientCode in ({PATIENTCODE_CSV})</postCheckSql>
+         
+         <postCheckText>Verify that Patient Status is Active, the Withdrawn Date is NULL, WithdrawnBy, WithdrawalActionID and WithdrawalReasonID are 0 and WithdrawalReason is empty.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+
+
+
+    <Query>
+         <includeSql>{INCLUDE_PATIENTHISTORY_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientHistory_deleted
+SELECT * FROM PatientHistory 
+WHERE PatientID in (SELECT PatientID From Patients WHERE PatientCode in ({PATIENTCODE_CSV}))
+AND NewPatientStatus = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'PatientStatus' and EnumerationName = 'DropOut')</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+
+         <postCheckSql>SELECT p.PatientCode,Count(*) as numInPatientHistory_Deleted
+FROM PatientHistory_Deleted phd
+JOIN {DESIGNDB}.dbo.Enumerations ON phd.NewPatientStatus = Enumerations.EnumerationValue AND EnumerationGroup = 'PatientStatus'  AND EnumerationName = 'DropOut'
+JOIN Patients P ON phd.PatientID = p.PatientID 
+WHERE PatientCode in ({PATIENTCODE_CSV}) GROUP BY PatientCode </postCheckSql>        
+         <postCheckText>Verify {NUM_PATIENTS} record is returned in PatientHistory_Deleted for Patient {PATIENTCODE_CSV}, with a value of 1.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT PatientCode,PatientHistoryID,  OldPatientStatus, NewPatientStatus, EnumerationName AS [New Patient Status Decode]
+FROM PatientHistory ph
+JOIN Patients p on p.PatientID = ph.PatientID
+JOIN {DESIGNDB}.dbo.Enumerations ON ph.NewPatientStatus = Enumerations.EnumerationValue AND EnumerationGroup = 'PatientStatus' AND EnumerationName = 'DropOut'
+WHERE p.PatientID in (SELECT PatientID From Patients WHERE PatientCode in ({PATIENTCODE_CSV}))</preCheckSql>
+         <preCheckText>Verify that the patient only has {NUM_PATIENTS} row within the PatientHistory table with New Patient Status of DropOut.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTS} </preRecordsReturned>
+         <updateSql>DELETE PatientHistory 
+WHERE PatientID in (SELECT PatientID From Patients WHERE PatientCode in ({PATIENTCODE_CSV}))
+AND NewPatientStatus = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'PatientStatus' and EnumerationName = 'DropOut')</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+
+         <postCheckSql>SELECT * FROM PatientHistory ph
+JOIN {DESIGNDB}.dbo.Enumerations ON Ph.NewPatientStatus = Enumerations.EnumerationValue AND EnumerationGroup = 'PatientStatus'  AND EnumerationName = 'DropOut'
+JOIN Patients P ON ph.PatientID = p.PatientID
+WHERE PatientCode in ({PATIENTCODE_CSV}) </postCheckSql>        
+         <postCheckText>Verify zero records are returned in PatientHistory for this Patient {PATIENTCODE_CSV}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+
+   </update_queries>
+</dcr_script>
+

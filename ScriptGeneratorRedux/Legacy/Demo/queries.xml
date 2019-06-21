@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DCR_Updates>
+   <DCR_Update>
+      <updateType>Delete_Site</updateType>
+    <Query>
+         <includeSql>{INCLUDE_DELETED_SITES}</includeSql>
+         <preCheckSql> </preCheckSql>
+         <preCheckText> </preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO Sites_deleted SELECT * FROM Sites WHERE CentreID in ({CENTREID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_SITES} </updateCount>
+         <postCheckSql>SELECT * FROM Sites_Deleted WHERE CentreID in ({CENTREID_CSV})</postCheckSql>
+         <postCheckText>Confirm that the following record(s) are returned: {NUM_SITES}.</postCheckText>
+         <postRecordsReturned>{NUM_SITES}</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT SiteID,CentreID FROM Sites WHERE CentreID in ({CENTREID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_SITES}, with the following Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>{NUM_SITES}</preRecordsReturned>
+         <updateSql>DELETE Sites WHERE CentreID in ({CENTREID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_SITES}</updateCount>
+         <postCheckSql>SELECT SiteID,CentreID FROM Sites WHERE CentreID in ({CENTREID_CSV})</postCheckSql>
+         <postCheckText> Verify that 0 records are returned. </postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>{INCLUDE_SITEOPENCLOSESTATE}</includeSql>
+         <preCheckSql>SELECT * FROM SiteOpenCloseState WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_SITEOPENCLOSESTATE}.</preCheckText>
+         <preRecordsReturned>{NUM_SITEOPENCLOSESTATE}</preRecordsReturned>
+         <updateSql>DELETE SiteOpenCloseState WHERE SiteID IN ({SITEID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_SITEOPENCLOSESTATE}</updateCount>
+         <postCheckSql>SELECT * FROM SiteOpenCloseState WHERE SiteID IN ({SITEID_CSV})</postCheckSql>
+         <postCheckText> Verify that 0 records are returned.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM ResupplyLevels WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_RESUPPLYLEVELS}.</preCheckText>
+         <preRecordsReturned>{NUM_RESUPPLYLEVELS}</preRecordsReturned>
+         <updateSql>DELETE ResupplyLevels WHERE SiteID IN ({SITEID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_RESUPPLYLEVELS}</updateCount>
+         <postCheckSql>SELECT * FROM ResupplyLevels WHERE SiteID IN ({SITEID_CSV})</postCheckSql>
+         <postCheckText> Verify that 0 records are returned. </postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM Shipment WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_SHIPMENTS} records are returned.</preCheckText>
+         <preRecordsReturned>0</preRecordsReturned>
+         <updateSql></updateSql>
+         <updateCount>-1</updateCount>
+         <postCheckSql></postCheckSql>
+         <postCheckText> </postCheckText>
+         <postRecordsReturned>-1</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM Materials WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_MATERIALS} records are returned.</preCheckText>
+         <preRecordsReturned>0</preRecordsReturned>
+         <updateSql></updateSql>
+         <updateCount>-1</updateCount>
+         <postCheckSql></postCheckSql>
+         <postCheckText> </postCheckText>
+         <postRecordsReturned>-1</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM Patients WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_PATIENTS} records are returned.</preCheckText>
+         <preRecordsReturned>0</preRecordsReturned>
+         <updateSql></updateSql>
+         <updateCount>-1</updateCount>
+         <postCheckSql></postCheckSql>
+         <postCheckText> </postCheckText>
+         <postRecordsReturned>-1</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM SiteHistory WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_SITEHISTORY}.</preCheckText>
+         <preRecordsReturned>{NUM_SITEHISTORY}</preRecordsReturned>
+         <updateSql>DELETE SiteHistory WHERE SiteID IN ({SITEID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_SITEHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM SiteHistory WHERE SiteID IN ({SITEID_CSV})</postCheckSql>
+         <postCheckText> Verify that 0 records are returned.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM SiteUserAccess WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_SITEUSERACCESS}.</preCheckText>
+         <preRecordsReturned>{NUM_SITEUSERACCESS}</preRecordsReturned>
+         <updateSql>DELETE SiteUserAccess WHERE SiteID IN ({SITEID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_SITEUSERACCESS}</updateCount>
+         <postCheckSql>SELECT * FROM SiteUserAccess WHERE SiteID IN ({SITEID_CSV})</postCheckSql>
+         <postCheckText> Verify that 0 records are returned.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText> </preCheckText>
+         <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO CustomData_deleted SELECT * FROM CustomData WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData_Deleted WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</postCheckSql>
+         <postCheckText>Verify that the following number of records are updated: {NUM_CUSTOMDATA}.</postCheckText>
+         <postRecordsReturned>{NUM_CUSTOMDATA}</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA}.</preCheckText>
+         <preRecordsReturned>{NUM_CUSTOMDATA}</preRecordsReturned>
+         <updateSql>DELETE CustomData WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</postCheckSql>
+         <postCheckText>Verify that 0 records are returned.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   </DCR_Update>
+
+
+   <DCR_Update>
+    <updateType>Delete_Patient</updateType>
+    <Query>
+         <includeSql>{INCLUDE_PATIENTS_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO Patients_deleted SELECT * FROM Patients WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+         <postCheckSql>SELECT * FROM Patients_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Confirm that the following record(s) are returned: {NUM_PATIENTS}</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+
+    <updateType>Delete_Patient</updateType>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT PatientID,PatientCode FROM Patients WHERE PatientCode in ({PATIENTCODE_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned:{NUM_PATIENTS}, with the following Patient IDs: {PATIENTID_CSV}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTS}</preRecordsReturned>
+         <updateSql>DELETE Patients WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+         <postCheckSql>SELECT PatientID,PatientCode FROM Patients WHERE PatientCode in ({PATIENTCODE_CSV})</postCheckSql>
+         <postCheckText>Verify that 0 records are returned</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>{INCLUDE_CUSTOMDATA_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO CustomData_deleted SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData_Deleted WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA}.</postCheckText>
+         <postRecordsReturned>{NUM_CUSTOMDATA}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA}.</preCheckText>
+	 <preRecordsReturned>{NUM_CUSTOMDATA}</preRecordsReturned>
+         <updateSql>DELETE CustomData WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>{INCLUDE_PATIENTHISTORY_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientHistory_Deleted SELECT * FROM PatientHistory WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM PatientHistory_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTHISTORY}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTHISTORY}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM PatientHistory WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTHISTORY}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTHISTORY}</preRecordsReturned>
+         <updateSql>DELETE PatientHistory WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM PatientHistory WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTHISTORY}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>{INCLUDE_PATIENTVISITS_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientVisits_Deleted SELECT * FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientVisits_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTVISITS}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTVISITS}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTVISITS}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTVISITS}</preRecordsReturned>
+         <updateSql>DELETE PatientVisits WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientVisits WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTVISITS}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+
+    <Query>
+         <includeSql>{INCLUDE_PATIENTEXPECTEDVISITS_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientExpectedVisits_Deleted SELECT * FROM PatientExpectedVisits WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTEXPECTEDVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientExpectedVisits_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTEXPECTEDVISITS}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTEXPECTEDVISITS}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM PatientExpectedVisits WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTEXPECTEDVISITS}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTEXPECTEDVISITS}</preRecordsReturned>
+         <updateSql>DELETE PatientExpectedVisits WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTEXPECTEDVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientExpectedVisits WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTEXPECTEDVISITS}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>{INCLUDE_PATIENTCODEHISTORY_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientCodeHistory_Deleted SELECT * FROM PatientCodeHistory WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTCODEHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM PatientCodeHistory_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODEHISTORY}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTCODEHISTORY}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>{INCLUDE_PATIENTCODEHISTORY}</includeSql>
+         <preCheckSql>SELECT * FROM PatientCodeHistory WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODEHISTORY}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTCODEHISTORY}</preRecordsReturned>
+         <updateSql>DELETE PatientCodeHistory WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTCODEHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM PatientCodeHistory WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODEHISTORY}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+
+   <Query>
+         <includeSql>{INCLUDE_PATIENTCODES_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientCodes_Deleted SELECT * FROM PatientCodes WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTCODES}</updateCount>
+         <postCheckSql>SELECT * FROM PatientCodes_Deleted WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODES}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTCODES}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>{INCLUDE_PATIENTCODES}</includeSql>
+         <preCheckSql>SELECT * FROM PatientCodes WHERE PatientID in ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODES}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTCODES}</preRecordsReturned>
+         <updateSql>DELETE PatientCodes WHERE PatientID in ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTCODES}</updateCount>
+         <postCheckSql>SELECT * FROM PatientCodes WHERE PatientID in ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTCODES}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   <Query>
+         <includeSql>{UPDATE_RAND_MAT}</includeSql>
+         <preCheckSql>SELECT * FROM Materials WHERE PatientID IN ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_MATERIALS} records are returned. </preCheckText>
+         <preRecordsReturned>{NUM_MATERIALS}</preRecordsReturned>
+         <updateSql>UPDATE Materials SET PatientID = 0, SiteID = 0, MaterialStatusID = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'MaterialStatusID' and EnumerationName = 'Damaged'), PatientVisitID = 0  WHERE PatientID IN ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_MATERIALS}</updateCount>
+         <postCheckSql>SELECT * FROM Materials WHERE PatientID IN ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText> </postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   <Query>
+         <includeSql>{UPDATE_RAND_MAT}</includeSql>
+         <preCheckSql>SELECT * FROM Randomisation WHERE PatientID IN ({PATIENTID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_RANDOMISATION} records are returned. </preCheckText>
+         <preRecordsReturned>{NUM_RANDOMISATION}</preRecordsReturned>
+         <updateSql>UPDATE Randomisation SET PatientID = -1  WHERE PatientID IN ({PATIENTID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_RANDOMISATION} </updateCount>
+         <postCheckSql>SELECT * FROM Randomisation WHERE PatientID IN ({PATIENTID_CSV})</postCheckSql>
+         <postCheckText> </postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   </DCR_Update>
+
+
+   <DCR_Update>
+    <updateType>Delete_PatientVisit</updateType>
+    <Query>
+         <includeSql>{INCLUDE_PATIENTVISITS_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO PatientVisits_deleted SELECT * FROM PatientVisits WHERE PatientVisitID in ({PATIENTVISITID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientVisits_Deleted WHERE PatientVisitID in ({PATIENTVISITID_CSV})</postCheckSql>
+         <postCheckText>Confirm that the following record(s) are returned: {NUM_PATIENTVISITS}</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTVISITS}</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT p.PatientID,PatientCode,PatientVisitID,v.VisitID, v.Code
+ FROM Patients p join  PatientVisits pv on (p.PatientID = pv.PatientID) 
+JOIN {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.VisitID)
+ WHERE p.PatientID in (Select PatientID from Patients Where PatientCode = {PATIENTCODE_CSV}) 
+AND v.Code = '{VISITCODE_CSV}'
+ AND KitReplacementSequence = 0</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned:{NUM_PATIENTVISITS}, with the following Patient IDs: {PATIENTID_CSV}, PatientVisit IDs: {PATIENTVISITID_CSV}, Visit IDs: {VISITID_CSV} and Visit Code: {VISITCODE_CSV}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTVISITS}</preRecordsReturned>
+         <updateSql>DELETE PatientVisits WHERE PatientVisitID in ({PATIENTVISITID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+         <postCheckSql>SELECT * FROM PatientVisits WHERE PatientVisitID in ({PATIENTVISITID_CSV})</postCheckSql>
+         <postCheckText>Verify that 0 records are returned</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+    <Query>
+         <includeSql>{INCLUDE_CUSTOMDATA_DELETED}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+	 <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO CustomData_deleted SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTVISITID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData_Deleted WHERE ObjectID IN ({PATIENTVISITID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA}.</postCheckText>
+         <postRecordsReturned>{NUM_CUSTOMDATA}</postRecordsReturned>
+    </Query>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTVISITID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA}.</preCheckText>
+	 <preRecordsReturned>{NUM_CUSTOMDATA}</preRecordsReturned>
+         <updateSql>DELETE CustomData WHERE ObjectID IN ({PATIENTVISITID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({PATIENTVISITID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')</postCheckSql>
+         <postCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   <Query>
+         <includeSql>{UPDATE_MAT}</includeSql>
+         <preCheckSql></preCheckSql>
+         <preCheckText></preCheckText>
+         <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO [MaterialHistory]
+([MaterialID],[OldMaterialStatusID],[NewMaterialStatusID],[DateChanged],[ActionID],[PendingActionID])
+SELECT MaterialID
+,(SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'MaterialStatusID' AND EnumerationName = 'AllocatedToPatient') AS [OldMaterialStatusID]
+,(SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'MaterialStatusID' AND EnumerationName = 'Damaged') AS [NewMaterialStatusID]
+,GetUTCDate() AS [DateChanged]
+,0 AS [ActionID]
+,0 AS [PendingActionID]
+FROM Materials WHERE PatientVisitID IN ({PATIENTVISITID_CSV})
+SELECT @@ROWCOUNT AS "Records Affected"</updateSql>
+         <updateCount>{NUM_MATERIALS}</updateCount>
+         <postCheckSql>SELECT TOP {NUM_MATERIALS} * FROM [MaterialHistory] 
+WHERE [OldMaterialStatusID] = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'MaterialStatusID' AND EnumerationName = 'AllocatedToPatient')
+AND [NewMaterialStatusID] = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'MaterialStatusID' AND EnumerationName = 'Damaged')
+ORDER BY [MaterialHistoryID] DESC</postCheckSql>
+         <postCheckText>Verify that the {NUM_MATERIALS} records relate to the records that were set to damaged are returned and that the OldMaterialStatusID is 4 and the NewMaterialStatusID is 5.</postCheckText>
+         <postRecordsReturned>{NUM_MATERIALS}</postRecordsReturned>
+    </Query>
+
+   <Query>
+         <includeSql>{UPDATE_MAT}</includeSql>
+         <preCheckSql>SELECT * FROM Materials WHERE PatientVisitID IN ({PATIENTVISITID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_MATERIALS} records are returned. </preCheckText>
+         <preRecordsReturned>{NUM_MATERIALS}</preRecordsReturned>
+         <updateSql>UPDATE Materials SET PatientID = 0, PatientVisitID = 0, SiteID = 0, MaterialStatusID = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE EnumerationGroup = 'MaterialStatusID' and EnumerationName = 'Damaged') WHERE PatientVisitID IN ({PATIENTVISITID_CSV})
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_MATERIALS}</updateCount>
+         <postCheckSql>SELECT * FROM Materials WHERE PatientVisitID IN ({PATIENTVISITID_CSV})</postCheckSql>
+         <postCheckText> </postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   <Query>
+         <includeSql>{IS_LAST_VIS}</includeSql>
+         <preCheckSql>SELECT top 1 pv.VisitID FROM PatientVisits pv JOIN {DESIGNDB}.dbo.Visits v on (v.visitID = pv.visitID) WHERE unscheduled = 0 AND patientID = {PATIENTID_CSV} ORDER BY patientVisitID DESC</preCheckSql>
+         <preCheckText>Verify that the last VisitID is set to {VISITID_CSV}.</preCheckText>
+         <preRecordsReturned>1</preRecordsReturned>
+         <updateSql>UPDATE Patients SET NextVisitID = {VISITID_CSV} WHERE PATIENTID = {PATIENTID_CSV}
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+         <postCheckSql>SELECT PatientID,NextVisitID FROM Patients WHERE PatientID = {PATIENTID_CSV}</postCheckSql>
+         <postCheckText>Verify that NextVisitID is set to {VISITID_CSV}.</postCheckText>
+         <postRecordsReturned>1</postRecordsReturned>
+    </Query>
+
+
+   </DCR_Update>
+
+   <DCR_Update>
+      <updateType>Update_VisDate</updateType>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT PatientCode, format(PV.EnteredDate,'dd-MMM-yyyy') as EnteredDate, V.Code, v.visitid
+FROM Patients P
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode in ({PATIENTCODE_CSV})
+AND code = '{VISITCODE_CSV}' AND KitReplacementSequence = 0
+ORDER BY PV.PatientVisitID</preCheckSql>
+         <preCheckText>Please confirm that the following number of records are returned: {NUM_PATIENTVISITS}, with the visit Codes: {VISITCODE_CSV}, Visit ID: {VISITID_CSV} and EnteredDates: {ORIGINAL_DATE_CSV}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTVISITS} </preRecordsReturned>
+         <updateSql>UPDATE PatientVisits 
+SET EnteredDate = convert(datetime,'{NEW_VIS_DATE}')
+FROM PatientVisits PV
+JOIN Patients P ON P.PatientID = PV.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode in ({PATIENTCODE_CSV})
+AND code = '{VISITCODE_CSV}' AND KitReplacementSequence = 0
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+
+         <postCheckSql>SELECT PatientCode, format(PV.EnteredDate,'dd-MMM-yyyy') as EnteredDate, V.Code, v.visitid
+FROM Patients P
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode in ({PATIENTCODE_CSV})
+AND pv.VisitID in ({VISITID_CSV})
+ORDER BY PV.PatientVisitID</postCheckSql>
+         
+         <postCheckText>Please confirm that the following number of records are returned: {NUM_PATIENTVISITS}, with the visit Codes: {VISITCODE_CSV} and EnteredDates: {NEW_VIS_DATE}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTVISITS}</postRecordsReturned>
+    </Query>
+   </DCR_Update>
+
+   <DCR_Update>
+      <updateType>Update_CustomData_Pat</updateType>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT p.PatientCode,FieldName,Value,CustomDataID
+FROM Customdata cd 
+JOIN Patients p on (p.PatientID = cd.ObjectID)
+JOIN {DESIGNDB}.dbo.CustomFields cf on (cd.FieldID = cf.CustomFieldID)
+WHERE FieldID = (SELECT CustomFieldID FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients' AND FieldName = {CF_NAME})
+AND ObjectID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENTCODE_CSV})</preCheckSql>
+         <preCheckText>Verify that Value is set to {ORIGINAL_CD_VAL} and that CustomDataID is set to {CUSTOM_DATA_ID}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTS} </preRecordsReturned>
+         <updateSql>UPDATE CustomData SET Value = {NEW_CD_VAL} WHERE CustomDataId = {CUSTOM_DATA_ID}
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+
+         <postCheckSql>SELECT p.PatientCode,FieldName,Value
+FROM Customdata cd 
+JOIN Patients p on (p.PatientID = cd.ObjectID)
+JOIN {DESIGNDB}.dbo.CustomFields cf on (cd.FieldID = cf.CustomFieldID)
+WHERE FieldID = (SELECT CustomFieldID FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients' AND FieldName = {CF_NAME})
+AND ObjectID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENTCODE_CSV})</postCheckSql>
+         <postCheckText>Verify that Value is set to {NEW_CD_VAL}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+   </DCR_Update>
+
+
+   <DCR_Update>
+      <updateType>Update_CustomData_Vis</updateType>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT p.PatientCode,FieldName,Value,CustomDataID FROM Customdata cd 
+JOIN PatientVisits pv on (pv.PatientVisitID = cd.ObjectID)
+JOIN Patients p on (pv.PatientID = p.PatientID)
+JOIN {DESIGNDB}.dbo.CustomFields cf on (cd.FieldID = cf.CustomFieldID)
+Where ObjectID = (Select PatientVisitID From PatientVisits Where VisitID = {VISITID_CSV} and PatientID = (Select PatientID from Patients where PatientCode = {PATIENTCODE_CSV}))
+and FieldID = (SELECT CustomFieldID FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'PatientVisits' AND FieldName = {CF_NAME})</preCheckSql>
+         <preCheckText>Verify that Value is set to {ORIGINAL_CD_VAL} and that CustomDataID is set to {CUSTOM_DATA_ID}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTS} </preRecordsReturned>
+         <updateSql>UPDATE CustomData SET Value = {NEW_CD_VAL} WHERE CustomDataId = {CUSTOM_DATA_ID}
+SELECT @@ROWCOUNT as "Rows Affected"</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+
+         <postCheckSql>SELECT p.PatientCode,FieldName,Value,CustomDataID FROM Customdata cd 
+JOIN PatientVisits pv on (pv.PatientVisitID = cd.ObjectID)
+JOIN Patients p on (pv.PatientID = p.PatientID)
+JOIN {DESIGNDB}.dbo.CustomFields cf on (cd.FieldID = cf.CustomFieldID)
+Where ObjectID = (Select PatientVisitID From PatientVisits Where VisitID = {VISITID_CSV} and PatientID = (Select PatientID from Patients where PatientCode = {PATIENTCODE_CSV}))
+and FieldID = (SELECT CustomFieldID FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'PatientVisits' AND FieldName = {CF_NAME})</postCheckSql>
+         <postCheckText>Verify that Value is set to {NEW_CD_VAL}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+   </DCR_Update>
+
+
+
+   <DCR_Update>
+      <updateType>Update_Order_to_Intransit</updateType>
+   <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT s.ShipmentID,s.OrderNumber,s.ConfirmedOnSite,s.Status,e.EnumerationName
+FROM Shipment s
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationValue = s.Status
+WHERE OrderNumber = {ORDER_NUM}</preCheckSql>
+         <preCheckText>Note the order status is 1 (at site), and the ConfirmedOnSite date is set.</preCheckText>
+         <preRecordsReturned>{NUM_ORDERS}</preRecordsReturned>
+         <updateSql>UPDATE Shipment
+SET Status = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations e WHERE e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationName = 'InTransit'),ConfirmedOnSite = NULL
+WHERE OrderNumber = {ORDER_NUM}
+</updateSql>
+         <updateCount>{NUM_ORDERS}</updateCount>
+         <postCheckSql>SELECT s.ShipmentID,s.OrderNumber,s.ConfirmedOnSite,s.Status,e.EnumerationName
+FROM Shipment s
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationValue = s.Status
+WHERE OrderNumber = {ORDER_NUM}</postCheckSql>
+         <postCheckText>Note the order status is 0 (in transit), and the confirmed on site date is null.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   </DCR_Update>
+
+   <DCR_Update>
+      <updateType>Update_Order_to_Cancelled</updateType>
+   <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT s.ShipmentID, s.OrderNumber, s.Status, e.EnumerationName, s.OrderCancelled, s.ConfirmedOnSite ,s.OrderSent
+FROM Shipment s
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationValue = s.Status
+WHERE OrderNumber = {ORDER_NUM}</preCheckSql>
+         <preCheckText>Note that order {ORDER_NUM} as a status of 1 (at site), and no order cancelled date.  Note that ConfirmedOnSite and OrderSent are set.</preCheckText>
+         <preRecordsReturned>{NUM_ORDERS}</preRecordsReturned>
+         <updateSql>UPDATE Shipment
+SET Status = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations e WHERE e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationName = 'InTransit'),ConfirmedOnSite = NULL
+WHERE OrderNumber = {ORDER_NUM}
+</updateSql>
+         <updateCount>{NUM_ORDERS}</updateCount>
+         <postCheckSql>SELECT s.ShipmentID, s.OrderNumber, s.Status, e.EnumerationName, s.OrderCancelled, s.ConfirmedOnSite ,s.OrderSent
+FROM Shipment s
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationValue = s.Status
+WHERE OrderNumber = {ORDER_NUM}</postCheckSql>
+         <postCheckText>Note that order {ORDER_NUM} as a status of 6 (cancelled), and the order cancelled date is set. Note that ConfirmedOnSite and OrderSent are NULL.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+    </Query>
+
+   </DCR_Update>
+
+
+
+</DCR_Updates>
+

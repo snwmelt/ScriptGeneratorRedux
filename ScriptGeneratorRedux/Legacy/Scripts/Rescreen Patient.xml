@@ -1,0 +1,1252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+	<update_param>
+		<updateType>Rescreeen_Patient</updateType> 
+		<description>Rescreen Patient</description>
+
+		<inputParam>
+			<inputText>Enter Old PatientCode</inputText><!--Question you ask-->
+			<paramDesc>Old Patient Code</paramDesc><!--param Desc-->
+			<paramName>OLDPATIENTCODE</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+			<sqlValidation>SELECT * FROM Patients WHERE PatientCode = '{CSV_ITEM}'</sqlValidation>
+			<inputType>String</inputType><!--String, Int, Bool-->
+			<inputMethod>Text</inputMethod><!--Text or List-->
+			<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+			<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+		</inputParam>
+
+
+
+		<inputParam>
+			<inputText>Enter New PatientCode</inputText><!--Question you ask-->
+			<paramDesc>New Patient Code</paramDesc><!--param Desc-->
+			<paramName>NEWPATIENTCODE</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+			<sqlValidation>SELECT * FROM Patients WHERE PatientCode = '{CSV_ITEM}'</sqlValidation>
+			<inputType>String</inputType><!--String, Int, Bool-->
+			<inputMethod>Text</inputMethod><!--Text or List-->
+			<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+			<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+		</inputParam>
+
+
+
+      <inputParam>
+	<inputText>Enter the visit code for the screening visit</inputText><!--Question you ask-->
+	<paramDesc>Screening Visit Code</paramDesc><!--param Desc-->
+	<paramName>SCREENVISITCODE</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * FROM {DESIGNDB}.dbo.Visits WHERE Code = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>
+SELECT Code AS "Item"
+FROM PatientVisits pv
+JOIN {DESIGNDB}.dbo.Visits v ON (pv.VisitID = v.visitID)
+WHERE PatientID IN (SELECT PatientID FROM Patients WHERE PatientCode IN ({OLDPATIENTCODE})) AND KitReplacementSequence = 0 ORDER BY v.VisitID
+        </validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+
+      <inputParam>
+        <inputText>Enter the Screening Visit ID </inputText><!--Question you ask-->
+        <paramDesc>Screening Visit ID</paramDesc><!--param Desc-->
+        <paramName>SCREENVISITID</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+        <sqlValidation>SELECT * FROM {DESIGNDB}.dbo.Visits where VisitID = '{CSV_ITEM}'</sqlValidation>
+        <inputType>Int</inputType><!--String, Int, Bool-->
+        <inputMethod>List</inputMethod><!--Text or List-->
+        <validItems/><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+        <validItemsSQL>
+SELECT pv.VisitID AS "Item"
+FROM PatientVisits pv 
+JOIN {DESIGNDB}.dbo.Visits v ON (pv.VisitID = v.visitID)
+WHERE PatientID IN (SELECT PatientID FROM Patients WHERE PatientCode IN ({OLDPATIENTCODE}))
+AND KitReplacementSequence = 0
+AND Code = '{SCREENVISITCODE}'
+ORDER BY v.VisitID
+        </validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+
+      <inputParam>
+	<inputText>Enter the ticket number</inputText><!--Question you ask-->
+	<paramDesc>Ticket Number</paramDesc><!--param Desc-->
+	<paramName>TICKET_NUM</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+
+      <Param>
+         <query>
+SELECT 'Old PatientID' AS "Desc",
+       'OLDPATIENTID' AS "Param",
+       CAST(PatientID AS NVARCHAR(MAX)) AS Val
+FROM Patients
+WHERE PatientCode IN ({OLDPATIENTCODE})
+         </query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+SELECT 'New PatientID' AS "Desc",
+       'NEWPATIENTID' AS "Param",
+       CAST(PatientID AS NVARCHAR(MAX)) AS Val
+FROM Patients
+WHERE PatientCode IN ({NEWPATIENTCODE})
+         </query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+SELECT 'Number of patient and patient visit custom fields' AS "Desc",
+       'NUM_CUSTOMFIELDS' AS "Param",
+       CONVERT(NVARCHAR(MAX),COUNT(*)) AS Val
+FROM [{DESIGNDB}].[dbo].[CustomFields]
+WHERE TableName IN ('Patients','PatientVisits')
+         </query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+SELECT 'ActionID of new patients screening visit' AS "Desc",
+       'NEWSCREENACTIONID' AS "Param",
+       CAST(PV.ActionID AS NVARCHAR(MAX)) AS Val
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode IN ({NEWPATIENTCODE})
+AND V.VisitID = '{SCREENVISITID}'
+         </query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+SELECT 'PatientVisitID of new patients screening visit' AS "Desc",
+       'NEWSCREENPVID' AS "Param",
+       CAST(PV.PatientVisitID AS NVARCHAR(MAX)) AS Val
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode IN ({NEWPATIENTCODE})
+AND V.VisitID = '{SCREENVISITID}'
+         </query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+SELECT 'Number of patient visits without new patient screening visit' AS "Desc",
+       'NUM_PATIENTVISITS' AS "Param",
+       CONVERT(NVARCHAR(MAX),COUNT(*)-1) AS Val
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+         </query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+SELECT 'Number of new patient visits without screening visit' AS "Desc",
+       'NUM_NEWPATIENTVISITS' AS "Param",
+       CONVERT(NVARCHAR(MAX),COUNT(*)-1) AS Val
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode IN ({NEWPATIENTCODE})
+         </query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+SELECT 'Number of old patient visits' AS "Desc",
+       'NUM_OLDPATIENTVISITS' AS "Param",
+       CONVERT(NVARCHAR(MAX),COUNT(*)) AS Val
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode IN ({OLDPATIENTCODE})
+         </query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Materials assigned to new patient' AS "Desc",
+       'INCLUDE_MATERIALS' AS "Param",
+       CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val
+FROM Materials m
+JOIN Patients p ON p.PatientID = m.PatientID
+WHERE PatientCode IN ({NEWPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+	  
+
+      <Param>
+        <query>
+SELECT 'Number of materials assigned to new patient' AS "Desc",
+       'NUM_MATERIALS' AS "Param",
+       CAST(COUNT(*) AS NVARCHAR(MAX)) AS Val
+FROM Materials m
+JOIN Patients p ON p.PatientID = m.PatientID
+WHERE PatientCode IN ({NEWPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+	  
+	  
+	  <Param>
+        <query>
+SELECT 'Number of materials assigned to both patients' AS "Desc",
+       'NUM_ALLMATERIALS' AS "Param",
+       CAST(COUNT(*) AS NVARCHAR(MAX)) AS Val
+FROM Materials m
+JOIN Patients p ON p.PatientID = m.PatientID
+WHERE PatientCode IN ({OLDPATIENTCODE},{NEWPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Rancodes assigned to new patient' AS "Desc",
+       'INCLUDE_RAND' AS "Param",
+       CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val
+FROM Randomisation r
+JOIN Patients p ON p.PatientID = r.PatientID
+WHERE PatientCode IN ({NEWPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of rancodes assigned to new patient' AS "Desc",
+       'NUM_RAND' AS "Param",
+       CAST(COUNT(*) AS NVARCHAR(MAX)) AS Val
+FROM Randomisation r
+JOIN Patients p ON p.PatientID = r.PatientID
+WHERE PatientCode IN ({NEWPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'SystemPage enumeration value for rescreen action' AS "Desc",
+       'RESCREENENUMERATION' AS "Param",
+       CAST(EnumerationValue AS NVARCHAR(MAX)) AS Val
+FROM {DESIGNDB}.dbo.Enumerations
+WHERE EnumerationGroup = 'SystemPage'
+AND EnumerationName LIKE 'Rescreen'
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of expected patient visits for both patient codes' AS "Desc",
+       'NUM_PEV' AS "Param",
+       CAST(COUNT(*) AS NVARCHAR(MAX)) AS Val
+FROM PatientExpectedVisits pev
+JOIN Patients p ON p.PatientID = pev.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of expected patient visits for the old patient code' AS "Desc",
+       'NUM_PEVOLD' AS "Param",
+       CAST(COUNT(*) AS NVARCHAR(MAX)) AS Val
+FROM PatientExpectedVisits pev
+JOIN Patients p ON p.PatientID = pev.PatientID
+WHERE p.PatientCode IN ({OLDPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of expected patient visits the new patient code' AS "Desc",
+       'NUM_PEVNEW' AS "Param",
+       CAST(COUNT(*) AS NVARCHAR(MAX)) AS Val
+FROM PatientExpectedVisits pev
+JOIN Patients p ON p.PatientID = pev.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of patient code history records for the patients' AS "Desc",
+       'NUM_PATCODEHIST' AS "Param",
+       CAST(COUNT(*) AS NVARCHAR(MAX)) AS Val
+FROM PatientCodeHistory pch
+JOIN Patients p ON p.PatientID = pch.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'ID of patient code history record for the new patients screening' AS "Desc",
+       'NEWPATCODEHISTID' AS "Param",
+       CAST(pch.PatientCodeHistoryID AS NVARCHAR(MAX)) AS Val
+FROM PatientCodeHistory pch
+JOIN Patients p ON p.PatientID = pch.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+AND LEN(pch.OldPatientCode) = 0
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of patient code history records for new patient to be reassigned' AS "Desc",
+       'NUM_PCHRECS' AS "Param",
+       CAST(COUNT(*)-1 AS NVARCHAR(MAX)) AS Val
+FROM PatientCodeHistory pch
+JOIN Patients p ON p.PatientID = pch.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of patient history records' AS "Desc",
+       'NUM_PATHIST' AS "Param",
+       CAST(COUNT(*) AS NVARCHAR(MAX)) AS Val
+FROM PatientHistory ph
+JOIN Patients p ON p.PatientID = ph.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Expected number of patient history records after updates' AS "Desc",
+       'NUM_EXPPATHIST' AS "Param",
+       CAST(COUNT(*)+1 AS NVARCHAR(MAX)) AS Val
+FROM PatientHistory ph
+JOIN Patients p ON p.PatientID = ph.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Patient level custom data present for new patient' AS "Desc",
+       'USE_NEWPATCUSTDATA' AS "Param",
+       CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val
+FROM CustomData cd
+JOIN Patients p ON p.PatientID = cd.ObjectID
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+AND cf.TableName = 'Patients'
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of Patient level custom data items for new patient' AS "Desc",
+       'NUM_NEWPATCUSTDATA' AS "Param",
+       CAST(COUNT(*) AS VARCHAR) AS Val
+FROM CustomData cd
+JOIN Patients p ON p.PatientID = cd.ObjectID
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+AND cf.TableName = 'Patients'
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of Patient level custom data items for old patient' AS "Desc",
+       'NUM_OLDPATCUSTDATA' AS "Param",
+       CAST(COUNT(*) AS VARCHAR) AS Val
+FROM CustomData cd
+JOIN Patients p ON p.PatientID = cd.ObjectID
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID
+WHERE p.PatientCode IN ({OLDPATIENTCODE})
+AND cf.TableName = 'Patients'
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of Patient level custom data items for both patients' AS "Desc",
+       'NUM_ALLPATCUSTDATA' AS "Param",
+       CAST(COUNT(*) AS VARCHAR) AS Val
+FROM CustomData cd
+JOIN Patients p ON p.PatientID = cd.ObjectID
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID
+WHERE p.PatientCode IN ({OLDPATIENTCODE},{NEWPATIENTCODE})
+AND cf.TableName = 'Patients'
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Patient visit level custom data present for new patient' AS "Desc",
+       'INCLUDE_NEWPATVISCUSTDATA' AS "Param",
+       CAST((CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END) AS VARCHAR) AS Val
+FROM CustomData cd
+JOIN PatientVisits pv ON pv.PatientVisitID = cd.ObjectID
+JOIN Patients p ON p.PatientID = pv.PatientID
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+AND cf.TableName = 'PatientVisits'
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'Number of Patient visit level custom data items for new patient' AS "Desc",
+       'NUM_NEWPATVISCUSTDATA' AS "Param",
+       CAST(COUNT(*) AS VARCHAR) AS Val
+FROM CustomData cd
+JOIN PatientVisits pv ON pv.PatientVisitID = cd.ObjectID
+JOIN Patients p ON p.PatientID = pv.PatientID
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+AND cf.TableName = 'PatientVisits'
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+      <Param>
+        <query>
+SELECT 'New patient status' AS "Desc",
+       'NEWPATIENTSTATUS' AS "Param",
+       CAST(PatientStatus AS VARCHAR) AS Val
+FROM Patients 
+WHERE PatientCode IN ({NEWPATIENTCODE})
+        </query>
+        <requiredTables/>
+      </Param>
+
+
+		<Param>
+			<query>
+SELECT 'New patient NextVisitID' AS "Desc",
+       'NEWPATIENTNEXTVISITID' AS "Param",
+       CAST(NextVisitID AS VARCHAR) AS Val
+FROM Patients 
+WHERE PatientCode IN ({NEWPATIENTCODE})
+			</query>
+			<requiredTables/>
+		</Param>
+
+		<Param>
+			<query>
+SELECT
+    'Was the new screening done before the screenfail' AS "Desc",
+	'PSCF_AFTER_PREG' AS "Param",
+    IIF(LEAD(x.SystemPage,1) OVER (ORDER BY x.ActionDate) = -78
+       ,'true'
+       ,'false') AS Val
+FROM (
+	SELECT TOP 1 a.SystemPage, a.ActionDate
+	FROM Actions a
+	JOIN Patients p ON p.PatientID = a.PatientID
+	WHERE (p.PatientCode IN ({OLDPATIENTCODE}) AND a.SystemPage = -176) -- First patients screenfail action
+	OR (p.PatientCode IN ({NEWPATIENTCODE}) AND a.SystemPage = -78) -- Second patients screen action
+	ORDER BY a.ActionDate) x
+			</query>
+			<requiredTables/>
+		</Param>
+
+		<Param>
+			<query>
+SELECT
+	'Number of action records other than the screening action for the new patient' AS "Desc",
+	'NUM_NEWACTIONS' AS "Param",
+	CAST(COUNT(1) - 1 AS NVARCHAR(MAX)) AS Val
+FROM Actions a
+JOIN Patients p ON p.PatientID = a.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+			</query>
+			<requiredTables/>
+		</Param>
+		
+		<Param>
+			<query>
+SELECT
+	'Total number of action records for old and new PatientID' AS "Desc",
+	'NUM_TOTALACTIONS' AS "Param",
+	CAST(COUNT(1) AS NVARCHAR(MAX)) AS Val
+FROM Actions a
+JOIN Patients p ON p.PatientID = a.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+			</query>
+			<requiredTables/>
+		</Param>
+		
+	</update_param>
+
+
+
+
+
+
+
+	<update_queries>
+		<updateType>Rescreeen_Patient</updateType>
+
+		<Query>
+			<includeSql>{PSCF_AFTER_PREG}</includeSql>
+			<preCheckSql>
+--
+-- WARNING
+----------
+--
+-- The new patient was screened BEFORE the old patient was screenfailed
+-- Pay extra attention to the order that Action and PatientHistory records appear in
+-- as these are likely to be the wrong way round
+--
+-- Delete this comment block before submitting this script
+--
+            </preCheckSql>
+            <preCheckText></preCheckText>
+            <preRecordsReturned>1</preRecordsReturned>
+
+            <updateSql />
+            <updateCount />
+
+            <postCheckSql />
+            <postCheckText />
+            <postRecordsReturned />
+        </Query>
+	  
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT CustomFieldID ,TableName, FieldName, {DESIGNDB}.dbo.GetUserTranslation(TextID,1,1)
+FROM {DESIGNDB}.dbo.CustomFields
+WHERE TableName IN ('Patients','PatientVisits')
+ORDER BY TableName, FieldName
+            </preCheckSql>
+            <preCheckText>Verify that the following number of records are returned: {NUM_CUSTOMFIELDS}. Note there are no fields relating to rescreening (such as an old or previous screening number or rescreen flag) that implies this study uses a bespoke method for rescreening.</preCheckText>
+            <preRecordsReturned>{NUM_CUSTOMFIELDS}</preRecordsReturned>
+
+            <updateSql />
+            <updateCount />
+
+            <postCheckSql />
+            <postCheckText />
+            <postRecordsReturned />
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT PatientID, PatientCode
+FROM Patients
+WHERE PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+            </preCheckSql>
+            <preCheckText>Verify that the following number of records are returned: 2.  Note PatientID {NEWPATIENTID} relates to patient code {NEWPATIENTCODE}, and PatientID {OLDPATIENTID} relates to patient code {OLDPATIENTCODE}.</preCheckText>
+            <preRecordsReturned>2</preRecordsReturned>
+
+            <updateSql>
+            </updateSql>
+            <updateCount>-1</updateCount>
+
+            <postCheckSql>
+            </postCheckSql>
+            <postCheckText></postCheckText>
+            <postRecordsReturned>-1</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT PV.PatientVisitID, P.PatientID, PatientCode, PatientStatus, NextVisitID, ScreenFailedBy, ScreenFailed, ScreenFailReason, ScreenFailReasonID, PV.TitrationID, PV.EnteredDate, PV.ActualDate, V.StrataID, V.VisitID, V.Code, PV.ActionID, a.SystemPage, e.EnumerationName
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+JOIN Actions a ON a.ActionID = pv.ActionID
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationValue = a.SystemPage AND e.EnumerationGroup = 'SystemPage'
+WHERE p.PatientCode IN ({OLDPATIENTCODE})
+ORDER BY PatientCode, PV.PatientVisitID
+            </preCheckSql>
+            <preCheckText>Note that the following number of records are returned: {NUM_OLDPATIENTVISITS}.  Note that the screening visit for patient {OLDPATIENTCODE} has visit code {SCREENVISITCODE} and visit ID {SCREENVISITID}.</preCheckText>
+            <preRecordsReturned>{NUM_OLDPATIENTVISITS}</preRecordsReturned>
+
+            <updateSql>
+UPDATE Actions
+SET PatientID = {OLDPATIENTID}
+WHERE PatientID = {NEWPATIENTID}
+AND ActionID != {NEWSCREENACTIONID}
+            </updateSql>
+            <updateCount>{NUM_NEWACTIONS}</updateCount>
+
+            <postCheckSql>
+SELECT ActionID, PatientID
+FROM Actions
+WHERE PatientID IN ({OLDPATIENTID},{NEWPATIENTID})
+            </postCheckSql>
+            <postCheckText>Verify that {NUM_TOTALACTIONS} records are returned, and that all the records reference PatientID {OLDPATIENTID}.</postCheckText>
+            <postRecordsReturned>{NUM_TOTALACTIONS}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql />
+            <preCheckText />
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+INSERT INTO PatientVisits_deleted
+SELECT * FROM PatientVisits WHERE PatientVisitID IN ({NEWSCREENPVID})
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+SELECT * FROM PatientVisits_deleted WHERE PatientVisitID IN ({NEWSCREENPVID})
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: 1.</postCheckText>
+            <postRecordsReturned>1</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT PV.PatientVisitID, P.PatientID, PatientCode, PatientStatus, NextVisitID, ScreenFailedBy, ScreenFailed, ScreenFailReason, ScreenFailReasonID, PV.TitrationID, PV.EnteredDate, PV.ActualDate, V.StrataID, V.VisitID, V.Code, PV.ActionID, a.SystemPage, e.EnumerationName
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+JOIN Actions a ON a.ActionID = pv.ActionID
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationValue = a.SystemPage AND e.EnumerationGroup = 'SystemPage'
+WHERE p.PatientCode IN ({NEWPATIENTCODE})
+AND V.VisitID = '{SCREENVISITID}'
+ORDER BY PatientCode, PV.PatientVisitID
+            </preCheckSql>
+            <preCheckText>Verify that the following number of records are returned: 1. Note this is the screening visit taken by the new patient - to be converted to a rescreen event. Note the ActionID is {NEWSCREENACTIONID}. Note the NextVisitID value for PatientID {NEWPATIENTID} (value {NEWPATIENTNEXTVISITID}). </preCheckText>
+            <preRecordsReturned>1</preRecordsReturned>
+
+            <updateSql>
+DELETE FROM PatientVisits WHERE PatientVisitID IN ({NEWSCREENPVID})
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+SELECT PV.PatientVisitID, P.PatientID, PatientCode, PatientStatus, NextVisitID, ScreenFailedBy, ScreenFailed, ScreenFailReason, ScreenFailReasonID, PV.TitrationID, PV.EnteredDate, PV.ActualDate, V.StrataID, V.VisitID, V.Code, PV.ActionID, a.SystemPage, e.EnumerationName
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+JOIN Actions a ON a.ActionID = pv.ActionID
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationValue = a.SystemPage AND e.EnumerationGroup = 'SystemPage'
+WHERE p.PatientID IN ({NEWPATIENTID})
+AND V.VisitID = '{SCREENVISITID}'
+ORDER BY PatientCode, PV.PatientVisitID
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: 0. This verifies the screening visit for PatientID {NEWPATIENTID} has been deleted.</postCheckText>
+            <postRecordsReturned>0</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT *
+FROM {DESIGNDB}.dbo.Enumerations
+WHERE EnumerationGroup = 'SystemPage'
+AND EnumerationName LIKE 'Rescreen'
+            </preCheckSql>
+            <preCheckText>Verify that the following number of records are returned: 1. Note the enumeration value for Rescreen is {RESCREENENUMERATION}.</preCheckText>
+            <preRecordsReturned>1</preRecordsReturned>
+
+            <updateSql>
+UPDATE Actions
+SET SystemPage = {RESCREENENUMERATION}
+   ,PatientID = {OLDPATIENTID}
+WHERE ActionID = {NEWSCREENACTIONID}
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+SELECT a.ActionID, a.SystemPage, e.EnumerationName AS ActionType, a.PatientID
+FROM Actions a
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationValue = a.SystemPage AND e.EnumerationGroup = 'SystemPage'
+WHERE a.ActionID = {NEWSCREENACTIONID}
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: 1. Note the ActionID is {NEWSCREENACTIONID}, the action type is Rescreen, and PatientID is {OLDPATIENTID}. This used to be the ActionID for the new patient's screening.</postCheckText>
+            <postRecordsReturned>1</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT PV.PatientVisitID, P.PatientID, PatientCode, PatientStatus, NextVisitID, ScreenFailedBy, ScreenFailed, ScreenFailReason, ScreenFailReasonID, PV.TitrationID, PV.EnteredDate, PV.ActualDate, V.StrataID, V.VisitID, V.Code, PV.ActionID, PV.PatientVisitID
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+AND NOT (PatientCode IN ({NEWPATIENTCODE}) AND v.VisitID = '{SCREENVISITID}')
+ORDER BY PatientCode, PV.PatientVisitID
+            </preCheckSql>
+            <preCheckText>Verify that the following number of records are returned: {NUM_PATIENTVISITS}. Note these are the visits taken by both patients except for the new patients screening visit that we are going to delete. </preCheckText>
+            <preRecordsReturned>{NUM_PATIENTVISITS}</preRecordsReturned>
+
+            <updateSql>
+UPDATE PatientVisits
+SET PatientID = (SELECT PatientID FROM Patients WHERE PatientCode IN ({OLDPATIENTCODE}))
+WHERE PatientID = (SELECT PatientID FROM Patients WHERE PatientCode IN ({NEWPATIENTCODE}))
+            </updateSql>
+            <updateCount>{NUM_NEWPATIENTVISITS}</updateCount>
+
+            <postCheckSql>
+SELECT P.PatientID, PatientCode, PatientStatus, NextVisitID, ScreenFailedBy, ScreenFailed, ScreenFailReason, ScreenFailReasonID, PV.TitrationID, PV.EnteredDate, PV.ActualDate, V.StrataID, V.VisitID, V.Code, PV.ActionID, PV.PatientVisitID
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+ORDER BY PatientCode, PV.PatientVisitID
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_PATIENTVISITS}. Verify they are all associated with PatientID {OLDPATIENTID}. Verify the NextVisitID is set to the value noted for PatientID {NEWPATIENTID} (value {NEWPATIENTNEXTVISITID}). </postCheckText>
+            <postRecordsReturned>{NUM_PATIENTVISITS}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>{INCLUDE_MATERIALS}</includeSql>
+            <preCheckSql>
+SELECT m.MaterialID, m.KitNumber, m.PatientID, p.PatientCode, m.PatientVisitID
+FROM Materials m
+JOIN Patients p ON p.PatientID = m.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+ORDER BY p.PatientCode, m.KitNumber
+            </preCheckSql>
+            <preCheckText>Verify that the following number of records are returned: {NUM_ALLMATERIALS}.  Note these records will need updating to point to PatientID {OLDPATIENTID}.</preCheckText>
+            <preRecordsReturned>{NUM_ALLMATERIALS}</preRecordsReturned>
+
+            <updateSql>
+UPDATE Materials
+SET PatientID = {OLDPATIENTID}
+WHERE PatientID = {NEWPATIENTID}
+            </updateSql>
+            <updateCount>{NUM_MATERIALS}</updateCount>
+
+            <postCheckSql>
+SELECT m.MaterialID, m.KitNumber, m.PatientID, p.PatientCode, m.PatientVisitID
+FROM Materials m
+JOIN Patients p ON p.PatientID = m.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+ORDER BY p.PatientCode, m.KitNumber
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_ALLMATERIALS}. Note that all the materials are associate with with PatientID {OLDPATIENTID}.</postCheckText>
+            <postRecordsReturned>{NUM_ALLMATERIALS}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>{INCLUDE_RAND}</includeSql>
+            <preCheckSql>
+SELECT r.RandomisationID, r.PatientID, p.PatientCode
+FROM Randomisation r
+JOIN Patients p ON p.PatientID = r.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+ORDER BY p.PatientCode
+            </preCheckSql>
+            <preCheckText>Verify that the following number of records are returned: {NUM_RAND}.  Note these records will need updating to point to PatientID {OLDPATIENTID}.</preCheckText>
+            <preRecordsReturned>{NUM_RAND}</preRecordsReturned>
+
+            <updateSql>
+UPDATE Randomisation
+SET PatientID = {OLDPATIENTID}
+WHERE PatientID = {NEWPATIENTID}
+            </updateSql>
+            <updateCount>{NUM_RAND}</updateCount>
+
+            <postCheckSql>
+SELECT r.RandomisationID, r.PatientID, p.PatientCode
+FROM Randomisation r
+JOIN Patients p ON p.PatientID = r.PatientID
+WHERE p.PatientCode IN ({NEWPATIENTCODE},{OLDPATIENTCODE})
+ORDER BY p.PatientCode
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_RAND}. Note that the rancode is associate with with PatientID {OLDPATIENTID}.</postCheckText>
+            <postRecordsReturned>{NUM_RAND}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT *
+FROM PatientExpectedVisits
+WHERE PatientID IN ({NEWPATIENTID},{OLDPATIENTID})
+ORDER BY PatientID, PatientExpectedVisitID
+            </preCheckSql>
+            <preCheckText>Verify that the following number of records are returned: {NUM_PEV}, where {NUM_PEVOLD} are for the old patient ID, and {NUM_PEVNEW} are for the new patient ID.</preCheckText>
+            <preRecordsReturned>{NUM_PEV}</preRecordsReturned>
+
+            <updateSql>
+INSERT INTO PatientExpectedVisits_deleted SELECT * FROM PatientExpectedVisits WHERE PatientID IN ({OLDPATIENTID})
+            </updateSql>
+            <updateCount>{NUM_PEVOLD}</updateCount>
+
+            <postCheckSql>
+SELECT *
+FROM PatientExpectedVisits_deleted
+WHERE PatientID IN ({NEWPATIENTID},{OLDPATIENTID})
+ORDER BY PatientID, PatientExpectedVisitID
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_PEVOLD}. Verify they are all associated with PatientID {OLDPATIENTID}.</postCheckText>
+            <postRecordsReturned>{NUM_PEVOLD}</postRecordsReturned>
+        </Query>
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql />
+            <preCheckText />
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+DELETE PatientExpectedVisits WHERE PatientID IN ({OLDPATIENTID})
+            </updateSql>
+            <updateCount>{NUM_PEVOLD}</updateCount>
+
+            <postCheckSql />
+            <postCheckText />
+            <postRecordsReturned>-1</postRecordsReturned>
+        </Query>
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql />
+            <preCheckText />
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+UPDATE PatientExpectedVisits SET PatientID = {OLDPATIENTID} WHERE PatientID IN ({NEWPATIENTID})
+            </updateSql>
+            <updateCount>{NUM_PEVNEW}</updateCount>
+
+            <postCheckSql>
+SELECT *
+FROM PatientExpectedVisits
+WHERE PatientID IN ({NEWPATIENTID},{OLDPATIENTID})
+ORDER BY PatientID, PatientExpectedVisitID
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_PEVNEW}. Verify they are all associated with PatientID {OLDPATIENTID}.</postCheckText>
+            <postRecordsReturned>{NUM_PEVNEW}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT *
+FROM PatientCodeHistory
+WHERE PatientID IN ({NEWPATIENTID},{OLDPATIENTID})
+            </preCheckSql>
+            <preCheckText>Note that the following number of records are returned: {NUM_PATCODEHIST}.  Note the record in which patient code {NEWPATIENTCODE} is first used, as this will be updated to be a record of when patient {OLDPATIENTCODE} became patient {NEWPATIENTCODE}.</preCheckText>
+            <preRecordsReturned>{NUM_PATCODEHIST}</preRecordsReturned>
+
+            <updateSql>
+UPDATE PatientCodeHistory
+SET OldPatientCode = {OLDPATIENTCODE}
+   ,ActionID = {NEWSCREENACTIONID}
+   ,PatientID = {OLDPATIENTID}
+WHERE PatientCodeHistoryID = {NEWPATCODEHISTID}
+AND OldPatientCode = ''
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+SELECT *
+FROM PatientCodeHistory
+WHERE PatientID IN ({NEWPATIENTID},{OLDPATIENTID})
+			</postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_PATCODEHIST}. Verify all records are linked to PatientID {OLDPATIENTID} and that PatientCodeHistoryID {NEWPATCODEHISTID} shows the change from patient code {OLDPATIENTCODE} to {NEWPATIENTCODE}.</postCheckText>
+            <postRecordsReturned>{NUM_PATCODEHIST}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql />
+            <preCheckText />
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+UPDATE PatientCodeHistory
+SET PatientID = {OLDPATIENTID}
+WHERE PatientID = {NEWPATIENTID}
+            </updateSql>
+            <updateCount>{NUM_PCHRECS}</updateCount>
+
+            <postCheckSql />
+            <postCheckText />
+            <postRecordsReturned>-1</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+SELECT *
+FROM PatientHistory
+WHERE PatientID IN ({NEWPATIENTID},{OLDPATIENTID})
+            </preCheckSql>
+            <preCheckText>Note that the following number of records are returned: {NUM_PATHIST} showing all the PatientHistory records for both patients.</preCheckText>
+            <preRecordsReturned>{NUM_PATHIST}</preRecordsReturned>
+
+            <updateSql>
+INSERT INTO PatientHistory (PatientID, OldPatientStatus, NewPatientStatus, ReasonID, ReasonText, DateChanged, ActionID, PendingActionID)
+VALUES ({OLDPATIENTID}, 
+        (SELECT EnumerationValue
+         FROM {DESIGNDB}.dbo.Enumerations
+         WHERE EnumerationGroup = 'PatientStatus'
+         AND EnumerationName = 'ScreenFail'),
+        (SELECT EnumerationValue 
+         FROM {DESIGNDB}.dbo.Enumerations
+         WHERE EnumerationGroup = 'PatientStatus' 
+         AND EnumerationName = 'Active'),
+        0,
+        'Manually re-screened by DCR '{TICKET_NUM}'',
+        (SELECT Recruited 
+         FROM Patients 
+         WHERE PatientID = {NEWPATIENTID}),
+        {NEWSCREENACTIONID},
+        0)
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+SELECT *
+FROM PatientHistory
+WHERE PatientID IN ({NEWPATIENTID},{OLDPATIENTID})
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_EXPPATHIST}. Verify they are all assoicated with PatientID {OLDPATIENTID}.</postCheckText>
+            <postRecordsReturned>{NUM_EXPPATHIST}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>{USE_NEWPATCUSTDATA}</includeSql>
+            <preCheckSql>
+SELECT p.PatientCode, cd.ObjectID, cd.Value, cf.FieldName
+FROM CustomData cd 
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID AND cf.TableName = 'Patients'
+JOIN Patients p ON p.PatientID = cd.ObjectID
+WHERE cd.ObjectID IN ({NEWPATIENTID},{OLDPATIENTID})
+ORDER BY cd.ObjectID, cf.FieldName
+            </preCheckSql>
+            <preCheckText>Note that the following number of records are returned: {NUM_ALLPATCUSTDATA}. Note the number of records for patient {OLDPATIENTCODE} is {NUM_OLDPATCUSTDATA} records and for patient {NEWPATIENTCODE} is {NUM_NEWPATCUSTDATA} records. We're going to delete the record for patient {OLDPATIENTCODE} and correct the records for {NEWPATIENTCODE} to use PatientID {OLDPATIENTID}.</preCheckText>
+            <preRecordsReturned>{NUM_ALLPATCUSTDATA}</preRecordsReturned>
+
+            <updateSql>
+INSERT INTO CustomData_deleted
+SELECT cd.*
+FROM CustomData cd
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID AND cf.TableName = 'Patients'
+WHERE cd.ObjectID IN ({OLDPATIENTID})
+            </updateSql>
+            <updateCount>{NUM_OLDPATCUSTDATA}</updateCount>
+
+            <postCheckSql>
+SELECT cd.*
+FROM CustomData_deleted cd
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID AND cf.TableName = 'Patients'
+WHERE cd.ObjectID IN ({OLDPATIENTID})
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_OLDPATCUSTDATA}.</postCheckText>
+            <postRecordsReturned>{NUM_OLDPATCUSTDATA}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>{USE_NEWPATCUSTDATA}</includeSql>
+            <preCheckSql>
+            </preCheckSql>
+            <preCheckText></preCheckText>
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+DELETE CustomData
+FROM CustomData cd
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID AND cf.TableName = 'Patients'
+WHERE cd.ObjectID IN ({OLDPATIENTID}) 
+            </updateSql>
+            <updateCount>{NUM_OLDPATCUSTDATA}</updateCount>
+
+            <postCheckSql>
+            </postCheckSql>
+            <postCheckText></postCheckText>
+            <postRecordsReturned>-1</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>{USE_NEWPATCUSTDATA}</includeSql>
+            <preCheckSql>
+            </preCheckSql>
+            <preCheckText></preCheckText>
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+UPDATE CustomData
+SET CustomData.ObjectID = {OLDPATIENTID}
+FROM CustomData cd
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID AND cf.TableName = 'Patients'
+WHERE cd.ObjectID IN ({NEWPATIENTID}) 
+            </updateSql>
+            <updateCount>{NUM_NEWPATCUSTDATA}</updateCount>
+
+            <postCheckSql>
+SELECT p.PatientCode, cd.ObjectID, cd.Value, cf.FieldName
+FROM CustomData cd 
+JOIN {DESIGNDB}.dbo.CustomFields cf ON cf.CustomFieldID = cd.FieldID AND cf.TableName = 'Patients'
+JOIN Patients p ON p.PatientID = cd.ObjectID
+WHERE cd.ObjectID IN ({NEWPATIENTID},{OLDPATIENTID})
+ORDER BY cd.ObjectID, cf.FieldName
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_NEWPATCUSTDATA}. Verify they are all associated with ObjectID {OLDPATIENTID}.</postCheckText>
+            <postRecordsReturned>{NUM_NEWPATCUSTDATA}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>{INCLUDE_NEWPATVISCUSTDATA}</includeSql>
+            <preCheckSql>
+SELECT P.PatientID, PatientCode, PV.EnteredDate, V.VisitID, V.Code, CD.ObjectID, CD.Value, CF.FieldName
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+JOIN CustomData CD ON CD.ObjectID = PV.PatientVisitID
+JOIN {DESIGNDB}.dbo.CustomFields CF ON CF.CustomFieldID = CD.FieldID AND TableName = 'PatientVisits'
+WHERE P.PatientID IN ({NEWPATIENTID})
+ORDER BY PatientCode, PV.PatientVisitID, CF.FieldName
+            </preCheckSql>
+            <preCheckText>Note that the following number of records are returned: {NUM_NEWPATVISCUSTDATA}. Note these are associated with patient {NEWPATIENTCODE}.</preCheckText>
+            <preRecordsReturned>{NUM_NEWPATVISCUSTDATA}</preRecordsReturned>
+
+            <updateSql>
+            </updateSql>
+            <updateCount>-1</updateCount>
+
+            <postCheckSql>
+SELECT P.PatientID, PatientCode, PV.EnteredDate, V.VisitID, V.Code, CD.ObjectID, CD.Value, CF.FieldName
+FROM Patients P 
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+JOIN CustomData CD ON CD.ObjectID = PV.PatientVisitID
+JOIN {DESIGNDB}.dbo.CustomFields CF ON CF.CustomFieldID = CD.FieldID AND TableName = 'PatientVisits'
+WHERE P.PatientID IN ({NEWPATIENTID})
+ORDER BY PatientCode, PV.PatientVisitID, CF.FieldName
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: {NUM_NEWPATVISCUSTDATA}. Note these are associated with patient {OLDPATIENTCODE}.</postCheckText>
+            <postRecordsReturned>{NUM_NEWPATVISCUSTDATA}</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+            </preCheckSql>
+            <preCheckText></preCheckText>
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+INSERT INTO Patients_deleted
+SELECT *
+FROM Patients
+WHERE PatientID = {NEWPATIENTID}
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+SELECT *
+FROM Patients_deleted
+WHERE PatientID = {NEWPATIENTID}
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: 1.</postCheckText>
+            <postRecordsReturned>1</postRecordsReturned>
+        </Query>
+
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+            </preCheckSql>
+            <preCheckText></preCheckText>
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+DELETE Patients
+WHERE PatientID = {NEWPATIENTID}
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+            </postCheckSql>
+            <postCheckText></postCheckText>
+            <postRecordsReturned>-1</postRecordsReturned>
+        </Query>
+
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+            </preCheckSql>
+            <preCheckText></preCheckText>
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+UPDATE Patients
+SET PatientCode = {NEWPATIENTCODE}
+   ,PatientStatus = {NEWPATIENTSTATUS}
+   ,NextVisitID = {NEWPATIENTNEXTVISITID}
+WHERE PatientID = {OLDPATIENTID}
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+SELECT PatientID, PatientCode, PatientStatus
+FROM Patients
+WHERE PatientID IN ({NEWPATIENTID},{OLDPATIENTID})
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: 1.  Verify that PatientID {OLDPATIENTID} is now assoicated with patient code {NEWPATIENTCODE} and PatientStatus is set to {NEWPATIENTSTATUS}.</postCheckText>
+            <postRecordsReturned>1</postRecordsReturned>
+        </Query>
+
+
+
+<!--
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+            </preCheckSql>
+            <preCheckText>Note that the following number of records are returned: xxx.</preCheckText>
+            <preRecordsReturned>-1</preRecordsReturned>
+
+            <updateSql>
+            </updateSql>
+            <updateCount>-1</updateCount>
+
+            <postCheckSql>
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: xxx.</postCheckText>
+            <postRecordsReturned>-1</postRecordsReturned>
+        </Query>
+
+-->
+
+        <Query>
+          <includeSql>true</includeSql>
+            <preCheckSql>
+--------------------------------------------
+--
+-- Insert code to handle integration updates
+--
+--------------------------------------------
+            </preCheckSql>
+            <preCheckText>Note that the following number of records are returned: xxx.</preCheckText>
+            <preRecordsReturned>1</preRecordsReturned>
+
+            <updateSql>
+--------------------------------------------
+--
+-- Insert code to handle integration updates
+-- Remember to update record counts (1 record assumed - adjust final record count accordingly)
+-- Remember to set the TransferStatus of any files for the new patient (that we're deleting) to -1
+--
+--------------------------------------------
+            </updateSql>
+            <updateCount>1</updateCount>
+
+            <postCheckSql>
+--------------------------------------------
+--
+-- Insert code to handle integration update checks
+--
+--------------------------------------------
+            </postCheckSql>
+            <postCheckText>Verify that the following number of records are returned: xxx.</postCheckText>
+            <postRecordsReturned>1</postRecordsReturned>
+        </Query>
+
+
+
+   </update_queries>
+</dcr_script>
+

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+      <updateType>Delete_Site</updateType>
+      <description>Delete Site</description>
+      <inputParam>
+         <inputText>Enter CentreID</inputText>
+         <!--Question you ask-->
+         <paramDesc>CentreID List</paramDesc>
+         <!--param Desc-->
+         <paramName>CENTREID_CSV</paramName>
+         <!--Enter this as a csv and we will search for each individual item using query below-->
+         <sqlValidation>SELECT * from SITES where CENTREID = '{CSV_ITEM}'</sqlValidation>
+         <inputType>String</inputType>
+         <!--String, Int, Bool-->
+         <inputMethod>Text</inputMethod>
+         <!--Text or List-->
+         <validItems />
+         <!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+         <validItemsSQL />
+         <!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+      <Param>
+         <query>Select 'Number of Sites' as "Desc",'NUM_SITES' as "Param",convert(varchar(max),count(*)) as Val  from Sites where CentreID in ({CENTREID_CSV})</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT 'Site ID List' as "Desc",'SITEID_CSV' as "Param", stuff((SELECT ',' + cast(siteID as varchar(max))FROM sites WHERE CentreID in ({CENTREID_CSV})FOR XML PATH('')), 1, 1, '') as 
+
+"Val"</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Number of records in Sites_Deleted' as "Desc",'NUM_SITES_DELETED' as "Param",convert(varchar(max),count(*)) as Val  from Sites_Deleted where CentreID in ({CENTREID_CSV})</query>
+         <requiredTables>Sites_Deleted</requiredTables>
+      </Param>
+      <Param>
+         <query>SELECT  'Sites_Deleted exists' as "Desc",'Include_Deleted_Sites' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables 
+
+where table_name = 'Sites_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'CustomData_Deleted exists' as "Desc",'Include_CustomData_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'CustomData_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Number in SiteOpenCloseState' as "Desc",'NUM_SITEOPENCLOSESTATE' as "Param",convert(varchar(max),count(*)) as Val  from SiteOpenCloseState where SiteID in (Select SiteID from 
+
+Sites where CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables>siteOpenCloseState</requiredTables>
+      </Param>
+      <Param>
+         <query>SELECT  'SitesOpenCloseState exists' as "Desc",'Include_SiteOpenCloseState' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  
+
+information_schema.tables where table_name = 'SiteOpenCloseState'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Number in ResupplyLevels' as "Desc",'NUM_RESUPPLYLEVELS' as "Param",convert(varchar(max),count(*)) as Val  from ResupplyLevels where SiteID in (Select SiteID from Sites where 
+
+CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num Shipments' as "Desc",'NUM_SHIPMENTS' as "Param",convert(varchar(max),count(*)) as Val  from Shipment  s 
+JOIN  {DESIGNDB}.dbo.Enumerations e ON s.status = e.EnumerationValue AND EnumerationGroup = 'ShipmentStatus'
+WHERE EnumerationName != 'Cancelled' AND  SiteID in (Select SiteID from Sites where CentreID in 
+({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num Materials' as "Desc",'NUM_MATERIALS' as "Param",convert(varchar(max),count(*)) as Val  from Materials where SiteID in (Select SiteID from Sites where CentreID in 
+
+({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num Patients' as "Desc",'NUM_Patients' as "Param",convert(varchar(max),count(*)) as Val  from Patients where SiteID in (Select SiteID from Sites where CentreID in 
+
+({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num in SiteHistory' as "Desc",'NUM_SITEHISTORY' as "Param",convert(varchar(max),count(*)) as Val  from SiteHistory where SiteID in (Select SiteID from Sites where CentreID in 
+
+({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num in SiteUserAccess' as "Desc",'NUM_SITEUSERACCESS' as "Param",convert(varchar(max),count(*)) as Val  from SiteUserAccess where SiteID in (Select SiteID from Sites where 
+
+CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT 'Num in CustomData' as "Desc",'NUM_CUSTOMDATA' as "Param",convert(varchar(max),count(*)) Val FROM CustomData WHERE ObjectID IN (Select SiteID from Sites where CentreID in 
+
+({CENTREID_CSV})) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</query>
+         <requiredTables />
+      </Param>
+   </update_param>
+   <update_queries>
+      <updateType>Delete_Site</updateType>
+      <Query>
+         <includeSql>{INCLUDE_DELETED_SITES}</includeSql>
+         <preCheckSql />
+         <preCheckText />
+         <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO Sites_deleted SELECT * FROM Sites WHERE CentreID in ({CENTREID_CSV})</updateSql>
+         <updateCount>{NUM_SITES}</updateCount>
+         <postCheckSql>SELECT * FROM Sites_Deleted WHERE CentreID in ({CENTREID_CSV})</postCheckSql>
+         <postCheckText>Confirm that the following record(s) are returned: {NUM_SITES}, with the following Sites ID(s): {SITEID_CSV}.</postCheckText>
+         <postRecordsReturned>{NUM_SITES}</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT SiteID,CentreID FROM Sites WHERE CentreID in ({CENTREID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_SITES}, with the following Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>{NUM_SITES}</preRecordsReturned>
+         <updateSql>DELETE Sites WHERE CentreID in ({CENTREID_CSV})</updateSql>
+         <updateCount>{NUM_SITES}</updateCount>
+         <postCheckSql>SELECT SiteID,CentreID FROM Sites WHERE CentreID in ({CENTREID_CSV})</postCheckSql>
+         <postCheckText>Verify that 0 records are returned - the site ID(s) {SITEID_CSV} have been deleted.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>{INCLUDE_SITEOPENCLOSESTATE}</includeSql>
+         <preCheckSql>SELECT * FROM SiteOpenCloseState WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_SITEOPENCLOSESTATE}, with the following Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>{NUM_SITEOPENCLOSESTATE}</preRecordsReturned>
+         <updateSql>DELETE SiteOpenCloseState WHERE SiteID IN ({SITEID_CSV})</updateSql>
+         <updateCount>{NUM_SITEOPENCLOSESTATE}</updateCount>
+         <postCheckSql>SELECT * FROM SiteOpenCloseState WHERE SiteID IN ({SITEID_CSV})</postCheckSql>
+         <postCheckText>Verify that 0 records are returned - the site open/close data has been deleted for Sites ID(s): {SITEID_CSV}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM ResupplyLevels WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_RESUPPLYLEVELS}, with the following Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>{NUM_RESUPPLYLEVELS}</preRecordsReturned>
+         <updateSql>DELETE ResupplyLevels WHERE SiteID IN ({SITEID_CSV})</updateSql>
+         <updateCount>{NUM_RESUPPLYLEVELS}</updateCount>
+         <postCheckSql>SELECT * FROM ResupplyLevels WHERE SiteID IN ({SITEID_CSV})</postCheckSql>
+         <postCheckText>Verify that 0 records are returned - the site resupply levels have been deleted for Sites ID(s): {SITEID_CSV}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM Shipment s JOIN {DESIGNDB}.dbo.Enumerations e ON s.status = e.EnumerationValue AND EnumerationGroup = 'ShipmentStatus' WHERE EnumerationName != 'Cancelled' AND SiteID in (Select SiteID from Sites where CentreID in ({CENTREID_CSV}))</preCheckSql>
+         <preCheckText>Verify that {NUM_SHIPMENTS} records are returned for shipments associated with Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>0</preRecordsReturned>
+         <updateSql />
+         <updateCount>-1</updateCount>
+         <postCheckSql />
+         <postCheckText />
+         <postRecordsReturned>-1</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM Materials WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_MATERIALS} records are returned for materials associated with Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>0</preRecordsReturned>
+         <updateSql />
+         <updateCount>-1</updateCount>
+         <postCheckSql />
+         <postCheckText />
+         <postRecordsReturned>-1</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM Patients WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that {NUM_PATIENTS} records are returned for patients associated with Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>0</preRecordsReturned>
+         <updateSql />
+         <updateCount>-1</updateCount>
+         <postCheckSql />
+         <postCheckText />
+         <postRecordsReturned>-1</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM SiteHistory WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_SITEHISTORY}, with Sites ID(s): {SITEID_CSV}..</preCheckText>
+         <preRecordsReturned>{NUM_SITEHISTORY}</preRecordsReturned>
+         <updateSql>DELETE SiteHistory WHERE SiteID IN ({SITEID_CSV})</updateSql>
+         <updateCount>{NUM_SITEHISTORY}</updateCount>
+         <postCheckSql>SELECT * FROM SiteHistory WHERE SiteID IN ({SITEID_CSV})</postCheckSql>
+         <postCheckText>Verify that 0 records are returned - site history has been deleted for Sites ID(s): {SITEID_CSV}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM SiteUserAccess WHERE SiteID IN ({SITEID_CSV})</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_SITEUSERACCESS}, Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>{NUM_SITEUSERACCESS}</preRecordsReturned>
+         <updateSql>DELETE SiteUserAccess WHERE SiteID IN ({SITEID_CSV})</updateSql>
+         <updateCount>{NUM_SITEUSERACCESS}</updateCount>
+         <postCheckSql>SELECT * FROM SiteUserAccess WHERE SiteID IN ({SITEID_CSV})</postCheckSql>
+         <postCheckText>Verify that 0 records are returned - site user access deleted for Sites ID(s): {SITEID_CSV}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>{INCLUDE_CUSTOMDATA_DELETED}</includeSql>
+         <preCheckSql />
+         <preCheckText />
+         <preRecordsReturned>-1</preRecordsReturned>
+         <updateSql>INSERT INTO CustomData_deleted SELECT * FROM CustomData WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData_Deleted WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</postCheckSql>
+         <postCheckText>Verify that the following number of records are updated: {NUM_CUSTOMDATA} for Sites ID(s): {SITEID_CSV}.</postCheckText>
+         <postRecordsReturned>{NUM_CUSTOMDATA}</postRecordsReturned>
+      </Query>
+      <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</preCheckSql>
+         <preCheckText>Verify that the following number of records are returned: {NUM_CUSTOMDATA}, for Sites ID(s): {SITEID_CSV}.</preCheckText>
+         <preRecordsReturned>{NUM_CUSTOMDATA}</preRecordsReturned>
+         <updateSql>DELETE CustomData WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</updateSql>
+         <updateCount>{NUM_CUSTOMDATA}</updateCount>
+         <postCheckSql>SELECT * FROM CustomData WHERE ObjectID IN ({SITEID_CSV}) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</postCheckSql>
+         <postCheckText>Verify that 0 records are returned - site custom data has been deleted for Sites ID(s): {SITEID_CSV}.</postCheckText>
+         <postRecordsReturned>0</postRecordsReturned>
+      </Query>
+   </update_queries>
+</dcr_script>
+

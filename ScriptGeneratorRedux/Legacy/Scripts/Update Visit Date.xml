@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+      <updateType>Update_VisDate</updateType> 
+      <description>Update Visit Date</description>
+      <inputParam>
+	<inputText>Enter PatientCode</inputText><!--Question you ask-->
+	<paramDesc>Patient Code</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Patients where PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Is it a replacement visit?</inputText><!--Question you ask-->
+	<paramDesc>Replacement</paramDesc><!--param Desc-->
+	<paramName>REPLACEMENT_VIS</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems>True,False</validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <inputParam>
+	<inputText>Enter the Visit Code </inputText><!--Question you ask-->
+	<paramDesc>Visit Code</paramDesc><!--param Desc-->
+	<paramName>VISITCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from {DESIGNDB}.dbo.Visits where Code = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select code as "Item" From PatientVisits pv join {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.visitID) where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and KitReplacementSequence = (Case WHEN {REPLACEMENT_VIS} = 'True' THEN 1  WHEN {REPLACEMENT_VIS} = 'False' THEN 0  END) order by v.VisitID</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter the Visit ID </inputText><!--Question you ask-->
+	<paramDesc>Visit ID</paramDesc><!--param Desc-->
+	<paramName>VISITID_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from {DESIGNDB}.dbo.Visits where VisitID = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select pv.VisitID as "Item" From PatientVisits pv join {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.visitID) where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and KitReplacementSequence = (Case WHEN {REPLACEMENT_VIS} = 'True' THEN 1  WHEN {REPLACEMENT_VIS} = 'False' THEN 0  END) and Code  = '{VISITCODE_CSV}' order by v.VisitID</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter new Visit Date in 'dd-MMM-yyyy' format</inputText><!--Question you ask-->
+	<paramDesc>New Visit Date</paramDesc><!--param Desc-->
+	<paramName>NEW_VIS_DATE</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>Date</inputType><!--String, Int, Bool, Date-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Num PatientVisits' as "Desc",'NUM_PATIENTVISITS' as "Param",convert(varchar(max),count(*)) as Val  from PatientVisits WHERE PATIENTVISITID in 
+(Select PatientVisitID from PatientVisits WHERE PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and VisitID in ({VISITID_CSV}) and KitReplacementSequence = (Case WHEN {REPLACEMENT_VIS} = 'True' THEN 1  WHEN {REPLACEMENT_VIS} = 'False' THEN 0  END))
+	</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Original Dates' as "Desc",'ORIGINAL_DATE_CSV' as "Param", stuff((SELECT ',' + format(EnteredDate,'dd-MMM-yyyy') FROM PatientVisits WHERE VisitID in ({VISITID_CSV}) and PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV}) AND KitReplacementSequence = 0) FOR XML PATH('')), 1, 1, '') as "Val"
+	</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Decoded Replacement Value' as "Desc",'REP_SEQ' as "Param",convert(varchar(max),(Case WHEN {REPLACEMENT_VIS} = 'True' THEN 1  WHEN {REPLACEMENT_VIS} = 'False' THEN 0  END)) as "Val"</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+
+   <update_queries>
+      <updateType>Update_VisDate</updateType>
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT PatientCode, format(PV.EnteredDate,'dd-MMM-yyyy') as EnteredDate, format(PV.ActualDate,'dd-MMM-yyyy') as ActualDate, V.Code, v.visitid
+FROM Patients P
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode in ({PATIENTCODE_CSV})
+AND code = '{VISITCODE_CSV}' AND KitReplacementSequence = {REP_SEQ}
+ORDER BY PV.PatientVisitID</preCheckSql>
+         <preCheckText>Please confirm that the following number of records are returned: {NUM_PATIENTVISITS}, with the visit Codes: {VISITCODE_CSV}, Visit ID: {VISITID_CSV} and EnteredDates and ActualDates: {ORIGINAL_DATE_CSV}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTVISITS} </preRecordsReturned>
+         <updateSql>UPDATE PatientVisits 
+SET EnteredDate = convert(datetime,'{NEW_VIS_DATE}') , ActualDate = convert(datetime,'{NEW_VIS_DATE}')
+FROM PatientVisits PV
+JOIN Patients P ON P.PatientID = PV.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode in ({PATIENTCODE_CSV})
+AND code = '{VISITCODE_CSV}' AND KitReplacementSequence = {REP_SEQ} AND pv.VisitID in ({VISITID_CSV})</updateSql>
+         <updateCount>{NUM_PATIENTVISITS}</updateCount>
+
+         <postCheckSql>SELECT PatientCode, format(PV.EnteredDate,'dd-MMM-yyyy') as EnteredDate, format(PV.ActualDate,'dd-MMM-yyyy') as ActualDate, V.Code, v.visitid
+FROM Patients P
+JOIN PatientVisits PV ON PV.PatientID = P.PatientID
+JOIN {DESIGNDB}.dbo.Visits V ON V.VisitID = PV.VisitID
+WHERE PatientCode in ({PATIENTCODE_CSV})
+AND pv.VisitID in ({VISITID_CSV})
+ORDER BY PV.PatientVisitID</postCheckSql>
+         
+         <postCheckText>Please confirm that the following number of records are returned: {NUM_PATIENTVISITS}, with the visit Codes: {VISITCODE_CSV} and EnteredDates and ActualDates: {NEW_VIS_DATE}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTVISITS}</postRecordsReturned>
+    </Query>
+
+   </update_queries>
+</dcr_script>
+

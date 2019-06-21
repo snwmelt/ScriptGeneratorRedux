@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+	<update_param>
+		<updateType>Update_DepotLowStock</updateType> 
+		<description>Update Depot Low Stock</description>
+		
+		<inputParam>
+			<inputText>Select the depot low stock schedule</inputText><!--Question you ask-->
+			<paramDesc>Schedule</paramDesc><!--param Desc-->
+			<paramName>SCHEDULENAME_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+			<sqlValidation>SELECT * FROM Schedules WHERE ShortName = '{CSV_ITEM}'</sqlValidation>
+			<inputType>Int</inputType><!--String, Int, Bool-->
+			<inputMethod>List</inputMethod><!--Text or List-->
+			<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+			<validItemsSQL>
+SELECT ShortName AS "Item"
+FROM Schedules
+WHERE ShortName LIKE '%Depot%'
+ORDER BY ShortName
+			</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+		</inputParam>
+
+
+		<Param>
+			<query>
+SELECT 'ScheduleID' AS "Desc",
+       'SCHEDULEID_CSV' AS "Param",
+	   STUFF((SELECT ',' + CAST(ScheduleID AS NVARCHAR(MAX))
+              FROM Schedules               WHERE ShortName IN ('{SCHEDULENAME_CSV}')
+              FOR XML PATH(''))
+			  , 1, 1, '') AS "Val"
+			</query>
+			<requiredTables />
+		</Param>
+
+		<Param>
+			<query>
+SELECT 'Number of depots' AS "Desc",
+       'NUM_DEPOTS' AS "Param",
+	   COUNT(1) AS "Val"
+FROM   Depots D
+JOIN   [BER-FLXSQL-002C].Security.dbo.Facilities f
+ON     f.FacilityID = d.FacilityID
+			</query>
+			<requiredTables />
+		</Param>
+		
+	</update_param>
+
+	
+	<update_queries>
+		<updateType>Update_DepotLowStock</updateType>
+		
+		<Query>
+			<includeSql>true</includeSql>
+			<preCheckSql>
+SELECT ScheduleID,
+       ShortName,
+       REPLACE(Parameters, '|', '|' + CHAR(13) + CHAR(10)) AS Parameters
+FROM   Schedules
+WHERE  ScheduleID = {SCHEDULEID_CSV};
+			</preCheckSql>
+			<preCheckText>Note that 1 record is returned for the low depot stock alert and its parameters. Note which trigger parameters are set to 0.</preCheckText>
+			<preRecordsReturned>1</preRecordsReturned>
+			
+			<updateSql>
+UPDATE Schedules
+SET    Parameters = REPLACE(Parameters, '=0', '=-1')
+WHERE  ScheduleID = {SCHEDULEID_CSV};
+			</updateSql>
+			<updateCount>1</updateCount>
+
+			<postCheckSql>
+SELECT ScheduleID,
+       ShortName,
+       REPLACE(Parameters, '|', '|' + CHAR(13) + CHAR(10)) AS Parameters
+FROM   Schedules
+WHERE  ScheduleID = {SCHEDULEID_CSV};
+			</postCheckSql>
+			<postCheckText>Verify that 1 record is returned for the low depot stock alert and its parameters. Verify the trigger parameters were set to 0 are now -1.</postCheckText>
+			<postRecordsReturned>1</postRecordsReturned>
+		</Query>
+
+		<Query>
+			<includeSql>true</includeSql>
+			<preCheckSql>
+SELECT d.DepotID,
+       f.FacilityID,
+	   f.ShortName
+FROM   Depots d
+JOIN   [BER-FLXSQL-002C].Security.dbo.Facilities f
+ON     f.FacilityID = d.FacilityID;
+			</preCheckSql>
+			<preCheckText>Note that {NUM_DEPOTS} records are returned. Note the FacilityIDs of the depots match those we want to update in the schedule parameters.</preCheckText>
+			<preRecordsReturned>1</preRecordsReturned>
+			
+			<updateSql>
+			</updateSql>
+			<updateCount>0</updateCount>
+
+			<postCheckSql>
+			</postCheckSql>
+			<postCheckText></postCheckText>
+			<postRecordsReturned>0</postRecordsReturned>
+		</Query>
+		
+	</update_queries>
+</dcr_script>
+

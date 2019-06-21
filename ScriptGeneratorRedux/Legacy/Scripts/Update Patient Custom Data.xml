@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+	<update_param>
+		<updateType>Update_CustomData_Pat</updateType> 
+		<description>Update Patient Custom Data</description>
+		
+		<inputParam>
+			<inputText>Enter PatientCode</inputText><!--Question you ask-->
+			<paramDesc>Patient Code</paramDesc><!--param Desc-->
+			<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+			<sqlValidation>SELECT * FROM Patients WHERE PatientCode = '{CSV_ITEM}'</sqlValidation>
+			<inputType>String</inputType><!--String, Int, Bool-->
+			<inputMethod>Text</inputMethod><!--Text or List-->
+			<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+			<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+		</inputParam>
+
+		<inputParam>
+			<inputText>Select Custom Field</inputText><!--Question you ask-->
+			<paramDesc>Custom Field</paramDesc><!--param Desc-->
+			<paramName>CF_NAME</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+			<sqlValidation></sqlValidation>
+			<inputType>String</inputType><!--String, Int, Bool-->
+			<inputMethod>List</inputMethod><!--Text or List-->
+			<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+			<validItemsSQL>SELECT FieldName AS "Item" FROM {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients'</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+		</inputParam>
+
+		<inputParam>
+			<inputText>Enter New Value</inputText><!--Question you ask-->
+			<paramDesc>New Custom Field Value</paramDesc><!--param Desc-->
+			<paramName>NEW_CD_VAL</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+			<sqlValidation></sqlValidation>
+			<inputType>String</inputType><!--String, Int, Bool-->
+			<inputMethod>Text</inputMethod><!--Text or List-->
+			<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+			<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+		</inputParam>
+
+
+		<Param>
+			<query>
+SELECT 'Number of Patients' AS "Desc", 'NUM_PATIENTS' AS "Param", CONVERT(VARCHAR(MAX),COUNT(*)) AS Val
+FROM Patients
+WHERE PatientCode IN ({PATIENTCODE_CSV})
+			</query>
+			<requiredTables />
+		</Param>
+
+		<Param>
+			<query>
+SELECT 'Custom Data ID' AS "Desc", 'CUSTOM_DATA_ID' AS "Param", CONVERT(VARCHAR(MAX),CustomDataID) AS Val  
+FROM Customdata cd 
+JOIN Patients p ON (p.PatientID = cd.ObjectID)
+JOIN {DESIGNDB}.dbo.CustomFields cf ON (cd.FieldID = cf.CustomFieldID)
+WHERE FieldID = (SELECT CustomFieldID FROM {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients' AND FieldName = {CF_NAME})
+AND ObjectID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENTCODE_CSV})
+			</query>
+			<requiredTables />
+		</Param>
+
+		<Param>
+			<query>
+SELECT 'Original Value' AS "Desc", 'ORIGINAL_CD_VAL' AS "Param", Value AS Val  
+FROM Customdata cd 
+JOIN Patients p ON (p.PatientID = cd.ObjectID)
+JOIN {DESIGNDB}.dbo.CustomFields cf ON (cd.FieldID = cf.CustomFieldID)
+WHERE FieldID = (SELECT CustomFieldID FROM {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients' AND FieldName = {CF_NAME})
+AND ObjectID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENTCODE_CSV})
+			</query>
+			<requiredTables />
+		</Param>
+
+	</update_param>
+
+	
+	
+	<update_queries>
+		<updateType>Update_CustomData_Pat</updateType>
+		
+		<Query>
+			<includeSql>true</includeSql>
+			<preCheckSql>SELECT p.PatientCode, FieldName, Value, CustomDataID
+FROM Customdata cd 
+JOIN Patients p ON (p.PatientID = cd.ObjectID)
+JOIN {DESIGNDB}.dbo.CustomFields cf ON (cd.FieldID = cf.CustomFieldID)
+WHERE FieldID = (SELECT CustomFieldID FROM {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients' AND FieldName = {CF_NAME})
+AND ObjectID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENTCODE_CSV})</preCheckSql>
+			<preCheckText>Verify that Value is set to {ORIGINAL_CD_VAL} and that CustomDataID is set to {CUSTOM_DATA_ID}.</preCheckText>
+			<preRecordsReturned>{NUM_PATIENTS}</preRecordsReturned>
+			<updateSql>UPDATE CustomData SET Value = {NEW_CD_VAL} WHERE CustomDataId = {CUSTOM_DATA_ID}</updateSql>
+			<updateCount>{NUM_PATIENTS}</updateCount>
+			<postCheckSql>SELECT p.PatientCode, FieldName, Value
+FROM Customdata cd 
+JOIN Patients p ON (p.PatientID = cd.ObjectID)
+JOIN {DESIGNDB}.dbo.CustomFields cf ON (cd.FieldID = cf.CustomFieldID)
+WHERE FieldID = (SELECT CustomFieldID FROM {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients' AND FieldName = {CF_NAME})
+AND ObjectID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENTCODE_CSV})</postCheckSql>
+			<postCheckText>Verify that Value is set to {NEW_CD_VAL}.</postCheckText>
+			<postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+		</Query>
+
+	</update_queries>
+</dcr_script>
+

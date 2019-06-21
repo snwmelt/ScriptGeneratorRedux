@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+      <updateType>Update_Order_to_Cancelled</updateType> 
+      <description>Update Order to Cancelled</description>
+      <inputParam>
+	<inputText>Enter Order Number</inputText><!--Question you ask-->
+	<paramDesc>OrderNumber</paramDesc><!--param Desc-->
+	<paramName>ORDER_NUM</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Shipment where OrderNumber = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <Param>
+         <query>Select 'Number of Shipments' as "Desc",'NUM_ORDERS' as "Param",convert(varchar(max),count(*)) as Val  from Shipment where OrderNumber in ({ORDER_NUM})</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Is in Transit' as "Desc",'IN_TRANSIT' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val from Shipment where ordernumber in ({ORDER_NUM}) and status = 0</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Is At Site' as "Desc",'AT_SITE' as "Param",CAST(CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val from Shipment where ordernumber in ({ORDER_NUM})and status = 1</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+
+   <update_queries>
+      <updateType>Update_Order_to_Cancelled</updateType>
+
+   <Query>
+         <includeSql>{AT_SITE}</includeSql>
+         <preCheckSql>SELECT s.ShipmentID, s.OrderNumber, s.Status, e.EnumerationName, s.OrderCancelled, s.ConfirmedOnSite
+FROM Shipment s
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationValue = s.Status
+WHERE OrderNumber = {ORDER_NUM}</preCheckSql>
+         <preCheckText>Note that order {ORDER_NUM} has a status of 1 (at site), orderCancelled is NULL and ConfirmedOnSite is set.</preCheckText>
+         <preRecordsReturned>{NUM_ORDERS}</preRecordsReturned>
+         <updateSql>UPDATE Shipment
+SET Status = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations e WHERE e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationName = 'Cancelled'), ConfirmedOnSite = NULL, OrderCancelled = GETUTCDATE()
+WHERE OrderNumber = {ORDER_NUM}</updateSql>
+         <updateCount>{NUM_ORDERS}</updateCount>
+         <postCheckSql>SELECT s.ShipmentID, s.OrderNumber, s.Status, e.EnumerationName, s.OrderCancelled, s.ConfirmedOnSite
+FROM Shipment s
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationValue = s.Status
+WHERE OrderNumber = {ORDER_NUM}</postCheckSql>
+         <postCheckText>Note that order {ORDER_NUM} has a status of 6 (cancelled), orderCancelled is set to todays date and that ConfirmedOnSite is NULL.</postCheckText>
+         <postRecordsReturned>{NUM_ORDERS}</postRecordsReturned>
+    </Query>
+
+   <Query>
+         <includeSql>{IN_TRANSIT}</includeSql>
+         <preCheckSql>SELECT s.ShipmentID, s.OrderNumber, s.Status, e.EnumerationName, s.OrderCancelled
+FROM Shipment s
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationValue = s.Status
+WHERE OrderNumber = {ORDER_NUM}</preCheckSql>
+         <preCheckText>Note that order {ORDER_NUM} has a status of 0 (In Transit) and orderCancelled is NULL.</preCheckText>
+         <preRecordsReturned>{NUM_ORDERS}</preRecordsReturned>
+         <updateSql>UPDATE Shipment
+SET Status = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations e WHERE e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationName = 'Cancelled'), OrderCancelled = GETUTCDATE()
+WHERE OrderNumber = {ORDER_NUM}</updateSql>
+         <updateCount>{NUM_ORDERS}</updateCount>
+         <postCheckSql>SELECT s.ShipmentID, s.OrderNumber, s.Status, e.EnumerationName, s.OrderCancelled
+FROM Shipment s
+JOIN {DESIGNDB}.dbo.Enumerations e ON e.EnumerationGroup = 'ShipmentStatus' AND e.EnumerationValue = s.Status
+WHERE OrderNumber = {ORDER_NUM}</postCheckSql>
+         <postCheckText>Note that order {ORDER_NUM} has a status of 6 (cancelled) and orderCancelled date is set to todays date.</postCheckText>
+         <postRecordsReturned>{NUM_ORDERS}</postRecordsReturned>
+    </Query>
+
+
+   </update_queries>
+</dcr_script>
+

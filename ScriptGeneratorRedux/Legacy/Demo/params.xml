@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_params>
+   <update_param>
+      <updateType>Delete_Site</updateType>
+      <description>Delete Site</description>
+      <inputParam>
+	<inputText>Enter CentreID</inputText><!--Question you ask-->
+	<paramDesc>CentreID List</paramDesc><!--param Desc-->
+	<paramName>CENTREID_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from SITES where CENTREID = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+      <Param>
+         <query>Select 'Number of Sites' as "Desc",'NUM_SITES' as "Param",convert(varchar(max),count(*)) as Val  from Sites where CentreID in ({CENTREID_CSV})</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT 'Site ID List' as "Desc",'SITEID_CSV' as "Param", stuff((SELECT ',' + cast(siteID as varchar(max))FROM sites WHERE CentreID in ({CENTREID_CSV})FOR XML PATH('')), 1, 1, '') as "Val"</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Number of records in Sites_Deleted' as "Desc",'NUM_SITES_DELETED' as "Param",convert(varchar(max),count(*)) as Val  from Sites_Deleted where CentreID in ({CENTREID_CSV})</query>
+         <requiredTables>Sites_Deleted</requiredTables>
+      </Param>
+      <Param>
+         <query>SELECT  'Sites_Deleted exists' as "Desc",'Include_Deleted_Sites' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'Sites_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Number in SiteOpenCloseState' as "Desc",'NUM_SITEOPENCLOSESTATE' as "Param",convert(varchar(max),count(*)) as Val  from SiteOpenCloseState where SiteID in (Select SiteID from Sites where CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables>siteOpenCloseState</requiredTables>
+      </Param>
+      <Param>
+         <query>SELECT  'SitesOpenCloseState exists' as "Desc",'Include_SiteOpenCloseState' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'SiteOpenCloseState'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Number in ResupplyLevels' as "Desc",'NUM_RESUPPLYLEVELS' as "Param",convert(varchar(max),count(*)) as Val  from ResupplyLevels where SiteID in (Select SiteID from Sites where CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num Shipments' as "Desc",'NUM_SHIPMENTS' as "Param",convert(varchar(max),count(*)) as Val  from Shipment where SiteID in (Select SiteID from Sites where CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num Materials' as "Desc",'NUM_MATERIALS' as "Param",convert(varchar(max),count(*)) as Val  from Materials where SiteID in (Select SiteID from Sites where CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num Patients' as "Desc",'NUM_Patients' as "Param",convert(varchar(max),count(*)) as Val  from Patients where SiteID in (Select SiteID from Sites where CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Num in SiteHistory' as "Desc",'NUM_SITEHISTORY' as "Param",convert(varchar(max),count(*)) as Val  from SiteHistory where SiteID in (Select SiteID from Sites where CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>Select 'Num in SiteUserAccess' as "Desc",'NUM_SITEUSERACCESS' as "Param",convert(varchar(max),count(*)) as Val  from SiteUserAccess where SiteID in (Select SiteID from Sites where CentreID in ({CENTREID_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Num in CustomData' as "Desc",'NUM_CUSTOMDATA' as "Param",convert(varchar(max),count(*)) Val FROM CustomData WHERE ObjectID IN (Select SiteID from Sites where CentreID in ({CENTREID_CSV})) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Sites')</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+   <update_param>
+      <updateType>Delete_Patient</updateType> 
+      <description>Delete Patient</description>
+      <inputParam>
+	<inputText>Enter PatientCode</inputText><!--Question you ask-->
+	<paramDesc>Patient Code List</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Patients where PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+      <inputParam>
+	<inputText>Update Rand and Materials</inputText><!--Question you ask-->
+	<paramDesc>Update Rand/Mat</paramDesc><!--param Desc-->
+	<paramName>UPDATE_RAND_MAT</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>Bool</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems>true,false</validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <Param>
+         <query>Select 'Number of Patients' as "Desc",'NUM_PATIENTS' as "Param",convert(varchar(max),count(*)) as Val  from Patients where PatientCode in ({PATIENTCODE_CSV})</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT 'Patient ID List' as "Desc",'PATIENTID_CSV' as "Param", stuff((SELECT ',' + cast(PatientID as varchar(max))FROM Patients WHERE PatientCode in ({PATIENTCODE_CSV})FOR XML PATH('')), 1, 1, '') as "Val"</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'Patients_Deleted exists' as "Desc",'Include_Patients_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'Patients_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'CustomData_Deleted exists' as "Desc",'Include_CustomData_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'CustomData_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'PatientHistory_Deleted exists' as "Desc",'Include_PatientHistory_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientHistory_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientHistory' as "Desc",'NUM_PATIENTHISTORY' as "Param",convert(varchar(max),count(*)) as Val  from PatientHistory WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'PatientVisits_Deleted exists' as "Desc",'Include_PatientVisits_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientVisits_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientVisits' as "Desc",'NUM_PATIENTVISITS' as "Param",convert(varchar(max),count(*)) as Val  from PatientVisits WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'PatientExpectedVisits_Deleted exists' as "Desc",'Include_PATIENTEXPECTEDVISITS_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PATIENTEXPECTEDVISITS_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientExpectedVisits' as "Desc",'NUM_PATIENTEXPECTEDVISITS' as "Param",convert(varchar(max),count(*)) as Val  from PATIENTEXPECTEDVISITS WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT  'PatientCodes_Deleted exists' as "Desc",'Include_PatientCodes_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientCodes_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'PatientCodes exists' as "Desc",'Include_PatientCodes' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientCodes'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientCodes' as "Desc",'NUM_PATIENTCODES' as "Param",convert(varchar(max),count(*)) as Val  from PatientCodes WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables>PatientCodes</requiredTables>
+      </Param>
+
+
+      <Param>
+         <query>SELECT  'PatientCodeHistory_Deleted exists' as "Desc",'Include_PatientCodeHistory_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientCodeHistory_Deleted'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>SELECT  'PatientCodeHistory exists' as "Desc",'Include_PatientCodeHistory' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientCodeHistory'</query>
+         <requiredTables />
+      </Param>
+      <Param>
+         <query>Select 'Num PatientCodeHistory' as "Desc",'NUM_PATIENTCODEHISTORY' as "Param",convert(varchar(max),count(*)) as Val  from PatientCodeHistory WHERE PATIENTID in (Select PatientID From Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables>PatientCodeHistory</requiredTables>
+      </Param>
+
+
+      <Param>
+         <query>SELECT 'Num in CustomData' as "Desc",'NUM_CUSTOMDATA' as "Param",convert(varchar(max),count(*)) Val FROM CustomData WHERE ObjectID IN (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'Patients')</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Num Materials' as "Desc",'NUM_MATERIALS' as "Param",convert(varchar(max),count(*)) as Val  from Materials where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>Select 'Num Randomisation' as "Desc",'NUM_RANDOMISATION' as "Param",convert(varchar(max),count(*)) as Val  from Randomisation where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV}))</query>
+         <requiredTables />
+      </Param>
+
+   </update_param>
+
+   <update_param>
+      <updateType>Delete_PatientVisit</updateType> 
+      <description>Delete PatientVisit</description>
+      <inputParam>
+	<inputText>Enter PatientCode</inputText><!--Question you ask-->
+	<paramDesc>Patient Code List</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Patients where PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter the Visit Code </inputText><!--Question you ask-->
+	<paramDesc>Visit Code</paramDesc><!--param Desc-->
+	<paramName>VISITCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from {DESIGNDB}.dbo.Visits where Code = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select code as "Item" From PatientVisits pv join {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.visitID) where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and KitReplacementSequence = 0 order by v.VisitID</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter the Visit ID </inputText><!--Question you ask-->
+	<paramDesc>Visit ID</paramDesc><!--param Desc-->
+	<paramName>VISITID_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from {DESIGNDB}.dbo.Visits where VisitID = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select pv.VisitID as "Item" From PatientVisits pv join {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.visitID) where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and KitReplacementSequence = 0 and Code  = '{VISITCODE_CSV}' order by v.VisitID</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <inputParam>
+	<inputText>Update Materials</inputText><!--Question you ask-->
+	<paramDesc>Update Materials</paramDesc><!--param Desc-->
+	<paramName>UPDATE_MAT</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>Bool</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems>true,false</validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <Param>
+         <query>Select 'Number of Patients' as "Desc",'NUM_PATIENTS' as "Param",convert(varchar(max),count(*)) as Val  from Patients where PatientCode in ({PATIENTCODE_CSV})</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Patient ID List' as "Desc",'PATIENTID_CSV' as "Param", stuff((SELECT ',' + cast(PatientID as varchar(max))FROM Patients WHERE PatientCode in ({PATIENTCODE_CSV})FOR XML PATH('')), 1, 1, '') as "Val"</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Patient Visit ID List' as "Desc",'PATIENTVISITID_CSV' as "Param", stuff((SELECT ',' + cast(PatientVisitID as varchar(max))FROM PatientVisits WHERE PatientVisitID in 
+(Select PatientVisitID from PatientVisits WHERE PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and VisitID in ({VISITID_CSV}) and KitReplacementSequence = 0)
+FOR XML PATH('')), 1, 1, '') as "Val"</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>SELECT  'PatientVisits_Deleted exists' as "Desc",'Include_PatientVisits_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'PatientVisits_Deleted'</query>
+         <requiredTables />
+      </Param>
+
+
+
+      <Param>
+         <query>Select 'Num PatientVisits' as "Desc",'NUM_PATIENTVISITS' as "Param",convert(varchar(max),count(*)) as Val  from PatientVisits WHERE PATIENTVISITID in 
+(Select PatientVisitID from PatientVisits WHERE PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and VisitID in ({VISITID_CSV}) and KitReplacementSequence = 0)
+	</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>SELECT 'Num in CustomData' as "Desc",'NUM_CUSTOMDATA' as "Param",convert(varchar(max),count(*)) Val FROM CustomData WHERE ObjectID IN 
+(Select PatientVisitID from PatientVisits WHERE PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and VisitID in ({VISITID_CSV}))
+AND FieldID IN (SELECT CustomFieldID FROM [{DESIGNDB}].[dbo].[CustomFields] cf WHERE cf.TableName = 'PatientVisits')</query>
+         <requiredTables />
+      </Param>
+
+     <Param>
+         <query>SELECT  'CustomData_Deleted exists' as "Desc",'Include_CustomData_Deleted' as "Param",CAST(CASE WHEN COUNT(*) &gt; 0 THEN 'true' ELSE 'false' END AS VARCHAR) AS Val From  information_schema.tables where table_name = 'CustomData_Deleted'</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Num Materials' as "Desc",'NUM_MATERIALS' as "Param",convert(varchar(max),count(*)) as Val  from Materials where PatientVisitID in 
+(Select PatientVisitID from PatientVisits WHERE PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and VisitID in ({VISITID_CSV}) and KitReplacementSequence = 0)
+	</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>SELECT 'Visit Code List' as "Desc",'VISITCODE_CSV' as "Param", stuff((SELECT ',' + cast(Code as varchar(max))FROM {DESIGNDB}.dbo.Visits WHERE VisitID in ({VISITID_CSV})FOR XML PATH('')), 1, 1, '') as "Val"
+	</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>select * from (select top 1 'Last Visit' as "Desc",'IS_LAST_VIS' as "Param", cast(case when pv.visitID = {VISITID_CSV} then 'true' else 'false' end as varchar) as val  from patientVisits pv join 
+{DESIGNDB}.dbo.visits v on (v.visitID = pv.visitID)
+where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV}))  and unscheduled = 0 order by patientVisitID desc) x
+	</query>
+         <requiredTables />
+      </Param>
+
+   </update_param>
+
+   <update_param>
+      <updateType>Update_VisDate</updateType> 
+      <description>Update Visit Date</description>
+      <inputParam>
+	<inputText>Enter PatientCode</inputText><!--Question you ask-->
+	<paramDesc>Patient Code</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Patients where PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+      <inputParam>
+	<inputText>Enter the Visit Code </inputText><!--Question you ask-->
+	<paramDesc>Visit Code</paramDesc><!--param Desc-->
+	<paramName>VISITCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from {DESIGNDB}.dbo.Visits where Code = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select code as "Item" From PatientVisits pv join {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.visitID) where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and KitReplacementSequence = 0 order by v.VisitID</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter the Visit ID </inputText><!--Question you ask-->
+	<paramDesc>Visit ID</paramDesc><!--param Desc-->
+	<paramName>VISITID_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from {DESIGNDB}.dbo.Visits where VisitID = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select pv.VisitID as "Item" From PatientVisits pv join {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.visitID) where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and KitReplacementSequence = 0 and Code  = '{VISITCODE_CSV}' order by v.VisitID</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter new Visit Date in 'dd-MMM-yyyy' format</inputText><!--Question you ask-->
+	<paramDesc>New Visit Date</paramDesc><!--param Desc-->
+	<paramName>NEW_VIS_DATE</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>Date</inputType><!--String, Int, Bool, Date-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Num PatientVisits' as "Desc",'NUM_PATIENTVISITS' as "Param",convert(varchar(max),count(*)) as Val  from PatientVisits WHERE PATIENTVISITID in 
+(Select PatientVisitID from PatientVisits WHERE PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and VisitID in ({VISITID_CSV}) and KitReplacementSequence = 0)
+	</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Original Dates' as "Desc",'ORIGINAL_DATE_CSV' as "Param", stuff((SELECT ',' + format(EnteredDate,'dd-MMM-yyyy') FROM PatientVisits WHERE VisitID in ({VISITID_CSV}) and PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV}) AND KitReplacementSequence = 0) FOR XML PATH('')), 1, 1, '') as "Val"
+	</query>
+         <requiredTables />
+      </Param>
+
+   </update_param>
+
+   <update_param>
+      <updateType>Update_CustomData_Pat</updateType> 
+      <description>Update Patient Custom Data</description>
+      <inputParam>
+	<inputText>Enter PatientCode</inputText><!--Question you ask-->
+	<paramDesc>Patient Code</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Patients where PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Select Custom Field</inputText><!--Question you ask-->
+	<paramDesc>Custom Field</paramDesc><!--param Desc-->
+	<paramName>CF_NAME</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>SELECT FieldName as "Item" FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients'</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter New Value</inputText><!--Question you ask-->
+	<paramDesc>New Custom Field Value</paramDesc><!--param Desc-->
+	<paramName>NEW_CD_VAL</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Number of Patients' as "Desc",'NUM_PATIENTS' as "Param",convert(varchar(max),count(*)) as Val  from Patients where PatientCode in ({PATIENTCODE_CSV})</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>
+Select 'Custom Data ID' as "Desc",'CUSTOM_DATA_ID' as "Param",convert(varchar(max),CustomDataID) as Val  
+FROM Customdata cd 
+JOIN Patients p on (p.PatientID = cd.ObjectID)
+JOIN {DESIGNDB}.dbo.CustomFields cf on (cd.FieldID = cf.CustomFieldID)
+WHERE FieldID = (SELECT CustomFieldID FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients' AND FieldName = {CF_NAME})
+AND ObjectID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENTCODE_CSV})
+	</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+Select 'Original Value' as "Desc",'ORIGINAL_CD_VAL' as "Param",Value as Val  
+FROM Customdata cd 
+JOIN Patients p on (p.PatientID = cd.ObjectID)
+JOIN {DESIGNDB}.dbo.CustomFields cf on (cd.FieldID = cf.CustomFieldID)
+WHERE FieldID = (SELECT CustomFieldID FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'Patients' AND FieldName = {CF_NAME})
+AND ObjectID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENTCODE_CSV})
+	</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+
+
+   <update_param>
+      <updateType>Update_CustomData_Vis</updateType> 
+      <description>Update Visit Custom Data</description>
+      <inputParam>
+	<inputText>Enter PatientCode</inputText><!--Question you ask-->
+	<paramDesc>Patient Code</paramDesc><!--param Desc-->
+	<paramName>PATIENTCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Patients where PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Select Custom Field</inputText><!--Question you ask-->
+	<paramDesc>Custom Field</paramDesc><!--param Desc-->
+	<paramName>CF_NAME</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>SELECT FieldName as "Item" FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'PatientVisits'</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <inputParam>
+	<inputText>Enter the Visit Code </inputText><!--Question you ask-->
+	<paramDesc>Visit Code</paramDesc><!--param Desc-->
+	<paramName>VISITCODE_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from {DESIGNDB}.dbo.Visits where Code = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select code as "Item" From PatientVisits pv join {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.visitID) where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and KitReplacementSequence = 0 order by v.VisitID</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter the Visit ID </inputText><!--Question you ask-->
+	<paramDesc>Visit ID</paramDesc><!--param Desc-->
+	<paramName>VISITID_CSV</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from {DESIGNDB}.dbo.Visits where VisitID = '{CSV_ITEM}'</sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select pv.VisitID as "Item" From PatientVisits pv join {DESIGNDB}.dbo.Visits v on (pv.VisitID = v.visitID) where PatientID in (Select PatientID from Patients where PatientCode in ({PATIENTCODE_CSV})) and KitReplacementSequence = 0 and Code  = '{VISITCODE_CSV}' order by v.VisitID</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+
+      <inputParam>
+	<inputText>Enter New Value</inputText><!--Question you ask-->
+	<paramDesc>New Custom Field Value</paramDesc><!--param Desc-->
+	<paramName>NEW_CD_VAL</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Number of Patients' as "Desc",'NUM_PATIENTS' as "Param",convert(varchar(max),count(*)) as Val  from Patients where PatientCode in ({PATIENTCODE_CSV})</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>
+Select 'Custom Data ID' as "Desc",'CUSTOM_DATA_ID' as "Param",convert(varchar(max),CustomDataID) as Val    from CustomData 
+Where ObjectID = (Select PatientVisitID From PatientVisits Where VisitID = {VISITID_CSV} and PatientID = (Select PatientID from Patients where PatientCode = {PATIENTCODE_CSV}))
+and FieldID = (SELECT CustomFieldID FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'PatientVisits' AND FieldName = {CF_NAME})
+	</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+         <query>
+Select 'Original Value' as "Desc",'ORIGINAL_CD_VAL' as "Param",Value as Val    from CustomData 
+Where ObjectID = (Select PatientVisitID From PatientVisits Where VisitID = {VISITID_CSV} and PatientID = (Select PatientID from Patients where PatientCode = {PATIENTCODE_CSV}))
+and FieldID = (SELECT CustomFieldID FROM  {DESIGNDB}.dbo.CustomFields WHERE TableName = 'PatientVisits' AND FieldName = {CF_NAME})
+	</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+
+   <update_param>
+      <updateType>Update_Order_to_Intransit</updateType> 
+      <description>Update Order to Intransit</description>
+      <inputParam>
+	<inputText>Enter Order Number</inputText><!--Question you ask-->
+	<paramDesc>OrderNumber</paramDesc><!--param Desc-->
+	<paramName>ORDER_NUM</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Shipment where OrderNumber = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Number of Shipments' as "Desc",'NUM_ORDERS' as "Param",convert(varchar(max),count(*)) as Val  from Shipment where OrderNumber in ({ORDER_NUM})</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+
+   <update_param>
+      <updateType>Update_Order_to_Cancelled</updateType> 
+      <description>Update Order to Cancelled</description>
+      <inputParam>
+	<inputText>Enter Order Number</inputText><!--Question you ask-->
+	<paramDesc>OrderNumber</paramDesc><!--param Desc-->
+	<paramName>ORDER_NUM</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * from Shipment where OrderNumber = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Number of Shipments' as "Desc",'NUM_ORDERS' as "Param",convert(varchar(max),count(*)) as Val  from Shipment where OrderNumber in ({ORDER_NUM})</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+
+
+
+
+</dcr_params>
+

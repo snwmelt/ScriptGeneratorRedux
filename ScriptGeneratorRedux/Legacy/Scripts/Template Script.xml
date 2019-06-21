@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+      <updateType>Template_Script</updateType>
+      <description>Template Script</description>
+   </update_param>
+   <update_queries>
+      <updateType>Template_Script</updateType>
+      <FreeText>
+         <includeSql>true</includeSql>
+         <preFreeText>-- ** INCLUDE PRE CHECKS HERE **</preFreeText>
+         <updateFreeText>-- ** INCLUDE UPDATE HERE **
+
+--INCLUDE THE FOLLOWING AFTER EACH STATEMENT
+SET @Rows = @@RowCount
+SET @TotalRows += @Rows
+SELECT @Rows as "Rows Affected"</updateFreeText>
+         <postFreeText>-- ** INCLUDE POST UPDATE OR COMMIT CHECKS HERE **</postFreeText>
+         <endFreeText />
+      </FreeText>
+   </update_queries>
+</dcr_script>

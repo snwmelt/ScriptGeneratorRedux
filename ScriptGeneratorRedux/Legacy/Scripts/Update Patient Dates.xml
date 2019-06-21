@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr_script>
+   <update_param>
+      <updateType>UPD_Patient_Date</updateType> 
+      <description>Update Patient Date</description>
+      <inputParam>
+	<inputText>Enter the Patient Code</inputText><!--Question you ask-->
+	<paramDesc>Patient Code</paramDesc><!--param Desc-->
+	<paramName>PATIENT_CODE</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation>SELECT * FROM Patients WHERE PatientCode = '{CSV_ITEM}'</sqlValidation>
+	<inputType>String</inputType><!--String, Int, Bool-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+      <inputParam>
+	<inputText>Enter Column to Update</inputText><!--Question you ask-->
+	<paramDesc>Column being updated</paramDesc><!--param Desc-->
+	<paramName>UPD_COLUMN</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>Int</inputType><!--String, Int, Bool-->
+	<inputMethod>List</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL>Select Column_name as "Item" from Information_schema.columns where Table_name = 'Patients' and data_type = 'datetime'</validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+      <inputParam>
+	<inputText>Enter new Date in 'dd-MMM-yyyy' format</inputText><!--Question you ask-->
+	<paramDesc>New Date</paramDesc><!--param Desc-->
+	<paramName>NEW_DATE</paramName><!--Enter this as a csv and we will search for each individual item using query below-->
+	<sqlValidation></sqlValidation>
+	<inputType>Date</inputType><!--String, Int, Bool, Date-->
+	<inputMethod>Text</inputMethod><!--Text or List-->
+	<validItems></validItems><!--Valid Items, will overwrite the sql checks if populated. Will be used for the list items-->
+	<validItemsSQL></validItemsSQL><!--SQL to return a list of valid option... If populated then pressing the button next to it will update the list-->
+      </inputParam>
+
+
+      <Param>
+         <query>Select 'Number of Patients' as "Desc",'NUM_PATIENTS' as "Param",convert(varchar(max),count(*)) as Val  FROM Patients WHERE PatientCode in ({PATIENT_CODE})</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>Select 'Original Date' as "Desc",'ORIGINAL_DATE' as "Param",format({UPD_COLUMN},'dd-MMM-yyyy') as Val  FROM Patients WHERE PatientCode in ({PATIENT_CODE})</query>
+         <requiredTables />
+      </Param>
+
+
+      <Param>
+	 <query>
+SELECT 'Patient Status' as "Desc",'PAT_STATUS' as "Param",
+(CASE '{UPD_COLUMN}' 
+WHEN 'ScreenFailed' THEN  'ScreenFail'
+WHEN 'Withdrawn'  THEN  'DropOut'
+WHEN 'Unblinded'  THEN  'Unblinded' 
+WHEN 'TreatmentCompleted'  THEN 'TreatmentComplete'
+ELSE 'N/A'
+END) as "Val"
+	</query>
+         <requiredTables />
+      </Param>
+
+      <Param>
+         <query>SELECT 'Change Patient History' as "Desc", 'UPD_PATHIST' as "Param",(CASE WHEN '{UPD_COLUMN}' IN( 'ScreenFailed','Withdrawn','Unblinded','TreatmentCompleted') THEN 'true' ELSE 'false' END ) as "Val"</query>
+         <requiredTables />
+      </Param>
+
+
+   </update_param>
+
+   <update_queries>
+      <updateType>Update_Patient_Date</updateType>
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT PatientCode,{UPD_COLUMN} FROM Patients WHERE PatientCode in ({PATIENT_CODE})</preCheckSql>
+         <preCheckText>Confirm that {UPD_COLUMN} is currently set to {ORIGINAL_DATE} for Patient Code {PATIENT_CODE}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTS}</preRecordsReturned>
+         <updateSql>UPDATE Patients SET {UPD_COLUMN}  = convert(datetime,'{NEW_DATE}') WHERE PatientCode in ({PATIENT_CODE})</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+         <postCheckSql>SELECT PatientCode,{UPD_COLUMN} FROM Patients WHERE PatientCode in ({PATIENT_CODE})</postCheckSql>        
+         <postCheckText>Confirm that {UPD_COLUMN} is set to {NEW_DATE} for Patient Code {PATIENT_CODE}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+
+
+    <Query>
+         <includeSql>true</includeSql>
+         <preCheckSql>SELECT p.PatientCode,DateChanged,e.enumerationName as [NewPatientStatus] FROM PatientHistory ph 
+JOIN Patients p ON P.PatientID = ph.PatientID
+JOIN {DESIGNDB}.dbo.Enumerations e on e.EnumerationValue = ph.NewPatientStatus and EnumerationGroup = 'PatientStatus'
+WHERE PatientCode in ({PATIENT_CODE}) AND e.enumerationName = '{PAT_STATUS}'</preCheckSql>
+         <preCheckText>Confirm that NewPatientStatus is {PAT_STATUS} and DateChanged is {ORIGINAL_DATE}.</preCheckText>
+	 <preRecordsReturned>{NUM_PATIENTS}</preRecordsReturned>
+         <updateSql>UPDATE PatientHistory SET DateChanged = convert(datetime,'{NEW_DATE}')
+WHERE PatientID = (SELECT PatientID FROM Patients WHERE PatientCode = {PATIENT_CODE})
+AND NewPatientStatus = (SELECT EnumerationValue FROM {DESIGNDB}.dbo.Enumerations WHERE enumerationgroup = 'PatientStatus' AND EnumerationName = '{PAT_STATUS}')</updateSql>
+         <updateCount>{NUM_PATIENTS}</updateCount>
+         <postCheckSql>SELECT p.PatientCode,DateChanged,e.enumerationName as [NewPatientStatus] FROM PatientHistory ph 
+JOIN Patients p ON P.PatientID = ph.PatientID
+JOIN {DESIGNDB}.dbo.Enumerations e on e.EnumerationValue = ph.NewPatientStatus and EnumerationGroup = 'PatientStatus'
+WHERE PatientCode in ({PATIENT_CODE}) AND e.enumerationName = '{PAT_STATUS}'</postCheckSql>        
+         <postCheckText>Confirm that NewPatientStatus is {PAT_STATUS} and DateChanged is {NEW_DATE}.</postCheckText>
+         <postRecordsReturned>{NUM_PATIENTS}</postRecordsReturned>
+    </Query>
+
+   </update_queries>
+</dcr_script>
+
