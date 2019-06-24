@@ -1,0 +1,43 @@
+﻿<Page x:Class="ScriptGeneratorRedux.Views.MainPageView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ScriptGeneratorRedux.Views"
+      xmlns:Walkways="clr-namespace:Walkways.MVVM.View;assembly=Walkways"
+      xmlns:vms="clr-namespace:ScriptGeneratorRedux.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="MainPageView">
+
+    <Page.DataContext>
+        <vms:MainPageViewModel/>
+    </Page.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBox x:Name="UsernameTextBox" TextAlignment="Center" VerticalContentAlignment="Center" Height="30" 
+                 Width="250" Grid.Column="0" FontSize="14" BorderThickness="0,0,0,1" SnapsToDevicePixels="True" 
+                 Text="{Binding Path=Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+
+        
+
+
+        <Grid Grid.Column="1">
+            
+        </Grid>
+
+    </Grid>
+</Page>
