@@ -4,6 +4,40 @@
              xmlns:local="clr-namespace:ScriptGeneratorRedux"
              StartupUri="pack://application:,,,/Views/MainWindowView.xaml">
     <Application.Resources>
-         
+        <ControlTemplate TargetType="Button" x:Key="ModernButtonTemplate">
+            <Border Name="Border" 
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Padding        ="{TemplateBinding Padding}" 
+                BorderBrush    ="{TemplateBinding BorderBrush}"
+                Background     ="{TemplateBinding Background}">
+                <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" 
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+
+                <Trigger Property="IsEnabled" Value="true">
+                    <Setter Property="Opacity" Value="0.75"/>
+                </Trigger>
+
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Opacity" Value="1"/>
+                </Trigger>
+
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+            <Setter Property="Template" Value="{StaticResource ResourceKey=ModernButtonTemplate}"/>
+        </Style>
+
     </Application.Resources>
 </Application>

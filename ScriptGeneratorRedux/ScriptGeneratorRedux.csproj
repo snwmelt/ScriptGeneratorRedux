@@ -64,10 +64,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
+    <Compile Include="Models\Core\Extensions\ExString.cs" />
+    <Compile Include="Models\Core\Navigation\Enums\EUIContent.cs" />
+    <Compile Include="Models\Core\Core.cs" />
+    <Compile Include="Models\Core\Navigation\Interfaces\INavigationHandler.cs" />
+    <Compile Include="Models\Core\Authentication\Interfaces\IUserAuthenticator.cs" />
+    <Compile Include="Models\Core\Navigation\NavigationHandler.cs" />
+    <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="Views\LoginPageView.xaml.cs">
+      <DependentUpon>LoginPageView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainPageView.xaml.cs">
       <DependentUpon>MainPageView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\LoginPageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -133,7 +148,6 @@
     <Folder Include="Legacy\Code Files\" />
     <Folder Include="Legacy\Demo\" />
     <Folder Include="Legacy\Scripts\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

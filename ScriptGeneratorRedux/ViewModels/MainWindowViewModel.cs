@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ScriptGeneratorRedux.Views;
+using System.ComponentModel;
 using System.Windows.Controls;
 using Walkways.MVVM.View_Model;
 
@@ -16,6 +17,7 @@ namespace ScriptGeneratorRedux.ViewModels
         public MainWindowViewModel( )
         {
             _INPCInvoke = new INPCInvoker( this );
+            CurrentView = new LoginPageView( );
         }
 
         public Page CurrentView
