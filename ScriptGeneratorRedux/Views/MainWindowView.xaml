@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vms="clr-namespace:ScriptGeneratorRedux.ViewModels"
         mc:Ignorable="d"
+        MinHeight="768"
+        MinWidth="680"
         Title="MainWindow" Height="350" Width="525">
     <Window.DataContext>
         <vms:MainWindowViewModel/>

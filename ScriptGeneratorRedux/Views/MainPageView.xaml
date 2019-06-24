@@ -6,8 +6,8 @@
       xmlns:local="clr-namespace:ScriptGeneratorRedux.Views"
       xmlns:Walkways="clr-namespace:Walkways.MVVM.View;assembly=Walkways"
       xmlns:vms="clr-namespace:ScriptGeneratorRedux.ViewModels"
-      mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      mc:Ignorable="d"
+      d:DesignHeight="300" d:DesignWidth="960"
       Title="MainPageView">
 
     <Page.DataContext>
@@ -15,29 +15,89 @@
     </Page.DataContext>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="2" Margin="1">
 
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="256"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="UsernameTextBox" TextAlignment="Center" VerticalContentAlignment="Center" Height="30" 
-                 Width="250" Grid.Column="0" FontSize="14" BorderThickness="0,0,0,1" SnapsToDevicePixels="True" 
-                 Text="{Binding Path=Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </Grid>
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="1" Margin="-2" Grid.Column="0" >
+                    <Grid Grid.Column="0" Margin="7">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-        
+                        <ComboBox IsEditable="True" 
+                              VerticalAlignment="Top"
+                              VerticalContentAlignment="Center"
+                              HorizontalContentAlignment="Center"
+                              HorizontalAlignment="Stretch"
+                              Grid.Row="0"
+                              Margin="1"
+                              Height="31" 
+                              IsTextSearchEnabled="False" 
+                              x:Name="cb" 
+                              ItemsSource="{Binding ItemList}" 
+                              Text="{Binding SearchTextText}">
+                            <ComboBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ComboBox.ItemsPanel>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+                
 
+                <Grid Grid.Column="1">
+                    <!--Text Display and Editing Grids-->
+                </Grid>
 
-        <Grid Grid.Column="1">
+                <Border HorizontalAlignment="Right" VerticalAlignment="Top" BorderBrush="LightGray" BorderThickness="1" Margin="-2" Grid.Column="1" >
+                    <StackPanel Width="256"  Orientation="Vertical"  Margin="7"
+                             Visibility="{Binding ServerSettingsVisibility}">
+                        <ComboBox x:Name="ServerSelector" Margin="2,2,2,3" BorderThickness="1" 
+                              BorderBrush="LightGray" IsEditable="True" VerticalContentAlignment="Center" 
+                              HorizontalContentAlignment="Center"
+                              Height="31" />
+
+                        <ComboBox x:Name="EnvironmentSelector" Margin="2,0,2,3" BorderThickness="1" 
+                              BorderBrush="LightGray" IsEditable="True" VerticalContentAlignment="Center" 
+                              HorizontalContentAlignment="Center"
+                              Height="31" />
+
+                        <ComboBox x:Name="SecurityDBSelector" Margin="2,0,2,3" BorderThickness="1" 
+                              BorderBrush="LightGray" IsEditable="True" VerticalContentAlignment="Center" 
+                              HorizontalContentAlignment="Center"
+                              Height="31" />
+
+                        <ComboBox x:Name="StudyIDSelector" Margin="2,0,2,3" BorderThickness="1"
+                              BorderBrush="LightGray" IsEditable="True" VerticalContentAlignment="Center" 
+                              HorizontalContentAlignment="Center"
+                              Height="31" />
+
+                        <Button x:Name="ConnectionTestButton" Margin="2,5,2,3" Grid.Row="1" Height="28" 
+                            HorizontalAlignment="Stretch"  Content="Test Connection"  FontSize="14" 
+                            SnapsToDevicePixels="True" BorderThickness="1" BorderBrush="LightGray" 
+                            Command="{Binding Path=SettingsCommand}"/>
+
+                        <Button x:Name="ServerAddButton" Margin="2,0,2,3" HorizontalAlignment="Stretch"
+                        Content="Add Server"  FontSize="14" SnapsToDevicePixels="True" BorderThickness="1" 
+                            BorderBrush="LightGray" Command="{Binding Path=SettingsCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                
+            </Grid>
             
-        </Grid>
+            
+        </Border>
 
+        <Button x:Name="SettingsButton" Margin="7" Grid.Column="1" Height="28" Width="114" Grid.Row="4" Content="Server Info"  FontSize="14" 
+                    SnapsToDevicePixels="True" BorderThickness="1" BorderBrush="LightGray" Command="{Binding Path=SettingsCommand}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>
 </Page>
