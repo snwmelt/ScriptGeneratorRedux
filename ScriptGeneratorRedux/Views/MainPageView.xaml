@@ -31,14 +31,11 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
 
+                        <!-- MODIFY AND UPDATE -->
                         <ComboBox IsEditable="True" 
                               VerticalAlignment="Top"
-                              VerticalContentAlignment="Center"
-                              HorizontalContentAlignment="Center"
-                              HorizontalAlignment="Stretch"
                               Grid.Row="0"
                               Margin="1"
-                              Height="31" 
                               IsTextSearchEnabled="False" 
                               x:Name="cb" 
                               ItemsSource="{Binding ItemList}" 
@@ -52,43 +49,44 @@
                     </Grid>
                 </Border>
                 
-
                 <Grid Grid.Column="1">
                     <!--Text Display and Editing Grids-->
                 </Grid>
 
                 <Border HorizontalAlignment="Right" VerticalAlignment="Top" BorderBrush="LightGray" BorderThickness="1" Margin="-2" Grid.Column="1" >
-                    <StackPanel Width="256"  Orientation="Vertical"  Margin="7"
-                             Visibility="{Binding ServerSettingsVisibility}">
-                        <ComboBox x:Name="ServerSelector" Margin="2,2,2,3" BorderThickness="1" 
-                              BorderBrush="LightGray" IsEditable="True" VerticalContentAlignment="Center" 
-                              HorizontalContentAlignment="Center"
-                              Height="31" />
+                    <Grid Width="256" Margin="7">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                        <ComboBox x:Name="EnvironmentSelector" Margin="2,0,2,3" BorderThickness="1" 
-                              BorderBrush="LightGray" IsEditable="True" VerticalContentAlignment="Center" 
-                              HorizontalContentAlignment="Center"
-                              Height="31" />
+                        <StackPanel  Grid.Row="0"  Orientation="Vertical" Visibility="{Binding ServerSettingsVisibility}">
+                            <StackPanel.Resources>
 
-                        <ComboBox x:Name="SecurityDBSelector" Margin="2,0,2,3" BorderThickness="1" 
-                              BorderBrush="LightGray" IsEditable="True" VerticalContentAlignment="Center" 
-                              HorizontalContentAlignment="Center"
-                              Height="31" />
+                            </StackPanel.Resources>
 
-                        <ComboBox x:Name="StudyIDSelector" Margin="2,0,2,3" BorderThickness="1"
-                              BorderBrush="LightGray" IsEditable="True" VerticalContentAlignment="Center" 
-                              HorizontalContentAlignment="Center"
-                              Height="31" />
+                            <ComboBox x:Name="ServerSelector" Margin="2,2,2,3" BorderThickness="1" 
+                                      ItemsSource="{Binding AvailableServers}"/>
 
-                        <Button x:Name="ConnectionTestButton" Margin="2,5,2,3" Grid.Row="1" Height="28" 
-                            HorizontalAlignment="Stretch"  Content="Test Connection"  FontSize="14" 
-                            SnapsToDevicePixels="True" BorderThickness="1" BorderBrush="LightGray" 
-                            Command="{Binding Path=SettingsCommand}"/>
+                            <ComboBox x:Name="EnvironmentSelector" Margin="2,0,2,3" BorderThickness="1"
+                                      ItemsSource="{Binding AvailableServerCP4Environments}"/>
 
-                        <Button x:Name="ServerAddButton" Margin="2,0,2,3" HorizontalAlignment="Stretch"
-                        Content="Add Server"  FontSize="14" SnapsToDevicePixels="True" BorderThickness="1" 
-                            BorderBrush="LightGray" Command="{Binding Path=SettingsCommand}"/>
-                    </StackPanel>
+                            <ComboBox x:Name="SecurityDBSelector" Margin="2,0,2,3" BorderThickness="1" 
+                                      ItemsSource="{Binding AvailableCP4SecurityDatabases}"/>
+
+                            <ComboBox x:Name="StudyIDSelector" Margin="2,0,2,3" BorderThickness="1"
+                                      ItemsSource="{Binding AvailableStudyIDs}"/>
+
+                            <Button x:Name="ConnectionTestButton" Margin="2,5,2,3" Grid.Row="1" 
+                                      HorizontalAlignment="Stretch"  Content="Test Connection"
+                                      Command="{Binding Path=TestServerConnectionCommand}"/>
+
+                        </StackPanel>
+
+                        <Button Grid.Row="1" x:Name="ServerAddButton" Margin="2,0,2,3" HorizontalAlignment="Stretch"
+                            Content="Add Server" Command="{Binding Path=AddServerCommand}"/>
+                    </Grid>
+                    
                 </Border>
 
                 
