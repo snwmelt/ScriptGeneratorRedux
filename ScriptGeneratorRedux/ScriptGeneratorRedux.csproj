@@ -66,6 +66,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
     <Compile Include="Models\Core\Extensions\ExString.cs" />
+    <Compile Include="Models\Core\IO\Interfaces\IDataContext.cs" />
     <Compile Include="Models\Core\Navigation\Enums\EUIContent.cs" />
     <Compile Include="Models\Core\Core.cs" />
     <Compile Include="Models\Core\Navigation\Interfaces\INavigationHandler.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Views\Controls\LexingRichTextBoxUserControl.xaml.cs">
       <DependentUpon>LexingRichTextBoxUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Helpers\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Views\LoginPageView.xaml.cs">
       <DependentUpon>LoginPageView.xaml</DependentUpon>
     </Compile>
