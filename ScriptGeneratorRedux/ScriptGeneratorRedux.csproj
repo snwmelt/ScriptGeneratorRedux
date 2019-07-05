@@ -78,12 +78,26 @@
     <Compile Include="Models\Core\Scripting\Interfaces\IParameter.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="Views\Controls\EnvironmentSelectorUserControl.xaml.cs">
+      <DependentUpon>EnvironmentSelectorUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\LexingRichTextBoxUserControl.xaml.cs">
+      <DependentUpon>LexingRichTextBoxUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginPageView.xaml.cs">
       <DependentUpon>LoginPageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainPageView.xaml.cs">
       <DependentUpon>MainPageView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\Controls\EnvironmentSelectorUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\LexingRichTextBoxUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginPageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
