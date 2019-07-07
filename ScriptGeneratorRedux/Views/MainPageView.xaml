@@ -101,7 +101,7 @@
                                   Margin="1" 
                                   Grid.Row="0"
                                   VerticalAlignment="Top"
-                                  ItemsSource="{Binding Path=ServerList}">
+                                  ItemsSource="{Binding Path=ScriptList}">
                             <!-- Text="A" Consider for use in communicating drop down purpose -->
                             <ComboBox.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -109,6 +109,10 @@
                                 </ItemsPanelTemplate>
                             </ComboBox.ItemsPanel>
                         </ComboBox>
+                        
+                        <ListView x:Name="ScriptInputParametersListView" Grid.Row="1" DataContext="{Binding SelectedScript}"/>
+
+                        <ListView x:Name="ScriptStateIndicatorsListView" Grid.Row="2" DataContext="{Binding SelectedScript}"/>
                     </Grid>
                 </Border>
             </Grid>
