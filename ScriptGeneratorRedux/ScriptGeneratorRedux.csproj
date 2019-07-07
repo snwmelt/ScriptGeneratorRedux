@@ -66,6 +66,13 @@
     </ApplicationDefinition>
     <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
     <Compile Include="Models\Core\Extensions\ExString.cs" />
+    <Compile Include="Models\Core\IO\Database\Enums\EDatabaseType.cs" />
+    <Compile Include="Models\Core\IO\Database\Enums\ETargetEnvironment.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ICP4Study.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\IDatabase.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\IDatabaseServer.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\IManyToOne`1.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\IOneToMany%271.cs" />
     <Compile Include="Models\Core\Navigation\Enums\EUIContent.cs" />
     <Compile Include="Models\Core\Core.cs" />
     <Compile Include="Models\Core\Navigation\Interfaces\INavigationHandler.cs" />
@@ -167,6 +174,7 @@
     <Folder Include="Legacy\Code Files\" />
     <Folder Include="Legacy\Demo\" />
     <Folder Include="Legacy\Scripts\" />
+    <Folder Include="Models\Core\IO\Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
