@@ -73,6 +73,7 @@
     <Compile Include="Models\Core\IO\Database\Interfaces\IDatabaseServer.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\IManyToOne`1.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\IOneToMany%271.cs" />
+    <Compile Include="Models\Core\IO\Interfaces\IDataContext.cs" />
     <Compile Include="Models\Core\Navigation\Enums\EUIContent.cs" />
     <Compile Include="Models\Core\Core.cs" />
     <Compile Include="Models\Core\Navigation\Interfaces\INavigationHandler.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Models\Core\Scripting\Interfaces\IScriptComponent.cs" />
     <Compile Include="Models\Core\Scripting\Interfaces\IPSQL.cs" />
     <Compile Include="Models\Core\Scripting\Interfaces\IParameter.cs" />
+    <Compile Include="ViewModels\EnvironmentSelectorUserControlViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="Views\Controls\EnvironmentSelectorUserControl.xaml.cs">
@@ -91,6 +93,7 @@
     <Compile Include="Views\Controls\LexingRichTextBoxUserControl.xaml.cs">
       <DependentUpon>LexingRichTextBoxUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Helpers\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Views\LoginPageView.xaml.cs">
       <DependentUpon>LoginPageView.xaml</DependentUpon>
     </Compile>

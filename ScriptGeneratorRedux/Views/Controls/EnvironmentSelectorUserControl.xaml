@@ -14,16 +14,24 @@
         
         <StackPanel  Grid.Row="0"  Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ComboBox x:Name="ServerSelector" Margin="2,2,2,3" BorderThickness="1" 
-                                      ItemsSource="{Binding ElementName=ElementHost, Path=ServerList}"/>
+                      ItemsSource="{Binding ElementName=ElementHost, Path=ServerList}"
+                      SelectedItem="{Binding ElementName=ElementHost, Path=SelectedServer}"
+                      SelectedIndex="{Binding ElementName=ElementHost, Path=SelectedServerIndex}"/>
 
             <ComboBox x:Name="EnvironmentSelector" Margin="2,0,2,3" BorderThickness="1"
-                                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4EnvironmentList}"/>
+                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4EnvironmentList}"
+                      SelectedItem="{Binding ElementName=ElementHost, Path=SelectedCP4Environment}"
+                      SelectedIndex="{Binding ElementName=ElementHost, Path=SelectedCP4EnvironmentIndex}"/>
 
             <ComboBox x:Name="SecurityDBSelector" Margin="2,0,2,3" BorderThickness="1" 
-                                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4SecurityDatabaseList}"/>
+                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4SecurityDatabaseList}"
+                      SelectedItem="{Binding ElementName=ElementHost, Path=SelectedCP4SecurityDatabase}"
+                      SelectedIndex="{Binding ElementName=ElementHost, Path=SelectedCP4SecurityDatabaseIndex}"/>
 
             <ComboBox x:Name="StudyIDSelector" Margin="2,0,2,3" BorderThickness="1"
-                                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4StudyIDList}"/>
+                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4StudyIDList}"
+                      SelectedItem="{Binding ElementName=ElementHost, Path=SelectedCP4StudyID}"
+                      SelectedIndex="{Binding ElementName=ElementHost, Path=SelectedCP4StudyIDIndex}"/>
 
         </StackPanel>
 
