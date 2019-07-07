@@ -68,7 +68,20 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <vcs:EnvironmentSelectorUserControl Grid.Row="0" Background="Azure"/>
+                        <vcs:EnvironmentSelectorUserControl Grid.Row="0" Background="Azure" 
+                                                            ServerList="{Binding Path=ServerList}"
+                                                            SelectedServer="{Binding Path=SelectedServer}"
+                                                            CP4EnvironmentList="{Binding Path=CP4EnvironmentList}"
+                                                            SelectedCP4Environment="{Binding Path=SelectedCP4Environment}"
+                                                            CP4SecurityDatabaseList="{Binding Path=CP4SecurityDatabaseList}"
+                                                            SelectedCP4SecurityDatabase="{Binding Path=SelectedCP4SecurityDatabase}"
+                                                            CP4StudyIDList="{Binding Path=CP4StudyIDList}"
+                                                            SelectedCP4StudyID="{Binding Path=SelectedCP4StudyID}"
+                                                            ServerConnectionTestCommand="{Binding Path=ServerConnectionTestCommand}">
+                            <vcs:EnvironmentSelectorUserControl.DataContext>
+                                <vms:EnvironmentSelectorUserControlViewModel/>
+                            </vcs:EnvironmentSelectorUserControl.DataContext>
+                        </vcs:EnvironmentSelectorUserControl>
 
                         <Button Grid.Row="1" x:Name="ServerAddButton" Margin="2,0,2,3" HorizontalAlignment="Stretch"
                             Content="Add Server" Command="{Binding Path=AddServerCommand}"/>

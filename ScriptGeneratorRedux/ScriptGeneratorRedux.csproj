@@ -77,6 +77,7 @@
     <Compile Include="Models\Core\Scripting\Interfaces\IScriptComponent.cs" />
     <Compile Include="Models\Core\Scripting\Interfaces\IPSQL.cs" />
     <Compile Include="Models\Core\Scripting\Interfaces\IParameter.cs" />
+    <Compile Include="ViewModels\EnvironmentSelectorUserControlViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="Views\Controls\EnvironmentSelectorUserControl.xaml.cs">
