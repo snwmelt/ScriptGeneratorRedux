@@ -65,7 +65,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
-    <Compile Include="Models\Core\Extensions\ExString.cs" />
+    <Compile Include="Models\Extensions\ExString.cs" />
     <Compile Include="Models\Core\IO\Database\Enums\EDatabaseType.cs" />
     <Compile Include="Models\Core\IO\Database\Enums\ETargetEnvironment.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ICP4Study.cs" />
@@ -79,11 +79,6 @@
     <Compile Include="Models\Core\Navigation\Interfaces\INavigationHandler.cs" />
     <Compile Include="Models\Core\Authentication\Interfaces\IUserAuthenticator.cs" />
     <Compile Include="Models\Core\Navigation\NavigationHandler.cs" />
-    <Compile Include="Models\Core\Scripting\Interfaces\IValidationPSQL.cs" />
-    <Compile Include="Models\Core\Scripting\Interfaces\IParameterisedString.cs" />
-    <Compile Include="Models\Core\Scripting\Interfaces\IScriptComponent.cs" />
-    <Compile Include="Models\Core\Scripting\Interfaces\IPSQL.cs" />
-    <Compile Include="Models\Core\Scripting\Interfaces\IParameter.cs" />
     <Compile Include="ViewModels\EnvironmentSelectorUserControlViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
@@ -177,7 +172,6 @@
     <Folder Include="Legacy\Code Files\" />
     <Folder Include="Legacy\Demo\" />
     <Folder Include="Legacy\Scripts\" />
-    <Folder Include="Models\Core\IO\Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
