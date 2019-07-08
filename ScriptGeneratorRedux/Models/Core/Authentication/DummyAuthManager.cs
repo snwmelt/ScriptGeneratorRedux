@@ -1,8 +1,6 @@
 ﻿using System;
 using ScriptGeneratorRedux.Models.Core.Authentication.Interfaces;
-using ScriptGeneratorRedux.Models.Core.Extensions;
-using System.Security.Cryptography;
-using System.Text;
+using ScriptGeneratorRedux.Models.Extensions;
 
 namespace ScriptGeneratorRedux.Models.Core.Authentication
 {

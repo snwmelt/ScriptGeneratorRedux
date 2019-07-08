@@ -65,7 +65,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
-    <Compile Include="Models\Core\Extensions\ExString.cs" />
+    <Compile Include="Models\Extensions\ExString.cs" />
     <Compile Include="Models\Core\IO\Database\Enums\EDatabaseType.cs" />
     <Compile Include="Models\Core\IO\Database\Enums\ETargetEnvironment.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ICP4Study.cs" />

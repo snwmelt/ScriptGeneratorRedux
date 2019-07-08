@@ -25,11 +25,6 @@ namespace ScriptGeneratorRedux.Models.Core
             _LazyINavigationHandler = new Lazy<INavigationHandler>( ( ) => new NavigationHandler( ( ( INavigationServiceProvider )App.Current.MainWindow ).NavigationService ) );
         }
 
-        public void Dispose( )
-        {
-            throw new NotImplementedException( );
-        }
-
         public static INavigationHandler NavigationHandler
         {
             get

@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ScriptGeneratorRedux.Models.Core.Extensions
+namespace ScriptGeneratorRedux.Models.Extensions
 {
     internal static class ExString
     {
