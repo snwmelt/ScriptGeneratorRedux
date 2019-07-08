@@ -1,5 +1,5 @@
 ﻿using ScriptGeneratorRedux.Models.Core;
-using ScriptGeneratorRedux.Models.Core.Extensions;
+using ScriptGeneratorRedux.Models.Extensions;
 using System;
 using System.ComponentModel;
 using Walkways.MVVM.View_Model;
