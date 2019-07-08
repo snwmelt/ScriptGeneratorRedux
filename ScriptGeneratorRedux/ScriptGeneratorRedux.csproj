@@ -89,6 +89,7 @@
       <DependentUpon>LexingRichTextBoxUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Helpers\Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Views\Helpers\Converters\Interfaces\ILexer.cs" />
     <Compile Include="Views\LoginPageView.xaml.cs">
       <DependentUpon>LoginPageView.xaml</DependentUpon>
     </Compile>
