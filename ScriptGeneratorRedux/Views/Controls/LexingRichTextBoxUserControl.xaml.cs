@@ -59,7 +59,7 @@ namespace ScriptGeneratorRedux.Views.Controls
         {
             get
             {
-                return Lexer.Parse( ( FlowDocument )GetValue( FlowDocumentProperty ) );
+                return ( FlowDocument )GetValue( FlowDocumentProperty );
             }
 
             set
