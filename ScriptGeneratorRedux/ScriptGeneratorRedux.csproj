@@ -79,6 +79,11 @@
     <Compile Include="Models\Core\Navigation\Interfaces\INavigationHandler.cs" />
     <Compile Include="Models\Core\Authentication\Interfaces\IUserAuthenticator.cs" />
     <Compile Include="Models\Core\Navigation\NavigationHandler.cs" />
+    <Compile Include="Models\Scripting\Interfaces\IParameterisedString.cs" />
+    <Compile Include="Models\Scripting\Interfaces\ISGRScript.cs" />
+    <Compile Include="Models\Scripting\Interfaces\ISGRScriptElement.cs" />
+    <Compile Include="Models\Scripting\Interfaces\ISGRScriptParameter.cs" />
+    <Compile Include="Models\Scripting\Interfaces\ISRGScriptDependency.cs" />
     <Compile Include="ViewModels\EnvironmentSelectorUserControlViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
