@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptGeneratorRedux", "ScriptGeneratorRedux\ScriptGeneratorRedux.csproj", "{B0B61D91-BAF8-4010-BB7D-84F5BAB4F6D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGRModules", "SGRModules\SGRModules.csproj", "{DDB0608E-3B8E-4136-A8D8-C4754C3AAF36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGRCommon", "SGRCommon\SGRCommon.csproj", "{A503AD1A-22D2-40A5-88AE-4188388CA91C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +19,19 @@ Global
 		{B0B61D91-BAF8-4010-BB7D-84F5BAB4F6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0B61D91-BAF8-4010-BB7D-84F5BAB4F6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0B61D91-BAF8-4010-BB7D-84F5BAB4F6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDB0608E-3B8E-4136-A8D8-C4754C3AAF36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDB0608E-3B8E-4136-A8D8-C4754C3AAF36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDB0608E-3B8E-4136-A8D8-C4754C3AAF36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDB0608E-3B8E-4136-A8D8-C4754C3AAF36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A503AD1A-22D2-40A5-88AE-4188388CA91C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A503AD1A-22D2-40A5-88AE-4188388CA91C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A503AD1A-22D2-40A5-88AE-4188388CA91C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A503AD1A-22D2-40A5-88AE-4188388CA91C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1586BD42-6AC6-4B74-8FAC-79FAA1BA414D}
 	EndGlobalSection
 EndGlobal
