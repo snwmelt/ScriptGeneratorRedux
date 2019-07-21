@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>ddb0608e-3b8e-4136-a8d8-c4754c3aaf36</ProjectGuid>
+    <ProjectGuid>{DDB0608E-3B8E-4136-A8D8-C4754C3AAF36}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SGRModules</RootNamespace>
@@ -31,24 +31,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Net.Http"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="LanguageRecognition\CodeAnalysis\Events\CodeAnalysisEventArgs.cs" />
+    <Compile Include="LanguageRecognition\CodeAnalysis\Enums\ECodeComponentType.cs" />
+    <Compile Include="LanguageRecognition\CodeAnalysis\Events\Interfaces\ICodeAnalysisEvent.cs" />
+    <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICodeComponent.cs" />
+    <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICompnentLocation.cs" />
+    <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\IComponentState.cs" />
+    <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICodeAnalyser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="LanguageRecognition\CodeAnalysis\Events\Enums\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
- </Project>
+</Project>
