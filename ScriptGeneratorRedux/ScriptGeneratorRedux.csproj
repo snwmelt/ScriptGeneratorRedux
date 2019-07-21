@@ -79,11 +79,6 @@
     <Compile Include="Models\Core\Navigation\Interfaces\INavigationHandler.cs" />
     <Compile Include="Models\Core\Authentication\Interfaces\IUserAuthenticator.cs" />
     <Compile Include="Models\Core\Navigation\NavigationHandler.cs" />
-    <Compile Include="Models\Scripting\Interfaces\IParameterisedString.cs" />
-    <Compile Include="Models\Scripting\Interfaces\ISGRScript.cs" />
-    <Compile Include="Models\Scripting\Interfaces\ISGRScriptElement.cs" />
-    <Compile Include="Models\Scripting\Interfaces\ISGRScriptParameter.cs" />
-    <Compile Include="Models\Scripting\Interfaces\ISRGScriptDependency.cs" />
     <Compile Include="ViewModels\EnvironmentSelectorUserControlViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
@@ -177,6 +172,7 @@
     <Folder Include="Legacy\Code Files\" />
     <Folder Include="Legacy\Demo\" />
     <Folder Include="Legacy\Scripts\" />
+    <Folder Include="Models\Scripting\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
