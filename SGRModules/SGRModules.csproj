@@ -41,12 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LanguageRecognition\CodeAnalysis\Enums\EComponentState.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Events\CodeAnalysisEventArgs.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Enums\ECodeComponentType.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Events\Interfaces\ICodeAnalysisEvent.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICodeComponent.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICompnentLocation.cs" />
-    <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\IComponentState.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICodeAnalyser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
