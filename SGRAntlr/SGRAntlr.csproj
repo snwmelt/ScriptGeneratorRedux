@@ -47,11 +47,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Grammars\Lexers\tomlLexer.g4.cs">
+      <DependentUpon>tomlLexer.g4</DependentUpon>
+    </Compile>
+    <Compile Include="Grammars\Parsers\tomlParser.g4.cs">
+      <DependentUpon>tomlParser.g4</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Antlr4 Include="Grammars\Lexers\tomlLexer.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>SGRAntlrl.Grammars.Lexers</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="Grammars\Parsers\tomlParser.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>SGRAntlrl.Grammars.Parsers</CustomToolNamespace>
+    </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
