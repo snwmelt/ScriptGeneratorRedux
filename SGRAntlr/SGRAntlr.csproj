@@ -51,9 +51,13 @@
     <Compile Include="Grammars\Lexers\tomlLexer.g4.cs">
       <DependentUpon>tomlLexer.g4</DependentUpon>
     </Compile>
+    <Compile Include="Grammars\Listeners\TomlListener.cs" />
     <Compile Include="Grammars\Parsers\tomlParser.g4.cs">
       <DependentUpon>tomlParser.g4</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Interfaces\IResourceProvider`2.cs" />
+    <Compile Include="Helpers\ResourceFactory.cs" />
+    <Compile Include="Helpers\SGRAntlrResourceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +72,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SGRModules\SGRModules.csproj">
+      <Project>{DDB0608E-3B8E-4136-A8D8-C4754C3AAF36}</Project>
+      <Name>SGRModules</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
