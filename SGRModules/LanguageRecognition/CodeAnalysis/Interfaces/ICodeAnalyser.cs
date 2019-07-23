@@ -1,4 +1,5 @@
 ﻿using SGRModules.LanguageRecognition.CodeAnalysis.Events;
+using SGRModules.LanguageRecognition.Interfaces;
 using System;
 
 namespace SGRModules.LanguageRecognition.CodeAnalysis.Interfaces
@@ -7,5 +8,6 @@ namespace SGRModules.LanguageRecognition.CodeAnalysis.Interfaces
     {
         event EventHandler<CodeAnalysisEventArgs> CodeAnalysedEvent;
         void Analyse( String Text );
+        ILanguage TargetLanguage { get; }
     }
 }

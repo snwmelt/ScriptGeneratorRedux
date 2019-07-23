@@ -48,6 +48,9 @@
     <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICodeComponent.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICompnentLocation.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICodeAnalyser.cs" />
+    <Compile Include="LanguageRecognition\Interfaces\ILanguage.cs" />
+    <Compile Include="LanguageRecognition\Enums\ELanguage.cs" />
+    <Compile Include="LanguageRecognition\Enums\ELanguageFileExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

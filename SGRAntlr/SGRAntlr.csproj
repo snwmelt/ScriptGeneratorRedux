@@ -51,7 +51,6 @@
     <Compile Include="Grammars\Lexers\tomlLexer.g4.cs">
       <DependentUpon>tomlLexer.g4</DependentUpon>
     </Compile>
-    <Compile Include="Grammars\Listeners\TomlListener.cs" />
     <Compile Include="Grammars\Parsers\tomlParser.g4.cs">
       <DependentUpon>tomlParser.g4</DependentUpon>
     </Compile>
@@ -71,7 +70,9 @@
     </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Grammars\Listeners\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SGRModules\SGRModules.csproj">
       <Project>{DDB0608E-3B8E-4136-A8D8-C4754C3AAF36}</Project>
