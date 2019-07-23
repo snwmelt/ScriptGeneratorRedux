@@ -2,6 +2,7 @@
 using SGRModules.LanguageRecognition.CodeAnalysis.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace SGRModules.LanguageRecognition.CodeAnalysis.Events
 {
@@ -12,12 +13,12 @@ namespace SGRModules.LanguageRecognition.CodeAnalysis.Events
             get;
         }
 
-        public IEnumerable<Exception> Exceptions
+        public IEnumerable<_Exception> Exceptions
         {
             get;
         }
 
-        public CodeAnalysisEventArgs( ICodeComponent Component, IEnumerable<Exception> Exceptions = null )
+        public CodeAnalysisEventArgs( ICodeComponent Component, IEnumerable<_Exception> Exceptions = null )
         {
             this.Component  = Component;
             this.Exceptions = Exceptions;

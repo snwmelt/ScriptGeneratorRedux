@@ -41,6 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\Interfaces\IEvent.cs" />
+    <Compile Include="Factories\Events\Interfaces\IModuleInstantiatedEvent`1.cs" />
+    <Compile Include="Factories\Interfaces\IModuleFactory`1.cs" />
+    <Compile Include="Factories\ModuleFactory.cs" />
+    <Compile Include="Factories\Events\ModuleInstantiatedEventArgs`1.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Enums\EComponentState.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Events\CodeAnalysisEventArgs.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Enums\ECodeComponentType.cs" />
