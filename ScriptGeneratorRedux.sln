@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGRModules", "SGRModules\SG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGRCommon", "SGRCommon\SGRCommon.csproj", "{A503AD1A-22D2-40A5-88AE-4188388CA91C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGRAntlr", "SGRAntlrl\SGRAntlr.csproj", "{E0B7E320-43C5-4FA0-B4AA-93200E32B406}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGRAntlr", "SGRAntlr\SGRAntlr.csproj", "{E0B7E320-43C5-4FA0-B4AA-93200E32B406}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
