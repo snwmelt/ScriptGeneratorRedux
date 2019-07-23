@@ -21,7 +21,12 @@ namespace SGRModules.LanguageRecognition.CodeAnalysis.Events
         public CodeAnalysisEventArgs( ICodeComponent Component, IEnumerable<_Exception> Exceptions = null )
         {
             this.Component  = Component;
-            this.Exceptions = Exceptions;
+            this.Exceptions = Exceptions ?? new List<_Exception>( );
+        }
+
+        public void AddException( _Exception Ex )
+        {
+            ( Exceptions as List<_Exception> ).Add( Ex );
         }
     }
 }

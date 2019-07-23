@@ -19,17 +19,30 @@ namespace SGRModules.Factories
                      !ObjectType.IsInterface &&
                      typeof( T ).IsAssignableFrom( ObjectType ) )
                 {
-                    RaiseModuleCreatedEvent( DLLPath );
+                    RaiseModuleCreatedEvent( DLLPath, ObjectType );
                 }
             }
         }
 
         public event EventHandler<IModuleInstantiatedEvent<T>> OnModuleInstantiatedEvent;
 
-        private void RaiseModuleCreatedEvent( String SourceDLL )
+        private void RaiseModuleCreatedEvent( String SourceDLL, Type ObjectType )
         {
-            OnModuleInstantiatedEvent?.Invoke( this, new ModuleInstantiatedEventArgs<T>( ( T )Activator.CreateInstance( typeof( T ) ),
-                                                                                         SourceDLL ) );
+            IModuleInstantiatedEvent<T> _IModuleInstantiatedEvent = null;
+
+            try
+            {
+                _IModuleInstantiatedEvent = new ModuleInstantiatedEventArgs<T>( ( T )Activator.CreateInstance( ObjectType ),
+                                                                                SourceDLL );
+            }
+            catch ( Exception Ex )
+            {
+                _IModuleInstantiatedEvent = new ModuleInstantiatedEventArgs<T>( default( T ), SourceDLL );
+
+                _IModuleInstantiatedEvent.AddException( Ex );
+            }
+
+            OnModuleInstantiatedEvent?.Invoke( this, _IModuleInstantiatedEvent );
         }
     }
 }

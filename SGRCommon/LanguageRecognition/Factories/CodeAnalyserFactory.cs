@@ -31,7 +31,7 @@ namespace SGRCommon.LanguageRecognition.Factories
 
             _ModuleFactory.OnModuleInstantiatedEvent += ModuleFactory_OnModuleInstantiatedEvent;
 
-            foreach ( String DLLPath in Directory.GetFiles( Path.GetDirectoryName( Assembly.GetExecutingAssembly( ).Location ) ) )
+            foreach ( String DLLPath in Directory.GetFiles( Path.GetDirectoryName( Assembly.GetExecutingAssembly( ).Location ), "*.dll" ) )
             {
                 _ModuleFactory.LoadModules( DLLPath );
             }

@@ -26,7 +26,12 @@ namespace SGRModules.Factories
         {
             this.Instance   = Instance;
             this.SourceDLL  = SourceDLL;
-            this.Exceptions = Exceptions;
+            this.Exceptions = Exceptions ?? new List<_Exception>( );
+        }
+
+        public void AddException( _Exception Ex )
+        {
+            ( Exceptions as List<_Exception> ).Add( Ex );
         }
     }
 }
