@@ -16,25 +16,33 @@ namespace SGRCommon.LanguageRecognition.Factories
         #region Singleton Instantiation
 
         private static readonly CodeAnalyserFactory _Instance = new CodeAnalyserFactory( );
-        
-        private CodeAnalyserFactory()
+
+        private CodeAnalyserFactory( )
         {
-            LoadCodeAnalysers( );
+            _TargetDirectory = Assembly.GetExecutingAssembly( ).Location;
+            _ModuleFactory   = new ModuleFactory<ICodeAnalyser>( );
+            _ModulesLoaded   = false;
+
+            _ModuleFactory.OnModuleInstantiatedEvent += ModuleFactory_OnModuleInstantiatedEvent;
         }
 
         #endregion
 
+
         private void LoadCodeAnalysers( )
         {
-            _ModuleFactory = new ModuleFactory<ICodeAnalyser>( );
-            _CodeAnalysers = new List<ICodeAnalyser>( );
+            if( _CodeAnalysersList == null )
+                _CodeAnalysersList = new List<ICodeAnalyser>( );
 
-            _ModuleFactory.OnModuleInstantiatedEvent += ModuleFactory_OnModuleInstantiatedEvent;
+            if( _CodeAnalysersList.Count > 0 )
+                _CodeAnalysersList.Clear( );
 
-            foreach ( String DLLPath in Directory.GetFiles( Path.GetDirectoryName( Assembly.GetExecutingAssembly( ).Location ), "*.dll" ) )
+            foreach( String DLLPath in Directory.GetFiles( Path.GetDirectoryName( _TargetDirectory ), "*.dll" ) )
             {
                 _ModuleFactory.LoadModules( DLLPath );
             }
+
+            _ModulesLoaded = true;
         }
 
         private void ModuleFactory_OnModuleInstantiatedEvent( object sender, IModuleInstantiatedEvent<ICodeAnalyser> e )
@@ -47,15 +55,19 @@ namespace SGRCommon.LanguageRecognition.Factories
 
         private ICollection<ICodeAnalyser> _CodeAnalysers
         {
-            get;
-            set;
+            get
+            {
+                if( !_ModulesLoaded )
+                    LoadCodeAnalysers( );
+
+                return _CodeAnalysersList;
+            }
         }
 
-        private ModuleFactory<ICodeAnalyser> _ModuleFactory
-        {
-            get;
-            set;
-        }
+        private IList<ICodeAnalyser>         _CodeAnalysersList;
+        private ModuleFactory<ICodeAnalyser> _ModuleFactory;
+        private Boolean                      _ModulesLoaded;
+        private String                       _TargetDirectory;
 
         #endregion
 
@@ -73,6 +85,20 @@ namespace SGRCommon.LanguageRecognition.Factories
         public static ICodeAnalyser GetCodeAnalyser( ELanguageFileExtension FileExtension )
         {
             return _Instance._CodeAnalysers.FirstOrDefault( CodeAnalyser => CodeAnalyser.TargetLanguage.FileExtension == FileExtension );
+        }
+
+        public String TargetDirectory
+        {
+            get
+            {
+                return _TargetDirectory;
+            }
+
+            set
+            {
+                _ModulesLoaded   = false;
+                _TargetDirectory = value;
+            }
         }
     }
 }
