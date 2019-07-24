@@ -2,5 +2,6 @@
 {
     public enum ELanguage
     {
+        TOML
     }
 }

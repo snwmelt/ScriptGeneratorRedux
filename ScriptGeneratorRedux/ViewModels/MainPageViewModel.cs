@@ -30,13 +30,13 @@ namespace ScriptGeneratorRedux.ViewModels
 
         private Boolean CanCopyContnetContent( object obj )
         {
-            return !( Core.DataContext is null ) &&
+            return ( Core.DataContext != null ) &&
                    !String.IsNullOrWhiteSpace( DocumentText ); ;
         }
 
         private Boolean CanExportContent( object obj )
         {
-            return !( Core.DataContext is null ) &&
+            return ( Core.DataContext != null ) &&
                    !String.IsNullOrWhiteSpace( DocumentText ); ;
         }
 
@@ -75,7 +75,7 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             get
             {
-                return ( CurrentDocument is null ) ? null
+                return ( CurrentDocument == null ) ? null
                                                    : ( new TextRange( CurrentDocument.ContentStart, CurrentDocument.ContentEnd ) ).Text;
             }
         }
