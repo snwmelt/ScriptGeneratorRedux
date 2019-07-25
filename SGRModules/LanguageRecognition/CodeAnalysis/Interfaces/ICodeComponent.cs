@@ -5,9 +5,9 @@ namespace SGRModules.LanguageRecognition.CodeAnalysis.Interfaces
 {
     public interface ICodeComponent
     {
-        ECodeComponentType ComponentType { get; }
-        EComponentState State { get; }
+        Enum ComponentType { get; }
         IComponentLocation Location { get; }
+        EComponentState State { get; }
         String Text { get; }
     }
 }

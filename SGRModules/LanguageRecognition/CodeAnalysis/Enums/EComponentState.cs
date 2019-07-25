@@ -2,5 +2,7 @@
 {
     public enum EComponentState
     {
+        Valid,
+        Invalid
     }
 }

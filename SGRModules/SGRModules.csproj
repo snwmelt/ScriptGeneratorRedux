@@ -49,7 +49,6 @@
     <Compile Include="Factories\Events\ModuleInstantiatedEventArgs`1.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Enums\EComponentState.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Events\CodeAnalysisEventArgs.cs" />
-    <Compile Include="LanguageRecognition\CodeAnalysis\Enums\ECodeComponentType.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Events\Interfaces\ICodeAnalysisEvent.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\ICodeComponent.cs" />
     <Compile Include="LanguageRecognition\CodeAnalysis\Interfaces\IComponentLocation.cs" />
