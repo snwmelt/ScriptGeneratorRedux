@@ -1,0 +1,84 @@
+# This is a TOML document.
+
+title = "TOML Example"
+
+[owner]
+name = "Tom Preston-Werner"
+dob = 1979-05-27T07:32:00-08:00 # First class dates
+
+[database]
+server = "192.168.1.1"
+ports = [ 8001, 8001, 8002 ]
+connection_max = 5000
+enabled = true
+
+$[servers]
+
+  # Indentation (tabs and/or spaces) is allowed but not required
+  [servers.alpha]
+  ip = "10.0.0.1"
+  dc = "eqdc10"
+
+  [servers.beta]
+  ip = "10.0.0.2"
+  dc = "eqdc10"
+
+[clients]
+data = [ ["gamma", "delta"], [1, 2] ]
+
+# Line breaks are OK when inside arrays
+hosts = [
+  "alpha",
+  "omega"
+]
+
+# A TOML example. Unlike JSON it supports comments.
+[player]
+particles = [
+  [ 0.0, -5.0 ],
+  [ 4.330127018922194, -2.4999999999999996 ],
+  [ -4.330127018922194, -2.4999999999999996 ]
+]
+# Unlike YAML, there is only one way to write arrays.
+# There is only one way to write tables too.
+# This reduces implementation complexity for a TOML parser.
+# It also reduces how hard TOML is to use.
+
+size = 10
+maxOxygen = 2048
+maxResource = 256
+
+
+# Test file for TOML
+# Only this one tries to emulate a TOML file written by a user of the kind of parser writers probably hate
+# This part you'll really hate
+
+[the]
+test_string = "You'll hate me after this - #"          # " Annoying, isn't it?
+
+    [the.hard]
+    test_array = [ "] ", " # "]      # ] There you go, parse this!
+    test_array2 = [ "Test #11 ]proved that", "Experiment #9 was a success" ]
+    # You didn't think it'd as easy as chucking out the last #, did you?
+    another_test_string = " Same thing, but with a string #"
+    harder_test_string = " And when \"'s are in the string, along with # \""   # "and comments are there too"
+    # Things will get harder
+
+        [the.hard."bit#"]
+        "what?" = "You don't think some user won't do that?"
+        multi_line_array = [
+            "]",
+            # ] Oh yes I did
+            ]
+
+# Each of the following keygroups/key value pairs should produce an error. Uncomment to them to test
+
+#[error]   if you didn't catch this, your parser is broken
+#string = "Anything other than tabs, spaces and newline after a keygroup or key value pair has ended should produce an error unless it is a comment"   like this
+#array = [
+#         "This might most likely happen in multiline arrays",
+#         Like here,
+#         "or here,
+#         and here"
+#         ]     End of array comment, forgot the #
+#number = 3.14  pi <--again forgot the #         

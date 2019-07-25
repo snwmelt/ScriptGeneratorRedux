@@ -49,31 +49,35 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Grammars\Lexers\tomlLexer.g4.cs">
+    <Compile Include="Grammars\TOML\Common\TOMLComponentType.cs" />
+    <Compile Include="Grammars\TOML\Lexers\tomlLexer.g4.cs">
       <DependentUpon>tomlLexer.g4</DependentUpon>
     </Compile>
-    <Compile Include="Grammars\Parsers\tomlParser.g4.cs">
+    <Compile Include="Grammars\TOML\Parsers\tomlParser.g4.cs">
       <DependentUpon>tomlParser.g4</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\SGRModules\CodeAnalysis\CodeComponent.cs" />
     <Compile Include="Helpers\Interfaces\IResourceProvider`2.cs" />
     <Compile Include="Helpers\LanguageFactory.cs" />
     <Compile Include="Helpers\ResourceFactory.cs" />
     <Compile Include="Helpers\SGRAntlrResourceProvider.cs" />
+    <Compile Include="Helpers\SGRModules\CodeAnalysis\ComponentLocation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Antlr4 Include="Grammars\Lexers\tomlLexer.g4">
+    <None Include="Grammars\TOML\Examples\Example.toml" />
+    <Antlr4 Include="Grammars\TOML\Lexers\tomlLexer.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>SGRAntlrl.Grammars.Lexers</CustomToolNamespace>
+      <CustomToolNamespace>SGRAntlrl.Grammars.TOML.Lexers</CustomToolNamespace>
     </Antlr4>
-    <Antlr4 Include="Grammars\Parsers\tomlParser.g4">
+    <Antlr4 Include="Grammars\TOML\Parsers\tomlParser.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>SGRAntlrl.Grammars.Parsers</CustomToolNamespace>
+      <CustomToolNamespace>SGRAntlrl.Grammars.TOML.Parsers</CustomToolNamespace>
     </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Grammars\Listeners\" />
+    <Folder Include="Grammars\TOML\Listeners\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SGRModules\SGRModules.csproj">
