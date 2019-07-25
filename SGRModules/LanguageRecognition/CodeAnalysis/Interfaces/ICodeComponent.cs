@@ -7,7 +7,7 @@ namespace SGRModules.LanguageRecognition.CodeAnalysis.Interfaces
     {
         ECodeComponentType ComponentType { get; }
         EComponentState State { get; }
-        ICompnentLocation Location { get; }
+        IComponentLocation Location { get; }
         String Text { get; }
     }
 }
