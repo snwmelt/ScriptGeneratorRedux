@@ -29,7 +29,7 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             _INPCInvoke             = new INPCInvoker( this );
 
-            AddServerCommand        = new CommandRelay<Object>( DisplayAddServer, null );
+            AddServerCommand        = new CommandRelay<Object>( AddServer, null );
             CopyCommand             = new CommandRelay<Object>( CopyContnet, CanCopyContnetContent );
             ExportCommand           = new CommandRelay<Object>( ExportContnet, CanExportContent );
             GenerateCommand         = new CommandRelay<Object>( GenerateScriptContnet, CanGenerateScriptContnet );
@@ -37,9 +37,15 @@ namespace ScriptGeneratorRedux.ViewModels
             ValidateCommand         = new CommandRelay<Object>( ValidateScript, CanValidateScript );
         }
 
-        private void DisplayAddServer( Object Object )
+        private void AddServer( Object Object )
         {
-            AddServer = !AddServer;
+            if( IsAddingServer )
+            {
+                Core.DataContext.UpdateServersList( );
+            }
+
+            IsAddingServer = !IsAddingServer;
+            _INPCInvoke.NotifyPropertyChanged( ref PropertyChanged, nameof( AddServerButtonContent ) );
         }
 
         private Boolean CanCopyContnetContent( object obj )
@@ -71,7 +77,7 @@ namespace ScriptGeneratorRedux.ViewModels
             Core.DataContext.CopyToClipboard( CurrentDocument );
         }
 
-        public Boolean AddServer
+        public Boolean IsAddingServer
         {
             get
             {
@@ -80,6 +86,15 @@ namespace ScriptGeneratorRedux.ViewModels
             set
             {
                 _INPCInvoke.AssignPropertyValue( ref PropertyChanged, ref _AddServer, value );
+            }
+        }
+
+        public String AddServerButtonContent
+        {
+            get
+            {
+                return IsAddingServer ? "Confirm"
+                                      : "Add Server";
             }
         }
 

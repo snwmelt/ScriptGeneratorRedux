@@ -1,6 +1,7 @@
 ﻿<Page x:Class="ScriptGeneratorRedux.Views.MainPageView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:vms="clr-namespace:ScriptGeneratorRedux.ViewModels"
@@ -70,11 +71,24 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="0"/>
                         </Grid.RowDefinitions>
 
-                        <vcs:AddServerUserControl Grid.Row="0" Margin="2,2,2,6"
-                                                  Visibility="{Binding Path=AddServer, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <vcs:AddServerUserControl Grid.Row="0" Margin="2,2,2,6" Background="Azure"
+                                                  TargetServer="{Binding Path=TargetServer}"
+                                                  SecurityServer="{Binding Path=SecurityServer}"
+                                                  SecurityDBName="{Binding Path=SecurityDBName}"
+                                                  SecurityModeCheckBoxTicked="{Binding Path=UseWindowsAuthentication}"
+                                                  Username="{Binding Path=Username}"
+                                                  Password="{Binding Path=Password}"
+                                                  Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, 
+                                                                       Path=DataContext.IsAddingServer,
+                                                                       Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                  IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, 
+                                                                      Path=DataContext.IsAddingServer}">
+                            <vcs:AddServerUserControl.DataContext>
+                                <vms:AddServerUserControlViewModel/>
+                            </vcs:AddServerUserControl.DataContext>
+                        </vcs:AddServerUserControl>
 
                         <vcs:EnvironmentSelectorUserControl Grid.Row="0" Background="Azure" 
                                                             ServerList="{Binding Path=ServerList}"
@@ -92,14 +106,14 @@
                             <vcs:EnvironmentSelectorUserControl.Visibility>
                                 <MultiBinding Converter="{StaticResource MultiValueBooleanToVisibilityConverterKey}">
                                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Page}}"
-                                             Path="DataContext.AddServer" 
+                                             Path="DataContext.IsAddingServer" 
                                              Converter="{StaticResource InverseBooleanConverterKey}"/>
                                 </MultiBinding>
                             </vcs:EnvironmentSelectorUserControl.Visibility>
                         </vcs:EnvironmentSelectorUserControl>
 
-                        <Button Grid.Row="1" x:Name="ServerAddButton" Margin="2,0,2,3" HorizontalAlignment="Stretch"
-                            Content="Add Server" Command="{Binding Path=AddServerCommand}"/>
+                        <Button Grid.Row="1" x:Name="AddServerButton" Margin="2,0,2,3" HorizontalAlignment="Stretch"
+                            Content="{Binding AddServerButtonContent}" Command="{Binding Path=AddServerCommand}"/>
                     </Grid>
 
                 </Border>

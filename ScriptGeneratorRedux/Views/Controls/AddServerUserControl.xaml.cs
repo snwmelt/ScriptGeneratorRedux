@@ -11,15 +11,16 @@ namespace ScriptGeneratorRedux.Views.Controls
     {
         #region Dependency Properties
 
+        public static readonly DependencyProperty PasswordProperty = DependencyProperty.Register( nameof( Password ),
+                                                                                                  typeof( String ),
+                                                                                                  typeof( AddServerUserControl ),
+                                                                                                  new FrameworkPropertyMetadata( String.Empty,
+                                                                                                                                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
+
         public static readonly DependencyProperty SecurityModeTextProperty = DependencyProperty.Register( nameof( SecurityModeText ),
                                                                                                           typeof( String ),
                                                                                                           typeof( AddServerUserControl ),
                                                                                                           new PropertyMetadata( "User Windows Authentication" ) );
-
-        public static readonly DependencyProperty TargetServerPlaceholderTextProperty = DependencyProperty.Register( nameof( TargetServerPlaceholderText ),
-                                                                                                                     typeof( String ),
-                                                                                                                     typeof( AddServerUserControl ),
-                                                                                                                     new PropertyMetadata( "CP4 Server" ) );
         
         public static readonly DependencyProperty SecurityServerPlaceholderTextProperty = DependencyProperty.Register( nameof( SecurityServerPlaceholderText ),
                                                                                                                        typeof( String ),
@@ -34,23 +35,41 @@ namespace ScriptGeneratorRedux.Views.Controls
         public static readonly DependencyProperty SecurityDBNameProperty = DependencyProperty.Register( nameof( SecurityDBName ),
                                                                                                         typeof( String ),
                                                                                                         typeof( AddServerUserControl ),
-                                                                                                        new PropertyMetadata( String.Empty ) );
+                                                                                                        new FrameworkPropertyMetadata( String.Empty,
+                                                                                                                                       FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
         public static readonly DependencyProperty SecurityModeCheckBoxTickedProperty = DependencyProperty.Register( nameof( SecurityModeCheckBoxTicked ),
                                                                                                                     typeof( Boolean ),
                                                                                                                     typeof( AddServerUserControl ),
-                                                                                                                    new PropertyMetadata( true ) );
+                                                                                                                    new FrameworkPropertyMetadata( true,
+                                                                                                                                                   FrameworkPropertyMetadataOptions.AffectsRender |
+                                                                                                                                                   FrameworkPropertyMetadataOptions.BindsTwoWayByDefault) );
 
 
         public static readonly DependencyProperty SecurityServerProperty = DependencyProperty.Register( nameof( SecurityServer ),
                                                                                                         typeof( String ),
                                                                                                         typeof( AddServerUserControl ),
-                                                                                                        new PropertyMetadata( String.Empty, SecurityServerChangedCallback ) );
+                                                                                                        new FrameworkPropertyMetadata( String.Empty,
+                                                                                                                                       FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, 
+                                                                                                                                       SecurityServerChangedCallback ) );
         
         public static readonly DependencyProperty TargetServerProperty = DependencyProperty.Register( nameof( TargetServer ),
                                                                                                       typeof( String ),
                                                                                                       typeof( AddServerUserControl ),
-                                                                                                      new PropertyMetadata( String.Empty, TargetServerChangedCallback ) );
+                                                                                                      new FrameworkPropertyMetadata( String.Empty,
+                                                                                                                                   FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                                                                                                                                   TargetServerChangedCallback ) );
+
+        public static readonly DependencyProperty TargetServerPlaceholderTextProperty = DependencyProperty.Register( nameof( TargetServerPlaceholderText ),
+                                                                                                                     typeof( String ),
+                                                                                                                     typeof( AddServerUserControl ),
+                                                                                                                     new PropertyMetadata( "CP4 Server" ) );
+
+        public static readonly DependencyProperty UsernameProperty = DependencyProperty.Register( nameof( Username ),
+                                                                                                  typeof( String ),
+                                                                                                  typeof( AddServerUserControl ),
+                                                                                                  new FrameworkPropertyMetadata( String.Empty,
+                                                                                                                                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
         #region Callbacks
 
@@ -86,6 +105,11 @@ namespace ScriptGeneratorRedux.Views.Controls
         #endregion
 
         #region Accessors
+        public String Password
+        {
+            get { return ( String )GetValue( PasswordProperty ); }
+            set { SetValue( PasswordProperty, value ); }
+        }
 
         public String SecurityDBName
         {
@@ -133,6 +157,12 @@ namespace ScriptGeneratorRedux.Views.Controls
         {
             get { return ( String )GetValue( TargetServerProperty ); }
             set { SetValue( TargetServerProperty, value ); }
+        }
+
+        public String Username
+        {
+            get { return ( String )GetValue( UsernameProperty ); }
+            set { SetValue( UsernameProperty, value ); }
         }
 
         #endregion

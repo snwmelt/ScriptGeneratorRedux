@@ -7,7 +7,7 @@
     <Application.Resources>
         <sys:Double x:Key="DefaultFontSize">14</sys:Double>
         
-        <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="White"/>
+        <SolidColorBrush x:Key="ControlBackgroundBrush" Color="White"/>
 
         <SolidColorBrush  x:Key="BorderBrushResourceKey" Color="DarkGray"/>
 
@@ -53,11 +53,12 @@
             <Setter Property="FontSize" Value="{StaticResource DefaultFontSize}"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}"/>
+            <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
         </Style>
 
         <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource BaseControlStyle}">
             <Setter Property="BorderBrush" Value="LightGray"/>
+            <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -72,6 +73,7 @@
         </Style>
 
         <Style  TargetType="wc:ModernTextBox">
+            <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
             <Setter Property="BorderThickness" Value="0,0,0,2"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrushResourceKey}"/>
             <Setter Property="PlaceholderBrush" Value="{StaticResource BorderBrushResourceKey}"/>

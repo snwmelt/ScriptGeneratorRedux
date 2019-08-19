@@ -48,7 +48,7 @@
                               Text="{Binding Path=SecurityDBName}"/>
         </Grid>
 
-        <Grid Grid.Row="1" Margin="1,15,3,15">
+        <Grid Grid.Row="1" Margin="2,15,4,15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -70,8 +70,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <wc:ModernTextBox Grid.Row="0" x:Name="UsernameTextBox" PlaceholderText="Username" Margin="0,0,0,3"/>
-            <wc:ModernTextBox Grid.Row="1" x:Name="PasswordTextBox" PlaceholderText="Password"/>
+            <wc:ModernTextBox Grid.Row="0" x:Name="UsernameTextBox" Text="{Binding Path=Username}" PlaceholderText="Username" Margin="0,0,0,3"/>
+            <wc:ModernTextBox Grid.Row="1" x:Name="PasswordTextBox" Text="{Binding Path=Password}" PlaceholderText="Password"/>
         </Grid>
     </Grid>
 </UserControl>
