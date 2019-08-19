@@ -8,7 +8,8 @@
       xmlns:c="clr-namespace:ScriptGeneratorRedux.Views.Helpers.Converters"
       mc:Ignorable="d"
       d:DesignHeight="300" d:DesignWidth="960"
-      Title="MainPageView">
+      Title="MainPageView"
+      Background="White">
 
     <Page.DataContext>
         <vms:MainPageViewModel/>
@@ -47,13 +48,13 @@
                     <vcs:LexingRichTextBoxUserControl Grid.Row="0" Margin="-1,-1,-1,-1" OpacityMask="{StaticResource HeaderBackgroundOpacityMask}"
                                                       FlowDocument="{Binding Path=CurrentDocument}"/>
 
-                    <Grid  Grid.Row="1"  Background="White">
-                        <Button x:Name="ServerInfoButton" Margin="7" Height="28" Width="100" Content="Server Info" 
+                    <Grid  Grid.Row="1" Margin="7" Background="White">
+                        <Button x:Name="ServerInfoButton"  Height="28" Width="100" Content="Server Info" 
                         Command="{Binding Path=ToggleServerInfoCommand}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 
-                        <StackPanel Margin="7" VerticalAlignment="Bottom" HorizontalAlignment="Left"  
+                        <StackPanel   HorizontalAlignment="Left"  
                             Orientation="Horizontal">
-                            <Button x:Name="ExportButton" Height="28" Width="100" Content="Export"  Command="{Binding Path=ExportCommand}" Margin="0,0,2,0"/>
+                            <Button x:Name="ExportButton" Height="28" Width="100" Content="Export" Command="{Binding Path=ExportCommand}" Margin="0,0,2,0"/>
                             <Button x:Name="CopyButton" Height="28" Width="100" Content="Copy" Command="{Binding Path=CopyCommand}"/>
 
                         </StackPanel>
@@ -92,16 +93,18 @@
                 <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="0,0,2,0" Grid.Column="0" >
                     <Grid Grid.Column="0" Margin="7">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                             <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <ComboBox x:Name="ScriptSelector" 
                                   Margin="1" 
                                   Grid.Row="0"
                                   VerticalAlignment="Top"
-                                  ItemsSource="{Binding Path=ScriptList}">
+                                  ItemsSource="{Binding Path=ScriptList, Mode=OneWay}"
+                                  SelectedItem="{Binding Path=SelectedScript}">
                             <!-- Text="A" Consider for use in communicating drop down purpose -->
                             <ComboBox.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -110,9 +113,19 @@
                             </ComboBox.ItemsPanel>
                         </ComboBox>
                         
-                        <ListView x:Name="ScriptInputParametersListView" Grid.Row="1" DataContext="{Binding SelectedScript}"/>
+                        <ListView Margin="1" x:Name="ScriptInputParametersListView" Grid.Row="1" DataContext="{Binding SelectedScript, Mode=OneWay}"/>
 
-                        <ListView x:Name="ScriptStateIndicatorsListView" Grid.Row="2" DataContext="{Binding SelectedScript}"/>
+                        <ListView Margin="1" x:Name="ScriptStateIndicatorsListView" Grid.Row="2" DataContext="{Binding SelectedScript, Mode=OneWay}"/>
+
+                        <Grid Grid.Row="3" Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="ValidateButton" Grid.Column="0" Height="28" HorizontalAlignment="Stretch" Content="Validate"  Command="{Binding Path=ValidateCommand}" Margin="0,0,2,0"/>
+                            <Button x:Name="GenerateButton" Grid.Column="1" Height="28" HorizontalAlignment="Stretch" Content="Generate" Command="{Binding Path=GenerateCommand}"/>
+
+                        </Grid>
                     </Grid>
                 </Border>
             </Grid>

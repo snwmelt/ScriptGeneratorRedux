@@ -1,5 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Documents;
 using Walkways.MVVM.View_Model;
@@ -15,9 +16,11 @@ namespace ScriptGeneratorRedux.ViewModels
         #endregion
 
         #region Relay Command Properties
-        public CommandRelay<object> CopyCommand { get; }
+        public CommandRelay<Object> CopyCommand { get; }
         public CommandRelay<Object> ExportCommand { get; }
-        public CommandRelay<object> ToggleServerInfoCommand { get; }
+        public CommandRelay<Object> GenerateCommand { get; }
+        public CommandRelay<Object> ToggleServerInfoCommand { get; }
+        public CommandRelay<Object> ValidateCommand { get; }
         #endregion
 
         public MainPageViewModel( )
@@ -25,8 +28,11 @@ namespace ScriptGeneratorRedux.ViewModels
             _INPCInvoke             = new INPCInvoker( this );
             CopyCommand             = new CommandRelay<Object>( CopyContnet, CanCopyContnetContent );
             ExportCommand           = new CommandRelay<Object>( ExportContnet, CanExportContent );
+            GenerateCommand         = new CommandRelay<Object>( GenerateScriptContnet, CanGenerateScriptContnet );
             ToggleServerInfoCommand = new CommandRelay<Object>( ToggleServerInfo, null );
+            ValidateCommand         = new CommandRelay<Object>( ValidateScript, CanValidateScript );
         }
+        
 
         private Boolean CanCopyContnetContent( object obj )
         {
@@ -38,6 +44,18 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             return ( Core.DataContext != null ) &&
                    !String.IsNullOrWhiteSpace( DocumentText ); ;
+        }
+
+        // Will need to be updated once script interface has been formalised
+        private Boolean CanGenerateScriptContnet( object obj )
+        {
+            return false;
+        }
+
+        // Will need to be updated once script interface has been formalised
+        private Boolean CanValidateScript( object obj )
+        {
+            return false;
         }
 
         private void CopyContnet( object obj )
@@ -85,11 +103,46 @@ namespace ScriptGeneratorRedux.ViewModels
             Core.DataContext.ExportToFile( CurrentDocument );
         }
 
+        // Will need to be updated once script interface has been formalised
+        private void GenerateScriptContnet( object obj )
+        {
+            // should idealy be execute appropriate core scripting method
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
+        // Will need to be updated once script interface has been formalised
+        public IEnumerable<Object> ScriptList
+        {
+            get
+            {
+                return null; // should idealy be fetched from the core datacontext
+            }
+        }
+
+        // Will need to be updated once script interface has been formalised
+        public Object SelectedScript
+        {
+            get
+            {
+                return null; // should idealy be fetched from the core datacontext
+            }
+
+            set
+            {
+                // should idealy be fetched from the core datacontext
+            }
+        }
 
         private void ToggleServerInfo( object obj )
         {
             DisplayServerInfo = !DisplayServerInfo;
+        }
+
+        // Will need to be updated once script interface has been formalised
+        private void ValidateScript( object obj )
+        {
+            // should idealy be execute appropriate core scripting method
         }
     }
 }
