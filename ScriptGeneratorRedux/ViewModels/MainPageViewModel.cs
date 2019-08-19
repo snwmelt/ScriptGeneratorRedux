@@ -10,12 +10,14 @@ namespace ScriptGeneratorRedux.ViewModels
     internal class MainPageViewModel : INotifyPropertyChanged
     {
         #region Private Variables
+        private Boolean      _AddServer;
         private FlowDocument _CurrentDocument;
         private Boolean      _DisplayServerInfo;
         private INPCInvoker  _INPCInvoke;
         #endregion
 
         #region Relay Command Properties
+        public CommandRelay<Object> AddServerCommand { get; }
         public CommandRelay<Object> CopyCommand { get; }
         public CommandRelay<Object> ExportCommand { get; }
         public CommandRelay<Object> GenerateCommand { get; }
@@ -26,13 +28,19 @@ namespace ScriptGeneratorRedux.ViewModels
         public MainPageViewModel( )
         {
             _INPCInvoke             = new INPCInvoker( this );
+
+            AddServerCommand        = new CommandRelay<Object>( DisplayAddServer, null );
             CopyCommand             = new CommandRelay<Object>( CopyContnet, CanCopyContnetContent );
             ExportCommand           = new CommandRelay<Object>( ExportContnet, CanExportContent );
             GenerateCommand         = new CommandRelay<Object>( GenerateScriptContnet, CanGenerateScriptContnet );
             ToggleServerInfoCommand = new CommandRelay<Object>( ToggleServerInfo, null );
             ValidateCommand         = new CommandRelay<Object>( ValidateScript, CanValidateScript );
         }
-        
+
+        private void DisplayAddServer( Object Object )
+        {
+            AddServer = !AddServer;
+        }
 
         private Boolean CanCopyContnetContent( object obj )
         {
@@ -61,6 +69,18 @@ namespace ScriptGeneratorRedux.ViewModels
         private void CopyContnet( object obj )
         {
             Core.DataContext.CopyToClipboard( CurrentDocument );
+        }
+
+        public Boolean AddServer
+        {
+            get
+            {
+                return _AddServer;
+            }
+            set
+            {
+                _INPCInvoke.AssignPropertyValue( ref PropertyChanged, ref _AddServer, value );
+            }
         }
 
         public FlowDocument CurrentDocument

@@ -6,8 +6,9 @@
       xmlns:vms="clr-namespace:ScriptGeneratorRedux.ViewModels"
       xmlns:vcs="clr-namespace:ScriptGeneratorRedux.Views.Controls"
       xmlns:c="clr-namespace:ScriptGeneratorRedux.Views.Helpers.Converters"
+      xmlns:w="clr-namespace:Walkways.MVVM.View;assembly=Walkways"
       mc:Ignorable="d"
-      d:DesignHeight="300" d:DesignWidth="960"
+      d:DesignHeight="600" d:DesignWidth="960"
       Title="MainPageView"
       Background="White">
 
@@ -17,6 +18,8 @@
 
     <Page.Resources>
         <c:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <w:InverseBooleanConverter x:Key="InverseBooleanConverterKey"/>
+        <w:MultiValueBooleanToVisibilityConverter x:Key="MultiValueBooleanToVisibilityConverterKey"/>
     </Page.Resources>
 
     <Grid>
@@ -67,7 +70,11 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="0"/>
                         </Grid.RowDefinitions>
+
+                        <vcs:AddServerUserControl Grid.Row="0" Margin="2,2,2,6"
+                                                  Visibility="{Binding Path=AddServer, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                         <vcs:EnvironmentSelectorUserControl Grid.Row="0" Background="Azure" 
                                                             ServerList="{Binding Path=ServerList}"
@@ -82,6 +89,13 @@
                             <vcs:EnvironmentSelectorUserControl.DataContext>
                                 <vms:EnvironmentSelectorUserControlViewModel/>
                             </vcs:EnvironmentSelectorUserControl.DataContext>
+                            <vcs:EnvironmentSelectorUserControl.Visibility>
+                                <MultiBinding Converter="{StaticResource MultiValueBooleanToVisibilityConverterKey}">
+                                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Page}}"
+                                             Path="DataContext.AddServer" 
+                                             Converter="{StaticResource InverseBooleanConverterKey}"/>
+                                </MultiBinding>
+                            </vcs:EnvironmentSelectorUserControl.Visibility>
                         </vcs:EnvironmentSelectorUserControl>
 
                         <Button Grid.Row="1" x:Name="ServerAddButton" Margin="2,0,2,3" HorizontalAlignment="Stretch"

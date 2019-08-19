@@ -7,6 +7,9 @@
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="ElementHost">
     <Grid>
+        <Grid.DataContext>
+            <Binding ElementName="ElementHost"/>
+        </Grid.DataContext>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
@@ -14,29 +17,29 @@
         
         <StackPanel  Grid.Row="0"  Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ComboBox x:Name="ServerSelector" Margin="2,2,2,3" BorderThickness="1" 
-                      ItemsSource="{Binding ElementName=ElementHost, Path=ServerList}"
-                      SelectedItem="{Binding ElementName=ElementHost, Path=SelectedServer}"
-                      SelectedIndex="{Binding ElementName=ElementHost, Path=SelectedServerIndex}"/>
+                      ItemsSource="{Binding Path=ServerList}"
+                      SelectedItem="{Binding Path=SelectedServer}"
+                      SelectedIndex="{Binding Path=SelectedServerIndex}"/>
 
             <ComboBox x:Name="EnvironmentSelector" Margin="2,0,2,3" BorderThickness="1"
-                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4EnvironmentList}"
-                      SelectedItem="{Binding ElementName=ElementHost, Path=SelectedCP4Environment}"
-                      SelectedIndex="{Binding ElementName=ElementHost, Path=SelectedCP4EnvironmentIndex}"/>
+                      ItemsSource="{Binding Path=CP4EnvironmentList}"
+                      SelectedItem="{Binding Path=SelectedCP4Environment}"
+                      SelectedIndex="{Binding Path=SelectedCP4EnvironmentIndex}"/>
 
             <ComboBox x:Name="SecurityDBSelector" Margin="2,0,2,3" BorderThickness="1" 
-                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4SecurityDatabaseList}"
-                      SelectedItem="{Binding ElementName=ElementHost, Path=SelectedCP4SecurityDatabase}"
-                      SelectedIndex="{Binding ElementName=ElementHost, Path=SelectedCP4SecurityDatabaseIndex}"/>
+                      ItemsSource="{Binding Path=CP4SecurityDatabaseList}"
+                      SelectedItem="{Binding Path=SelectedCP4SecurityDatabase}"
+                      SelectedIndex="{Binding Path=SelectedCP4SecurityDatabaseIndex}"/>
 
             <ComboBox x:Name="StudyIDSelector" Margin="2,0,2,3" BorderThickness="1"
-                      ItemsSource="{Binding ElementName=ElementHost, Path=CP4StudyIDList}"
-                      SelectedItem="{Binding ElementName=ElementHost, Path=SelectedCP4StudyID}"
-                      SelectedIndex="{Binding ElementName=ElementHost, Path=SelectedCP4StudyIDIndex}"/>
+                      ItemsSource="{Binding Path=CP4StudyIDList}"
+                      SelectedItem="{Binding Path=SelectedCP4StudyID}"
+                      SelectedIndex="{Binding Path=SelectedCP4StudyIDIndex}"/>
 
         </StackPanel>
 
         <Button x:Name="ConnectionTestButton" Margin="2,5,2,3" Grid.Row="1" VerticalAlignment="Bottom"
                 HorizontalAlignment="Stretch"  Content="Test Connection"
-                Command="{Binding ElementName=ElementHost, Path=ServerConnectionTestCommand}"/>
+                Command="{Binding Path=ServerConnectionTestCommand}"/>
     </Grid>
 </UserControl>

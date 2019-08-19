@@ -1,5 +1,6 @@
 ﻿using ScriptGeneratorRedux.Views;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using Walkways.MVVM.View_Model;
 
@@ -9,8 +10,8 @@ namespace ScriptGeneratorRedux.ViewModels
     {
         #region Private Variables
 
-        private Page        _CurrentView;
-        private INPCInvoker _INPCInvoke;
+        private FrameworkElement _CurrentView;
+        private INPCInvoker      _INPCInvoke;
 
         #endregion
 
@@ -20,7 +21,7 @@ namespace ScriptGeneratorRedux.ViewModels
             CurrentView = new LoginPageView( );
         }
 
-        public Page CurrentView
+        public FrameworkElement CurrentView
         {
             get
             {
@@ -29,7 +30,7 @@ namespace ScriptGeneratorRedux.ViewModels
 
             set
             {
-                _INPCInvoke.AssignPropertyValue<Page>( ref PropertyChanged, ref _CurrentView, value );
+                _INPCInvoke.AssignPropertyValue( ref PropertyChanged, ref _CurrentView, value );
             }
         }
 
