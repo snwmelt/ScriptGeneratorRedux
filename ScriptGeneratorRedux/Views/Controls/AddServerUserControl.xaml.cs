@@ -52,13 +52,24 @@ namespace ScriptGeneratorRedux.Views.Controls
                                                                                                         new FrameworkPropertyMetadata( String.Empty,
                                                                                                                                        FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, 
                                                                                                                                        SecurityServerChangedCallback ) );
-        
+
+        public static readonly DependencyProperty ServerNamePlaceholderTextProperty = DependencyProperty.Register( nameof( ServerNamePlaceholderText ),
+                                                                                                                   typeof( String ),
+                                                                                                                   typeof( AddServerUserControl ),
+                                                                                                                   new PropertyMetadata( "Server Name" ) );
+
+        public static readonly DependencyProperty ServerNameProperty = DependencyProperty.Register( nameof( ServerName ),
+                                                                                                    typeof( String ),
+                                                                                                    typeof( AddServerUserControl ),
+                                                                                                    new FrameworkPropertyMetadata( String.Empty,
+                                                                                                                                   FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
+
         public static readonly DependencyProperty TargetServerProperty = DependencyProperty.Register( nameof( TargetServer ),
                                                                                                       typeof( String ),
                                                                                                       typeof( AddServerUserControl ),
                                                                                                       new FrameworkPropertyMetadata( String.Empty,
-                                                                                                                                   FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                                                                                                                                   TargetServerChangedCallback ) );
+                                                                                                                                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                                                                                                                                     TargetServerChangedCallback ) );
 
         public static readonly DependencyProperty TargetServerPlaceholderTextProperty = DependencyProperty.Register( nameof( TargetServerPlaceholderText ),
                                                                                                                      typeof( String ),
@@ -145,6 +156,18 @@ namespace ScriptGeneratorRedux.Views.Controls
         {
             get { return ( String )GetValue( SecurityServerPlaceholderTextProperty ); }
             set { SetValue( SecurityServerPlaceholderTextProperty, value ); }
+        }
+
+        public String ServerName
+        {
+            get { return ( String )GetValue( ServerNameProperty ); }
+            set { SetValue( ServerNameProperty, value ); }
+        }
+
+        public String ServerNamePlaceholderText
+        {
+            get { return ( String )GetValue( ServerNamePlaceholderTextProperty ); }
+            set { SetValue( ServerNamePlaceholderTextProperty, value ); }
         }
 
         public String TargetServerPlaceholderText

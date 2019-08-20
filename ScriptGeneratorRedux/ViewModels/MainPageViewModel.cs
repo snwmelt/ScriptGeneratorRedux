@@ -29,11 +29,11 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             _INPCInvoke             = new INPCInvoker( this );
 
-            AddServerCommand        = new CommandRelay<Object>( AddServer, null );
+            AddServerCommand        = new CommandRelay<Object>( AddServer );
             CopyCommand             = new CommandRelay<Object>( CopyContnet, CanCopyContnetContent );
             ExportCommand           = new CommandRelay<Object>( ExportContnet, CanExportContent );
             GenerateCommand         = new CommandRelay<Object>( GenerateScriptContnet, CanGenerateScriptContnet );
-            ToggleServerInfoCommand = new CommandRelay<Object>( ToggleServerInfo, null );
+            ToggleServerInfoCommand = new CommandRelay<Object>( ToggleServerInfo );
             ValidateCommand         = new CommandRelay<Object>( ValidateScript, CanValidateScript );
         }
 
