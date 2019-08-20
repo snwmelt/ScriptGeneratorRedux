@@ -66,7 +66,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
-    <Compile Include="Models\Core\IO\Interfaces\IServerDetailsProvider.cs" />
+    <Compile Include="Models\Core\DataContext.cs" />
+    <Compile Include="Models\Core\Events\Enums\ELoadingState.cs" />
+    <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs%271.cs" />
+    <Compile Include="Models\Core\IO\Database\DatabaseServer.cs" />
+    <Compile Include="Models\Core\IO\Events\DataLoadedEventArgs.cs" />
+    <Compile Include="Models\Core\IO\Interfaces\IDatabaseServerProvider.cs" />
     <Compile Include="Models\Extensions\ExString.cs" />
     <Compile Include="Models\Core\IO\Database\Enums\EDatabaseType.cs" />
     <Compile Include="Models\Core\IO\Database\Enums\ETargetEnvironment.cs" />
@@ -101,6 +106,9 @@
     <Compile Include="Views\MainPageView.xaml.cs">
       <DependentUpon>MainPageView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ValueConverters\IntegerToBooleanConverter.cs" />
+    <Compile Include="Views\ValueConverters\IntegerToVisibilityConverter.cs" />
+    <Compile Include="Views\ValueConverters\NotNullToBooleanConverter.cs" />
     <Page Include="Views\Controls\AddServerUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -182,6 +190,7 @@
     <Folder Include="Legacy\Code Files\" />
     <Folder Include="Legacy\Demo\" />
     <Folder Include="Legacy\Scripts\" />
+    <Folder Include="Models\Core\IO\Events\Interfaces\" />
     <Folder Include="Models\Scripting\" />
   </ItemGroup>
   <ItemGroup>

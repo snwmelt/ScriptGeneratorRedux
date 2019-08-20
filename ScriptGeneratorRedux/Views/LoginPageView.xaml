@@ -17,7 +17,6 @@
     <Page.Resources>
         <Walkways:MultiValueBooleanToVisibilityConverter    x:Key="MultiValueBooleanToVisibilityConverter"/>
         <Walkways:InverseBooleanConverter                   x:Key="InverseBooleanConverter"/>
-        <SolidColorBrush                                    x:Key="WatermarkSolidColorBrush"                Color="Gray"/>
     </Page.Resources>
 
     <Grid>

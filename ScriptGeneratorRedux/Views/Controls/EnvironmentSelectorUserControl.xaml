@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vvc="clr-namespace:ScriptGeneratorRedux.Views.ValueConverters"
+             xmlns:wv="clr-namespace:Walkways.MVVM.View;assembly=Walkways"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="ElementHost">
@@ -11,31 +13,120 @@
             <Binding ElementName="ElementHost"/>
         </Grid.DataContext>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="158"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         
         <StackPanel  Grid.Row="0"  Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <ComboBox x:Name="ServerSelector" Margin="2,2,2,3" BorderThickness="1" 
-                      ItemsSource="{Binding Path=ServerList}"
-                      SelectedItem="{Binding Path=SelectedServer}"
-                      SelectedIndex="{Binding Path=SelectedServerIndex}"/>
+            <StackPanel.Resources>
+                <BooleanToVisibilityConverter     x:Key="BooleanToVisibilityConverterKey"/>
+                <wv:MultiValueBooleanToVisibilityConverter x:Key="MultiValueBooleanToVisibilityConverterKey"/>
+                <vvc:IntegerToBooleanConverter x:Key="IntegerToBooleanConverterKey"/>
+                <vvc:NotNullToBooleanConverter    x:Key="NotNullToBooleanConverterKey"/>
+                
 
-            <ComboBox x:Name="EnvironmentSelector" Margin="2,0,2,3" BorderThickness="1"
-                      ItemsSource="{Binding Path=CP4EnvironmentList}"
-                      SelectedItem="{Binding Path=SelectedCP4Environment}"
-                      SelectedIndex="{Binding Path=SelectedCP4EnvironmentIndex}"/>
+                <Style TargetType="TextBlock">
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Foreground" Value="{StaticResource WatermarkSolidColorBrush}"/>
+                    <Setter Property="FontSize" Value="{StaticResource DefaultFontSize}"/>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="Margin" Value="0,0,10,0"/>
+                </Style>
+            </StackPanel.Resources>
+            
+            <Grid>
+                <ComboBox x:Name="ServerSelector" Margin="2,2,2,3" BorderThickness="1" 
+                          ItemsSource="{Binding Path=ServerList}"
+                          SelectedItem="{Binding Path=SelectedServer}"
+                          SelectedIndex="{Binding Path=SelectedServerIndex}"
+                          IsEnabled="{Binding ElementName=ServerSelector, Path=ItemsSource, 
+                                              Converter={StaticResource NotNullToBooleanConverterKey}}"
+                          Visibility="{Binding ElementName=ServerSelector, Path=IsEnabled, 
+                                               Converter={StaticResource BooleanToVisibilityConverterKey}}"/>
+                <TextBlock Text="Select Server">
+                    <TextBlock.DataContext>
+                        <Binding ElementName="ServerSelector"/>
+                    </TextBlock.DataContext>
+                    <TextBlock.Visibility>
+                        <MultiBinding Converter="{StaticResource MultiValueBooleanToVisibilityConverterKey}">
+                            <Binding Path="SelectedIndex" Converter="{StaticResource IntegerToBooleanConverterKey}"/>
+                            <Binding Path="IsEnabled"/>
+                        </MultiBinding>
+                    </TextBlock.Visibility>
+                </TextBlock>
+            </Grid>
 
-            <ComboBox x:Name="SecurityDBSelector" Margin="2,0,2,3" BorderThickness="1" 
-                      ItemsSource="{Binding Path=CP4SecurityDatabaseList}"
-                      SelectedItem="{Binding Path=SelectedCP4SecurityDatabase}"
-                      SelectedIndex="{Binding Path=SelectedCP4SecurityDatabaseIndex}"/>
 
-            <ComboBox x:Name="StudyIDSelector" Margin="2,0,2,3" BorderThickness="1"
-                      ItemsSource="{Binding Path=CP4StudyIDList}"
-                      SelectedItem="{Binding Path=SelectedCP4StudyID}"
-                      SelectedIndex="{Binding Path=SelectedCP4StudyIDIndex}"/>
+            <Grid>
+                <ComboBox x:Name="EnvironmentSelector" Margin="2,0,2,3" BorderThickness="1"
+                          ItemsSource="{Binding Path=CP4EnvironmentList}"
+                          SelectedItem="{Binding Path=SelectedCP4Environment}"
+                          SelectedIndex="{Binding Path=SelectedCP4EnvironmentIndex}"
+                          IsEnabled="{Binding ElementName=EnvironmentSelector, Path=ItemsSource, 
+                                              Converter={StaticResource NotNullToBooleanConverterKey}}"
+                          Visibility="{Binding ElementName=EnvironmentSelector, Path=IsEnabled, 
+                                               Converter={StaticResource BooleanToVisibilityConverterKey}}"/>
 
+                <TextBlock Text="Select Environment">
+                    <TextBlock.DataContext>
+                        <Binding ElementName="EnvironmentSelector"/>
+                    </TextBlock.DataContext>
+                    <TextBlock.Visibility>
+                        <MultiBinding Converter="{StaticResource MultiValueBooleanToVisibilityConverterKey}">
+                            <Binding Path="SelectedIndex" Converter="{StaticResource IntegerToBooleanConverterKey}"/>
+                            <Binding Path="IsEnabled"/>
+                        </MultiBinding>
+                    </TextBlock.Visibility>
+                </TextBlock>
+            </Grid>
+
+            <Grid>
+                <ComboBox x:Name="SecurityDBSelector" Margin="2,0,2,3" BorderThickness="1" 
+                          ItemsSource="{Binding Path=CP4SecurityDatabaseList}"
+                          SelectedItem="{Binding Path=SelectedCP4SecurityDatabase}"
+                          SelectedIndex="{Binding Path=SelectedCP4SecurityDatabaseIndex}"
+                          IsEnabled="{Binding ElementName=SecurityDBSelector, Path=ItemsSource, 
+                                              Converter={StaticResource NotNullToBooleanConverterKey}}"
+                          Visibility="{Binding ElementName=SecurityDBSelector, Path=IsEnabled, 
+                                               Converter={StaticResource BooleanToVisibilityConverterKey}}"/>
+
+                <TextBlock Text="Select Security Database">
+                    <TextBlock.DataContext>
+                        <Binding ElementName="SecurityDBSelector"/>
+                    </TextBlock.DataContext>
+                    <TextBlock.Visibility>
+                        <MultiBinding Converter="{StaticResource MultiValueBooleanToVisibilityConverterKey}">
+                            <Binding Path="SelectedIndex" Converter="{StaticResource IntegerToBooleanConverterKey}"/>
+                            <Binding Path="IsEnabled"/>
+                        </MultiBinding>
+                    </TextBlock.Visibility>
+                </TextBlock>
+            </Grid>
+
+            <Grid>
+                <ComboBox x:Name="StudyIDSelector" Margin="2,0,2,3" BorderThickness="1"
+                          ItemsSource="{Binding Path=CP4StudyIDList}"
+                          SelectedItem="{Binding Path=SelectedCP4StudyID}"
+                          SelectedIndex="{Binding Path=SelectedCP4StudyIDIndex}"
+                          IsEnabled="{Binding ElementName=StudyIDSelector, Path=ItemsSource, 
+                                              Converter={StaticResource NotNullToBooleanConverterKey}}"
+                          Visibility="{Binding ElementName=StudyIDSelector, Path=IsEnabled, 
+                                               Converter={StaticResource BooleanToVisibilityConverterKey}}"/>
+
+                <TextBlock Text="Select Study ID">
+                    <TextBlock.DataContext>
+                        <Binding ElementName="StudyIDSelector"/>
+                    </TextBlock.DataContext>
+                    <TextBlock.Visibility>
+                        <MultiBinding Converter="{StaticResource MultiValueBooleanToVisibilityConverterKey}">
+                            <Binding Path="SelectedIndex" Converter="{StaticResource IntegerToBooleanConverterKey}"/>
+                            <Binding Path="IsEnabled"/>
+                        </MultiBinding>
+                    </TextBlock.Visibility>
+                </TextBlock>
+            </Grid>
         </StackPanel>
 
         <Button x:Name="ConnectionTestButton" Margin="2,5,2,3" Grid.Row="1" VerticalAlignment="Bottom"

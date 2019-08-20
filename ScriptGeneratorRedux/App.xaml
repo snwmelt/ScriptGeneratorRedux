@@ -7,9 +7,9 @@
     <Application.Resources>
         <sys:Double x:Key="DefaultFontSize">14</sys:Double>
         
-        <SolidColorBrush x:Key="ControlBackgroundBrush" Color="White"/>
-
-        <SolidColorBrush  x:Key="BorderBrushResourceKey" Color="DarkGray"/>
+        <SolidColorBrush x:Key="ControlBackgroundBrush"   Color="White"/>
+        <SolidColorBrush x:Key="BorderBrushResourceKey"   Color="DarkGray"/>
+        <SolidColorBrush x:Key="WatermarkSolidColorBrush" Color="Gray"/>
 
         <Style TargetType="{x:Type Control}" x:Key="BaseControlStyle">
             <Setter Property="FontSize" Value="{StaticResource DefaultFontSize}" />
@@ -62,7 +62,7 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="IsTextSearchEnabled" Value="True"/>
             <Setter Property="IsTextSearchCaseSensitive" Value="False"/>
             <Setter Property="IsEditable" Value="True"/>

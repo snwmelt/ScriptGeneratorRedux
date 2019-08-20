@@ -21,6 +21,7 @@ namespace ScriptGeneratorRedux.Models.Core
 
         private Core( )
         {
+            _IDataContext           = new DataContext( );
             _IUserAuthenticator     = new DummyAuthManager( );
             _LazyINavigationHandler = new Lazy<INavigationHandler>( ( ) => new NavigationHandler( ( ( INavigationServiceProvider )App.Current.MainWindow ).NavigationService ) );
         }

@@ -21,12 +21,14 @@ namespace ScriptGeneratorRedux.Views.Controls
         public static readonly DependencyProperty SelectedCP4EnvironmentProperty = DependencyProperty.Register( "SelectedCP4Environment",
                                                                                                 typeof( Object ),
                                                                                                 typeof( EnvironmentSelectorUserControl ),
-                                                                                                new PropertyMetadata( null ) );
+                                                                                                new FrameworkPropertyMetadata( null,
+                                                                                                                               FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
         public static readonly DependencyProperty SelectedCP4EnvironmentIndexProperty = DependencyProperty.Register( "SelectedCP4EnvironmentIndex",
-                                                                                                typeof( int ),
-                                                                                                typeof( EnvironmentSelectorUserControl ),
-                                                                                                new PropertyMetadata( -1 ) );
+                                                                                                                     typeof( int ),
+                                                                                                                     typeof( EnvironmentSelectorUserControl ),
+                                                                                                                     new FrameworkPropertyMetadata( -1,
+                                                                                                                                                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
 
         public static readonly DependencyProperty CP4SecurityDatabaseListProperty = DependencyProperty.Register( "CP4SecurityDatabaseList",
@@ -37,12 +39,14 @@ namespace ScriptGeneratorRedux.Views.Controls
         public static readonly DependencyProperty SelectedCP4SecurityDatabaseProperty = DependencyProperty.Register( "SelectedCP4SecurityDatabase",
                                                                                                 typeof( Object ),
                                                                                                 typeof( EnvironmentSelectorUserControl ),
-                                                                                                new PropertyMetadata( null ) );
+                                                                                                new FrameworkPropertyMetadata( null,
+                                                                                                                               FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
         public static readonly DependencyProperty SelectedCP4SecurityDatabaseIndexProperty = DependencyProperty.Register( "SelectedCP4SecurityDatabaseIndex",
-                                                                                                typeof( int ),
-                                                                                                typeof( EnvironmentSelectorUserControl ),
-                                                                                                new PropertyMetadata( -1 ) );
+                                                                                                                          typeof( int ),
+                                                                                                                          typeof( EnvironmentSelectorUserControl ),
+                                                                                                                          new FrameworkPropertyMetadata( -1,
+                                                                                                                                                         FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
 
         public static readonly DependencyProperty CP4StudyIDListProperty = DependencyProperty.Register( "CP4StudyIDList",
@@ -53,12 +57,14 @@ namespace ScriptGeneratorRedux.Views.Controls
         public static readonly DependencyProperty SelectedCP4StudyIDProperty = DependencyProperty.Register( "SelectedCP4StudyID",
                                                                                                 typeof( Object ),
                                                                                                 typeof( EnvironmentSelectorUserControl ),
-                                                                                                new PropertyMetadata( null ) );
+                                                                                                new FrameworkPropertyMetadata( null,
+                                                                                                                               FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
         public static readonly DependencyProperty SelectedCP4StudyIDIndexProperty = DependencyProperty.Register( "SelectedCP4StudyIDIndex",
-                                                                                                typeof( int ),
-                                                                                                typeof( EnvironmentSelectorUserControl ),
-                                                                                                new PropertyMetadata( -1 ) );
+                                                                                                                 typeof( int ),
+                                                                                                                 typeof( EnvironmentSelectorUserControl ),
+                                                                                                                 new FrameworkPropertyMetadata( -1,
+                                                                                                                                                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
 
         public static readonly DependencyProperty ServerConnectionTestCommandProperty = DependencyProperty.Register( "ServerConnectionTestCommand",
@@ -75,13 +81,14 @@ namespace ScriptGeneratorRedux.Views.Controls
         public static readonly DependencyProperty SelectedServerProperty = DependencyProperty.Register( "SelectedServer",
                                                                                                 typeof( Object ),
                                                                                                 typeof( EnvironmentSelectorUserControl ),
-                                                                                                new PropertyMetadata( null ) );
+                                                                                                new FrameworkPropertyMetadata( null,
+                                                                                                                               FrameworkPropertyMetadataOptions.BindsTwoWayByDefault) );
 
         public static readonly DependencyProperty SelectedServerIndexProperty = DependencyProperty.Register( "SelectedServerIndex",
-                                                                                                typeof( int ),
-                                                                                                typeof( EnvironmentSelectorUserControl ),
-                                                                                                new PropertyMetadata( -1 ) );
-
+                                                                                                             typeof( int ),
+                                                                                                             typeof( EnvironmentSelectorUserControl ),
+                                                                                                             new FrameworkPropertyMetadata( -1,
+                                                                                                                                            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
         #endregion
 
         public EnvironmentSelectorUserControl( )

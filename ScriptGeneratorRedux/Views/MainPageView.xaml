@@ -73,7 +73,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <vcs:AddServerUserControl Grid.Row="0" Margin="2,2,2,6" Background="Azure"
+                        <vcs:AddServerUserControl Grid.Row="0" Margin="2,2,2,6"
                                                   TargetServer="{Binding Path=TargetServer}"
                                                   SecurityServer="{Binding Path=SecurityServer}"
                                                   SecurityDBName="{Binding Path=SecurityDBName}"
@@ -90,14 +90,14 @@
                             </vcs:AddServerUserControl.DataContext>
                         </vcs:AddServerUserControl>
 
-                        <vcs:EnvironmentSelectorUserControl Grid.Row="0" Background="Azure" 
-                                                            ServerList="{Binding Path=ServerList}"
+                        <vcs:EnvironmentSelectorUserControl Grid.Row="0"
+                                                            ServerList="{Binding Path=Servers}"
                                                             SelectedServer="{Binding Path=SelectedServer}"
-                                                            CP4EnvironmentList="{Binding Path=CP4EnvironmentList}"
+                                                            CP4EnvironmentList="{Binding Path=CP4Environments}"
                                                             SelectedCP4Environment="{Binding Path=SelectedCP4Environment}"
-                                                            CP4SecurityDatabaseList="{Binding Path=CP4SecurityDatabaseList}"
+                                                            CP4SecurityDatabaseList="{Binding Path=CP4SecurityDatabases}"
                                                             SelectedCP4SecurityDatabase="{Binding Path=SelectedCP4SecurityDatabase}"
-                                                            CP4StudyIDList="{Binding Path=CP4StudyIDList}"
+                                                            CP4StudyIDList="{Binding Path=CP4StudyIDs}"
                                                             SelectedCP4StudyID="{Binding Path=SelectedCP4StudyID}"
                                                             ServerConnectionTestCommand="{Binding Path=ServerConnectionTestCommand}">
                             <vcs:EnvironmentSelectorUserControl.DataContext>
@@ -108,6 +108,7 @@
                                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Page}}"
                                              Path="DataContext.IsAddingServer" 
                                              Converter="{StaticResource InverseBooleanConverterKey}"/>
+                                    <Binding Path="HasData" />
                                 </MultiBinding>
                             </vcs:EnvironmentSelectorUserControl.Visibility>
                         </vcs:EnvironmentSelectorUserControl>

@@ -1,13 +1,21 @@
-﻿using System.Windows.Documents;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
+using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.ViewModels;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
 {
     internal interface IDataContext
     {
-        void ExportToFile( FlowDocument FlowDocument );
         void CopyToClipboard( FlowDocument currentDocument );
-        void RegisterServerDetailsProvider( IServerDetailsProvider IServerDetailsProvider );
+        void ExportToFile( FlowDocument FlowDocument );
+        IEnumerable<String> GetEnvironmentNames( String ServerName );
+        IEnumerable<String> GetSecurityDBNames( String ServerName );
+        ICollection<String> GetServerNames( );
+        IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName, String SecurityDBName );
+        void RegisterServerDetailsProvider( IDatabaseServerProvider IServerDetailsProvider );
+        event EventHandler<DataLoadedEventArgs<ICollection<String>>> ServersLoadedEvent;
         void UpdateServersList( );
     }
 }

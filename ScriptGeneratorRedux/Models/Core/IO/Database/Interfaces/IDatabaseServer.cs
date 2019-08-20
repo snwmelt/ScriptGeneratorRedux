@@ -5,6 +5,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces
 {
     internal interface IDatabaseServer : IOneToMany<IDatabase>, IOneToMany<ICP4Study>
     {
+        String ConnectionString { get; }
         String Name { get; }
         ICollection<IDatabase> Databases { get; }
         ICollection<ICP4Study> Studies { get; }
