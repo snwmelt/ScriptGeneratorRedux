@@ -10,8 +10,9 @@ namespace ScriptGeneratorRedux.ViewModels
     internal class MainPageViewModel : INotifyPropertyChanged
     {
         #region Private Variables
-        private Boolean      _IsAddingServer;
         private FlowDocument _CurrentDocument;
+        private Boolean      _DisplayServerInfo;
+        private Boolean      _IsAddingServer;
         private INPCInvoker  _INPCInvoke;
         #endregion
 
