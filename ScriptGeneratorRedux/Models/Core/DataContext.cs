@@ -18,6 +18,7 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public DataContext( )
         {
+            int s = 0;
             _ServiceDetailsProviders = new List<IDatabaseServerProvider>( );
             //_DatabaseServers         = new Dictionary<String, IDatabaseServer>( );
         }
