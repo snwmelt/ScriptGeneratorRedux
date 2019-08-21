@@ -25,10 +25,10 @@ namespace ScriptGeneratorRedux.ViewModels
             _INPCInvoker = new INPCInvoker( this );
             Servers      = Core.DataContext.GetServerNames( );
 
-            Core.DataContext.ServersLoadedEvent += OnServersLoadedEvent;
+            Core.DataContext.OnServersLoaded += OnServersLoadedEvent;
         }
 
-        private void OnServersLoadedEvent( object sender, DataLoadedEventArgs<ICollection<String>> e )
+        private void OnServersLoadedEvent( object sender, LoadingEventArgs<ICollection<String>> e )
         {
             Servers.Clear( );
             Servers = e.Payload;

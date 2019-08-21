@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
+using ScriptGeneratorRedux.Models.Core.Events.Enums;
 
 namespace ScriptGeneratorRedux.Models.Core
 {
@@ -21,7 +22,8 @@ namespace ScriptGeneratorRedux.Models.Core
             _DatabaseServers         = new Dictionary<String, IDatabaseServer>( );
         }
 
-        public event EventHandler<DataLoadedEventArgs<ICollection<String>>> ServersLoadedEvent;
+        public event EventHandler<LoadingEventArgs<ICollection<String>>> OnServersLoaded;
+        public event EventHandler<LoadingEventArgs> OnInitialised;
 
         public void CopyToClipboard( FlowDocument currentDocument )
         {
@@ -64,6 +66,16 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public void UpdateServersList( )
         {
+        }
+
+        public void Initialise( )
+        {
+            InvokeInitialised( ELoadingState.Completed );
+        }
+        
+        private void InvokeInitialised( ELoadingState State, Exception Exception = null )
+        {
+            OnInitialised?.Invoke( this, new LoadingEventArgs( State, Exception ) );
         }
     }
 }

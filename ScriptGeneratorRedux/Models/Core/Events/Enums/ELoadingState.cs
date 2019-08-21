@@ -2,5 +2,7 @@
 {
     internal enum ELoadingState
     {
+        Completed,
+        Failed
     }
 }

@@ -69,8 +69,10 @@
     <Compile Include="Models\Core\DataContext.cs" />
     <Compile Include="Models\Core\Events\Enums\ELoadingState.cs" />
     <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs%271.cs" />
+    <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs.cs" />
     <Compile Include="Models\Core\IO\Database\DatabaseServer.cs" />
-    <Compile Include="Models\Core\IO\Events\DataLoadedEventArgs.cs" />
+    <Compile Include="Models\Core\IO\Events\LoadingEventArgs.cs" />
+    <Compile Include="Models\Core\IO\Events\LoadingEventArgs`1.cs" />
     <Compile Include="Models\Core\IO\Interfaces\IDatabaseServerProvider.cs" />
     <Compile Include="Models\Extensions\ExString.cs" />
     <Compile Include="Models\Core\IO\Database\Enums\EDatabaseType.cs" />

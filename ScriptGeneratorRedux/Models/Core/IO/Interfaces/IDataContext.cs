@@ -14,8 +14,10 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
         IEnumerable<String> GetSecurityDBNames( String ServerName );
         ICollection<String> GetServerNames( );
         IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName, String SecurityDBName );
+        void Initialise( );
+        event EventHandler<LoadingEventArgs> OnInitialised;
+        event EventHandler<LoadingEventArgs<ICollection<String>>> OnServersLoaded;
         void RegisterServerDetailsProvider( IDatabaseServerProvider IServerDetailsProvider );
-        event EventHandler<DataLoadedEventArgs<ICollection<String>>> ServersLoadedEvent;
         void UpdateServersList( );
     }
 }
