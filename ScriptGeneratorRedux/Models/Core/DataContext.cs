@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Documents;
-using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.Events.Enums;
+using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
+using ScriptGeneratorRedux.Models.Core.Events;
 
 namespace ScriptGeneratorRedux.Models.Core
 {
@@ -13,17 +13,17 @@ namespace ScriptGeneratorRedux.Models.Core
     {
         #region Private Variables
         private ICollection<IDatabaseServerProvider> _ServiceDetailsProviders;
-        private IDictionary<String, IDatabaseServer> _DatabaseServers;
+        //private IDictionary<String, IDatabaseServer> _DatabaseServers;
         #endregion
 
         public DataContext( )
         {
             _ServiceDetailsProviders = new List<IDatabaseServerProvider>( );
-            _DatabaseServers         = new Dictionary<String, IDatabaseServer>( );
+            //_DatabaseServers         = new Dictionary<String, IDatabaseServer>( );
         }
 
-        public event EventHandler<LoadingEventArgs<ICollection<String>>> OnServersLoaded;
-        public event EventHandler<LoadingEventArgs> OnInitialised;
+        public event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ICP4Study>>> OnServersLoaded;
+        public event EventHandler<ILoadingEventArgs> OnInitialised;
 
         public void CopyToClipboard( FlowDocument currentDocument )
         {
@@ -48,6 +48,7 @@ namespace ScriptGeneratorRedux.Models.Core
         public ICollection<String> GetServerNames( )
         {
             return null;
+            //_DatabaseServers.Select( x => x.Key ).ToList( );
         }
 
         public IEnumerable<Int64> GetStudyIDs( String EnvironmentName, String SecurityDBName )
@@ -70,6 +71,9 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public void Initialise( )
         {
+            //var n = new DatabaseServer( "Hello World", @"011010\SQL_2012_SP4" );
+
+            //_DatabaseServers.Add( n.Name, n );
             InvokeInitialised( ELoadingState.Completed );
         }
         

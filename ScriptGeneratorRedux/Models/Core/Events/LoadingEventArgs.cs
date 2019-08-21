@@ -2,7 +2,7 @@
 using System;
 using ScriptGeneratorRedux.Models.Core.Events.Enums;
 
-namespace ScriptGeneratorRedux.Models.Core.IO.Events
+namespace ScriptGeneratorRedux.Models.Core.Events
 {
     internal class LoadingEventArgs : EventArgs, ILoadingEventArgs
     {

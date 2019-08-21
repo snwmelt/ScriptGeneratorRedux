@@ -1,9 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core;
-using ScriptGeneratorRedux.Models.Core.IO.Database;
-using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
 using System;
-using System.Collections.Generic;
 
 namespace ScriptGeneratorRedux.ViewModels
 {

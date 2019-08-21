@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Windows.Documents;
-using ScriptGeneratorRedux.Models.Core.IO.Events;
-using ScriptGeneratorRedux.ViewModels;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
 {
@@ -15,8 +15,8 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
         ICollection<String> GetServerNames( );
         IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName, String SecurityDBName );
         void Initialise( );
-        event EventHandler<LoadingEventArgs> OnInitialised;
-        event EventHandler<LoadingEventArgs<ICollection<String>>> OnServersLoaded;
+        event EventHandler<ILoadingEventArgs> OnInitialised;
+        event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ICP4Study>>> OnServersLoaded;
         void RegisterServerDetailsProvider( IDatabaseServerProvider IServerDetailsProvider );
         void UpdateServersList( );
     }

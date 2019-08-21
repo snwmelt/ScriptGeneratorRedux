@@ -1,5 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core;
-using ScriptGeneratorRedux.Models.Core.IO.Events;
+using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,13 +26,14 @@ namespace ScriptGeneratorRedux.ViewModels
             _INPCInvoker = new INPCInvoker( this );
             Servers      = Core.DataContext.GetServerNames( );
 
-            Core.DataContext.OnServersLoaded += OnServersLoadedEvent;
+            Core.DataContext.OnServersLoaded += DataContext_OnServersLoaded;
         }
 
-        private void OnServersLoadedEvent( object sender, LoadingEventArgs<ICollection<String>> e )
+        private void DataContext_OnServersLoaded( Object sender, ILoadingEventArgs<IReadOnlyCollection<ICP4Study>> e )
         {
+            // parellel work to load names
+
             Servers.Clear( );
-            Servers = e.Payload;
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( HasData ) );
         }
 
