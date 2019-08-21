@@ -6,7 +6,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:vms="clr-namespace:ScriptGeneratorRedux.ViewModels"
       xmlns:vcs="clr-namespace:ScriptGeneratorRedux.Views.Controls"
-      xmlns:c="clr-namespace:ScriptGeneratorRedux.Views.Helpers.Converters"
+      xmlns:vvc="clr-namespace:ScriptGeneratorRedux.Views.ValueConverters"
       xmlns:w="clr-namespace:Walkways.MVVM.View;assembly=Walkways"
       mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="960"
@@ -18,13 +18,13 @@
     </Page.DataContext>
 
     <Page.Resources>
-        <c:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <w:InverseBooleanConverter x:Key="InverseBooleanConverterKey"/>
         <w:MultiValueBooleanToVisibilityConverter x:Key="MultiValueBooleanToVisibilityConverterKey"/>
     </Page.Resources>
 
     <Grid>
-        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="2" Margin="1">
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{StaticResource BorderBrushResourceKey}" BorderThickness="{StaticResource DefaultBorderThickness}" Margin="1">
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -34,6 +34,8 @@
                 
                 <Grid Grid.Column="1">
                     <Grid.Resources>
+                        <vvc:MathConverter x:Key="MathConverterKey"/>
+                        
                         <LinearGradientBrush 
                                 x:Key="HeaderBackgroundOpacityMask"
                                 StartPoint="1,1"
@@ -49,17 +51,46 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <vcs:LexingRichTextBoxUserControl Grid.Row="0" Margin="-1,-1,-1,-1" OpacityMask="{StaticResource HeaderBackgroundOpacityMask}"
-                                                      FlowDocument="{Binding Path=CurrentDocument}"/>
+                    <Grid Grid.Row="0" x:Name="TextDisplayGrid">
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type vcs:LexingRichTextBoxUserControl}">
+                                <Setter Property="Margin" Value="-1,-1,-1,-1"/>
+                                <Setter Property="OpacityMask" Value="{StaticResource HeaderBackgroundOpacityMask}"/>
+                            </Style>
+                        </Grid.Resources>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <vcs:LexingRichTextBoxUserControl Grid.Column="0" FlowDocument="{Binding Path=CurrentDocument}"/>
+
+                        <Border Grid.Column="1" 
+                                BorderBrush="{StaticResource BorderBrushResourceKey}" BorderThickness="2,0,0,0" 
+                                Visibility="{Binding Path=DisplayingScript, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <vcs:LexingRichTextBoxUserControl  FlowDocument="{Binding Path=CurrentScript}" Width="{Binding ElementName=TextDisplayGrid, Path=ActualWidth, Converter={StaticResource MathConverterKey}}"/>
+
+                        </Border>
+
+                        <Button x:Name="ViewScript" Content="{Binding Path=ViewScriptButtonContent}"  
+                                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                Height="32" Width="100" Margin="8,7,0,0" 
+                                BorderThickness="{StaticResource DefaultBorderThickness}" BorderBrush="Green"
+                                Command="{Binding Path=ViewScriptCommand}" 
+                                Visibility="{Binding Path=DisplayViewScriptButton, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Grid>
+
+                    
 
                     <Grid  Grid.Row="1" Margin="7" Background="White">
-                        <Button x:Name="ServerInfoButton"  Height="28" Width="100" Content="Server Info" 
+                        <Button x:Name="ServerInfoButton" Width="100" Content="Server Info" 
                         Command="{Binding Path=ToggleServerInfoCommand}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 
                         <StackPanel   HorizontalAlignment="Left"  
                             Orientation="Horizontal">
-                            <Button x:Name="ExportButton" Height="28" Width="100" Content="Export" Command="{Binding Path=ExportCommand}" Margin="0,0,2,0"/>
-                            <Button x:Name="CopyButton" Height="28" Width="100" Content="Copy" Command="{Binding Path=CopyCommand}"/>
+                            <Button x:Name="ExportButton" Width="100" Content="Export" Command="{Binding Path=ExportCommand}" Margin="0,0,2,0"/>
+                            <Button x:Name="CopyButton" Width="100" Content="Copy" Command="{Binding Path=CopyCommand}"/>
 
                         </StackPanel>
                     </Grid>
@@ -151,8 +182,8 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="ValidateButton" Grid.Column="0" Height="28" HorizontalAlignment="Stretch" Content="Validate"  Command="{Binding Path=ValidateCommand}" Margin="0,0,2,0"/>
-                            <Button x:Name="GenerateButton" Grid.Column="1" Height="28" HorizontalAlignment="Stretch" Content="Generate" Command="{Binding Path=GenerateCommand}"/>
+                            <Button x:Name="ValidateButton" Grid.Column="0" HorizontalAlignment="Stretch" Content="Validate"  Command="{Binding Path=ValidateCommand}" Margin="0,0,2,0"/>
+                            <Button x:Name="GenerateButton" Grid.Column="1" HorizontalAlignment="Stretch" Content="Generate" Command="{Binding Path=GenerateCommand}"/>
 
                         </Grid>
                     </Grid>

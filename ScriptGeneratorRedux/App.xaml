@@ -7,6 +7,8 @@
     <Application.Resources>
         <sys:Double x:Key="DefaultFontSize">14</sys:Double>
         
+        <Thickness x:Key="DefaultBorderThickness">2</Thickness>
+        
         <SolidColorBrush x:Key="ControlBackgroundBrush"   Color="White"/>
         <SolidColorBrush x:Key="BorderBrushResourceKey"   Color="DarkGray"/>
         <SolidColorBrush x:Key="WatermarkSolidColorBrush" Color="Gray"/>

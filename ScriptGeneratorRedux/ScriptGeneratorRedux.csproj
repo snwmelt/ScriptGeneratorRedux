@@ -101,7 +101,6 @@
     <Compile Include="Views\Controls\LexingRichTextBoxUserControl.xaml.cs">
       <DependentUpon>LexingRichTextBoxUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Helpers\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Views\LoginPageView.xaml.cs">
       <DependentUpon>LoginPageView.xaml</DependentUpon>
     </Compile>
@@ -110,6 +109,7 @@
     </Compile>
     <Compile Include="Views\ValueConverters\IntegerToBooleanConverter.cs" />
     <Compile Include="Views\ValueConverters\IntegerToVisibilityConverter.cs" />
+    <Compile Include="Views\ValueConverters\MathConverter.cs" />
     <Compile Include="Views\ValueConverters\NotNullToBooleanConverter.cs" />
     <Page Include="Views\Controls\AddServerUserControl.xaml">
       <SubType>Designer</SubType>

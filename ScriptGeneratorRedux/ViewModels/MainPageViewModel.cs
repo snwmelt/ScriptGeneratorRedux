@@ -11,6 +11,8 @@ namespace ScriptGeneratorRedux.ViewModels
     {
         #region Private Variables
         private FlowDocument _CurrentDocument;
+        private FlowDocument _CurrentScript;
+        private Boolean      _DisplayingScript;
         private Boolean      _DisplayServerInfo;
         private Boolean      _IsAddingServer;
         private INPCInvoker  _INPCInvoke;
@@ -23,6 +25,7 @@ namespace ScriptGeneratorRedux.ViewModels
         public CommandRelay<Object> GenerateCommand { get; }
         public CommandRelay<Object> ToggleServerInfoCommand { get; }
         public CommandRelay<Object> ValidateCommand { get; }
+        public CommandRelay<Object> ViewScriptCommand { get; }
         #endregion
 
         public MainPageViewModel( )
@@ -35,8 +38,9 @@ namespace ScriptGeneratorRedux.ViewModels
             GenerateCommand         = new CommandRelay<Object>( GenerateScriptContnet, CanGenerateScriptContnet );
             ToggleServerInfoCommand = new CommandRelay<Object>( ToggleServerInfo );
             ValidateCommand         = new CommandRelay<Object>( ValidateScript, CanValidateScript );
+            ViewScriptCommand       = new CommandRelay<Object>( ToggleDisplayingScript );
         }
-
+        
         private void AddServer( Object Object )
         {
             if( IsAddingServer )
@@ -76,17 +80,22 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             Core.DataContext.CopyToClipboard( CurrentDocument );
         }
-
-        public Boolean IsAddingServer
+        
+        private void ToggleDisplayingScript( Object obj )
         {
-            get
-            {
-                return _IsAddingServer;
-            }
-            set
-            {
-                _INPCInvoke.AssignPropertyValue( ref PropertyChanged, ref _IsAddingServer, value );
-            }
+            DisplayingScript = !DisplayingScript;
+            _INPCInvoke.NotifyPropertyChanged( ref PropertyChanged, nameof( ViewScriptButtonContent ) );
+        }
+
+        private void ToggleServerInfo( object obj )
+        {
+            DisplayServerInfo = !DisplayServerInfo;
+        }
+
+        // Will need to be updated once script interface has been formalised
+        private void ValidateScript( object obj )
+        {
+            // should idealy be execute appropriate core scripting method
         }
 
         public String AddServerButtonContent
@@ -108,6 +117,42 @@ namespace ScriptGeneratorRedux.ViewModels
             set
             {
                 _INPCInvoke.AssignPropertyValue( ref PropertyChanged, ref _CurrentDocument, value );
+                _INPCInvoke.NotifyPropertyChanged( ref PropertyChanged, nameof( DisplayViewScriptButton ) );
+            }
+        }
+
+        public FlowDocument CurrentScript
+        {
+            get
+            {
+                return _CurrentScript;
+            }
+
+            set
+            {
+                _INPCInvoke.AssignPropertyValue( ref PropertyChanged, ref _CurrentScript, value );
+                _INPCInvoke.NotifyPropertyChanged( ref PropertyChanged, nameof( DisplayViewScriptButton ) );
+            }
+        }
+
+        public Boolean DisplayingScript
+        {
+            get
+            {
+                return _DisplayingScript;
+            }
+
+            set
+            {
+                _INPCInvoke.AssignPropertyValue( ref PropertyChanged, ref _DisplayingScript, value );
+            }
+        }
+
+        public Boolean DisplayViewScriptButton
+        {
+            get
+            {
+                return CurrentDocument != CurrentScript;
             }
         }
 
@@ -144,6 +189,18 @@ namespace ScriptGeneratorRedux.ViewModels
             // should idealy be execute appropriate core scripting method
         }
 
+        public Boolean IsAddingServer
+        {
+            get
+            {
+                return _IsAddingServer;
+            }
+            set
+            {
+                _INPCInvoke.AssignPropertyValue( ref PropertyChanged, ref _IsAddingServer, value );
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         // Will need to be updated once script interface has been formalised
@@ -169,15 +226,13 @@ namespace ScriptGeneratorRedux.ViewModels
             }
         }
 
-        private void ToggleServerInfo( object obj )
+        public String ViewScriptButtonContent
         {
-            DisplayServerInfo = !DisplayServerInfo;
-        }
-
-        // Will need to be updated once script interface has been formalised
-        private void ValidateScript( object obj )
-        {
-            // should idealy be execute appropriate core scripting method
+            get
+            {
+                return DisplayingScript ? "Hide Script"
+                                        : "View Script";
+            }
         }
     }
 }
