@@ -71,13 +71,15 @@
     <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs%271.cs" />
     <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs.cs" />
     <Compile Include="Models\Core\Events\Interfaces\ISGREventArgs.cs" />
-    <Compile Include="Models\Core\IO\CP4DBO\CP4Server.cs" />
+    <Compile Include="Models\Core\IO\CP4DBO\CP4StudyServer.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\Enums\ECP4DepoplymentEnvironment.cs" />
-    <Compile Include="Models\Core\IO\CP4DBO\Interfaces\ICP4Server.cs" />
+    <Compile Include="Models\Core\IO\CP4DBO\Interfaces\ICP4StudyServer.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\Interfaces\ICP4Study.cs" />
     <Compile Include="Models\Core\Events\LoadingEventArgs.cs" />
     <Compile Include="Models\Core\Events\LoadingEventArgs`1.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ICP4DatabaseServiceProvider.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLConnectionCredentials.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLServer.cs" />
     <Compile Include="Models\Core\IO\Events\Enums\EIOState.cs" />
     <Compile Include="Models\Core\IO\Events\Interfaces\IIOStateChangedEventArgs.cs" />
     <Compile Include="Models\Core\IO\Events\IOStateChange.cs" />

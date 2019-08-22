@@ -6,6 +6,6 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces
 {
     internal interface ICP4DatabaseServiceProvider
     {
-        IReadOnlyCollection<ICP4Study> GetStudies( String ConnectionString );
+        IReadOnlyCollection<ICP4Study> GetStudies( ISQLServer Server );
     }
 }

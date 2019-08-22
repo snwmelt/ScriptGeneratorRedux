@@ -9,10 +9,11 @@ using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.Events;
 using ScriptGeneratorRedux.Models.Core.Events.Enums;
+using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 {
-    internal sealed class CP4Server : ICP4Server
+    internal sealed class CP4StudyServer : ICP4StudyServer
     {
         #region EventHandler Backing Fields
         private event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ICP4Study>>>                  _OnStudyDataLoaded;
@@ -26,18 +27,13 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 
         private EIOState _Status;
 
-        public CP4Server( String ConnectionString, String Name = null )
+        public CP4StudyServer( ISQLConnectionCredentials SQLConnectionCredentials, String Name = null )
         {
-            if( String.IsNullOrWhiteSpace( ConnectionString ) )
+            if( SQLConnectionCredentials == null )
                 throw new ArgumentOutOfRangeException( "Connection String Cannot Be Null, Empty, Or Whitespace." );
 
-            this.ConnectionString = ConnectionString;
-            this.Name             = Name ?? ConnectionString;
-        }
-
-        public String ConnectionString
-        {
-            get;
+            this.SQLConnectionCredentials = SQLConnectionCredentials;
+            this.Name                     = Name ?? SQLConnectionCredentials.ConnectionString;
         }
 
         public IReadOnlyCollection<ECP4DepoplymentEnvironment> Environments
@@ -48,7 +44,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 
         public void Initialise( )
         {
-            Studies = Core.CP4DatabaseService?.GetStudies( ConnectionString );
+            Studies = Core.CP4DatabaseService?.GetStudies( this );
 
             if( Studies?.Count > 0 )
             {
@@ -111,7 +107,13 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
         }
 
         public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
-        
+
+        public ISQLConnectionCredentials SQLConnectionCredentials
+        {
+            get;
+        }
+
+
         public EIOState Status
         {
             get
