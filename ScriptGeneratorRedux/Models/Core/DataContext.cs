@@ -18,7 +18,6 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public DataContext( )
         {
-            int s = 0;
             _ServiceDetailsProviders = new List<IDatabaseServerProvider>( );
             //_DatabaseServers         = new Dictionary<String, IDatabaseServer>( );
         }
@@ -72,7 +71,9 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public void Initialise( )
         {
-            //var n = new DatabaseServer( "Hello World", @"011010\SQL_2012_SP4" );
+            //var n = new IO.CP4DBO.CP4Server( "Hello World", @"011010\SQL_2012_SP4" );
+            //
+            //n.Initialise( );
 
             //_DatabaseServers.Add( n.Name, n );
             InvokeInitialised( ELoadingState.Completed );

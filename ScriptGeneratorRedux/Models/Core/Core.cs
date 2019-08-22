@@ -1,5 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core.Authentication;
 using ScriptGeneratorRedux.Models.Core.Authentication.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.Navigation;
 using ScriptGeneratorRedux.Models.Core.Navigation.Interfaces;
@@ -12,10 +13,11 @@ namespace ScriptGeneratorRedux.Models.Core
     {
         #region Private  Variables
 
-        private IDataContext             _IDataContext;
-        private static readonly Core     _Instance                = new Core( );
-        IUserAuthenticator               _IUserAuthenticator;
-        private Lazy<INavigationHandler> _LazyINavigationHandler;
+        private IDataContext                _IDataContext;
+        private static readonly Core        _Instance                = new Core( );
+        IUserAuthenticator                  _IUserAuthenticator;
+        private Lazy<INavigationHandler>    _LazyINavigationHandler;
+        private ICP4DatabaseServiceProvider _IDatabaseCP4ServiceProvider;
 
         #endregion
 
@@ -47,6 +49,14 @@ namespace ScriptGeneratorRedux.Models.Core
             get
             {
                 return _Instance._IDataContext;
+            }
+        }
+
+        public static ICP4DatabaseServiceProvider CP4DatabaseService
+        {
+            get
+            {
+                return _Instance._IDatabaseCP4ServiceProvider;
             }
         }
     }
