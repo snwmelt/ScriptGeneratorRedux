@@ -7,6 +7,6 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces
         String ConnectionString { get; }
         String Password { get; }
         String Username { get; }
-        Boolean UseWindowsAuthenication { get; }
+        Boolean UseWindowsAuthentication { get; }
     }
 }

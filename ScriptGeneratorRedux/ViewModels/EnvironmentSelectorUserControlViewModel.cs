@@ -1,6 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core;
 using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,17 +24,14 @@ namespace ScriptGeneratorRedux.ViewModels
         public EnvironmentSelectorUserControlViewModel( )
         {
             _INPCInvoker = new INPCInvoker( this );
-            Servers      = Core.DataContext.GetServerNames( );
 
             Core.DataContext.OnServersLoaded += DataContext_OnServersLoaded;
         }
 
-        private void DataContext_OnServersLoaded( Object sender, ILoadingEventArgs<IReadOnlyCollection<ICP4Study>> e )
+        private void DataContext_OnServersLoaded( Object sender, ILoadingEventArgs<IReadOnlyCollection<ISQLServer>> e )
         {
-            // parellel work to load names
-
-            Servers.Clear( );
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( HasData ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( Servers ) );
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -136,11 +133,7 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             get
             {
-                return _Servers;
-            }
-            private set
-            {
-                _INPCInvoker.AssignPropertyValue( ref PropertyChanged, ref _Servers, value );
+                return Core.DataContext.GetServerNames( );
             }
         }
     }

@@ -7,7 +7,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
 {
     internal interface IDataSource<T>
     {
-        void Initialise( );
+        void LoadData( );
         event EventHandler<ILoadingEventArgs<T>> OnDataLoaded;
         event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
         EIOState Status { get; }

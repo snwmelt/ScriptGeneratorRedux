@@ -10,14 +10,15 @@ using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.Events;
 using ScriptGeneratorRedux.Models.Core.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+using System.Collections;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 {
     internal sealed class CP4StudyServer : ICP4StudyServer
     {
         #region EventHandler Backing Fields
-        private event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ICP4Study>>>                  _OnStudyDataLoaded;
-        private event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ECP4DepoplymentEnvironment>>> _OnEnvironmentDataLoaded;
+        private event EventHandler<ILoadingEventArgs<IEnumerable<ICP4Study>>>                  _OnStudyDataLoaded;
+        private event EventHandler<ILoadingEventArgs<IEnumerable<ECP4DepoplymentEnvironment>>> _OnEnvironmentDataLoaded;
         #endregion
 
         #region Thread Lock Objects
@@ -42,7 +43,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             private set;
         }
 
-        public void Initialise( )
+        public void LoadData( )
         {
             Studies = Core.CP4DatabaseService?.GetStudies( this );
 
@@ -62,7 +63,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
                         }
                     };
 
-                    CP4Study.Initialise( );
+                    CP4Study.LoadData( );
                 }
 
                 Environments = UniqueEnvironments;
@@ -76,7 +77,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             get;
         }
         
-        public event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ICP4Study>>> OnDataLoaded
+        public event EventHandler<ILoadingEventArgs<IEnumerable<ICP4Study>>> OnDataLoaded
         {
             add
             {
@@ -91,7 +92,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             }
         }
 
-        event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ECP4DepoplymentEnvironment>>> IDataSource<IReadOnlyCollection<ECP4DepoplymentEnvironment>>.OnDataLoaded
+        event EventHandler<ILoadingEventArgs<IEnumerable<ECP4DepoplymentEnvironment>>> IDataSource<IEnumerable<ECP4DepoplymentEnvironment>>.OnDataLoaded
         {
             add
             {
@@ -133,17 +134,17 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
         
         private void InvokeEnvironmentsLoaded( )
         {
-            _OnEnvironmentDataLoaded?.Invoke( this, new LoadingEventArgs<IReadOnlyCollection<ECP4DepoplymentEnvironment>>( ELoadingState.Completed, Environments ) );
+            _OnEnvironmentDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ECP4DepoplymentEnvironment>>( ELoadingState.Completed, Environments ) );
         }
 
         private void InvokeEnvironmentsLoaded( ELoadingState State, Exception Exception, IReadOnlyCollection<ECP4DepoplymentEnvironment> Data = null )
         {
-            _OnEnvironmentDataLoaded?.Invoke( this, new LoadingEventArgs<IReadOnlyCollection<ECP4DepoplymentEnvironment>>( State, Data, Exception ) );
+            _OnEnvironmentDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ECP4DepoplymentEnvironment>>( State, Data, Exception ) );
         }
 
         private void InvokeStudiesLoaded( )
         {
-            _OnStudyDataLoaded?.Invoke( this, new LoadingEventArgs<IReadOnlyCollection<ICP4Study>>( ELoadingState.Completed, Studies ) );
+            _OnStudyDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ICP4Study>>( ELoadingState.Completed, Studies ) );
         }
 
         private void InvokeStatusChanged( )
@@ -160,7 +161,23 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 
         private void InvokeStudiesLoaded( ELoadingState State, Exception Exception, IReadOnlyCollection<ICP4Study> Data = null )
         {
-            _OnStudyDataLoaded?.Invoke( this, new LoadingEventArgs<IReadOnlyCollection<ICP4Study>>( State, Data, Exception ) );
+            _OnStudyDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ICP4Study>>( State, Data, Exception ) );
+        }
+
+        public IEnumerator<ICP4Study> GetEnumerator( )
+        {
+            return Studies?.GetEnumerator( );
+        }
+
+        IEnumerator<ECP4DepoplymentEnvironment> IEnumerable<ECP4DepoplymentEnvironment>.GetEnumerator( )
+        {
+            return Environments?.GetEnumerator( );
+        }
+
+        IEnumerator IEnumerable.GetEnumerator( )
+        {
+            yield return Studies?.GetEnumerator( );
+            yield return Environments?.GetEnumerator( );
         }
 
         public IReadOnlyCollection<ICP4Study> Studies

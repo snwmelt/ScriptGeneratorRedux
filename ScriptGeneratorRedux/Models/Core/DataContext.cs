@@ -6,23 +6,30 @@ using ScriptGeneratorRedux.Models.Core.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.Events;
+using ScriptGeneratorRedux.Models.Core.IO.Database;
+using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+using System.Linq;
+using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
+using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
 
 namespace ScriptGeneratorRedux.Models.Core
 {
     internal class DataContext : IDataContext
     {
         #region Private Variables
-        private ICollection<IDatabaseServerProvider> _ServiceDetailsProviders;
-        //private IDictionary<String, IDatabaseServer> _DatabaseServers;
+        private ICollection<ISQLServerProvider> _SQLServerProviders;
+        //private HashSet<ISQLServer>             _SecurityServers;
+        private HashSet<ICP4StudyServer>        _StudyServers;
         #endregion
 
         public DataContext( )
         {
-            _ServiceDetailsProviders = new List<IDatabaseServerProvider>( );
-            //_DatabaseServers         = new Dictionary<String, IDatabaseServer>( );
+            _SQLServerProviders = new List<ISQLServerProvider>( );
+            //_SecurityServers     = new HashSet<ISQLServer>( );
+            _StudyServers        = new HashSet<ICP4StudyServer>( );
         }
 
-        public event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ICP4Study>>> OnServersLoaded;
+        public event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ISQLServer>>> OnServersLoaded;
         public event EventHandler<ILoadingEventArgs> OnInitialised;
 
         public void CopyToClipboard( FlowDocument currentDocument )
@@ -37,7 +44,8 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public IEnumerable<String> GetEnvironmentNames( String ServerName )
         {
-            return null;
+            // Need to add data paths for this to execute as expected
+            yield return null;// ( _StudyServers as IEnumerableDataSource<ECP4DepoplymentEnvironment> ).Select( x => x.ToString( ) );   
         }
 
         public IEnumerable<String> GetSecurityDBNames( String ServerName )
@@ -47,8 +55,8 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public ICollection<String> GetServerNames( )
         {
-            return null;
-            //_DatabaseServers.Select( x => x.Key ).ToList( );
+            return _StudyServers.Select( x => x.Name )
+                                .ToList( );
         }
 
         public IEnumerable<Int64> GetStudyIDs( String EnvironmentName, String SecurityDBName )
@@ -61,12 +69,34 @@ namespace ScriptGeneratorRedux.Models.Core
             throw new NotImplementedException( );
         }
 
-        public void RegisterServerDetailsProvider( IDatabaseServerProvider IServerDetailsProvider )
+        public void RegisterServerDetailsProvider( ISQLServerProvider SQLServerProvider )
         {
+            _SQLServerProviders.Add( SQLServerProvider );
         }
 
         public void UpdateServersList( )
         {
+            //_SecurityServers.Clear( );
+            _StudyServers.Clear( );
+
+            foreach( ISQLServerProvider SQLServerProvider in _SQLServerProviders )
+            {
+                SQLServerProvider.LoadData( );
+
+                if( SQLServerProvider.Status == EIOState.Valid )
+                {
+                    foreach( ISQLServer SQLServer in SQLServerProvider )
+                    {
+                        if( SQLServer is ICP4StudyServer )
+                            _StudyServers.Add( SQLServer as ICP4StudyServer );
+
+                        //if( SQLServer is ICP4StudyServer )
+                        //    _SecurityServers.Add( SQLServer );
+                    }
+                }
+            }
+
+            OnServersLoaded?.Invoke( this, new LoadingEventArgs<IReadOnlyCollection<ISQLServer>>( ELoadingState.Completed, _StudyServers ) );
         }
 
         public void Initialise( )

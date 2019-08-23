@@ -2,5 +2,7 @@
 {
     internal enum EIOState
     {
+        Valid,
+        Invalid
     }
 }
