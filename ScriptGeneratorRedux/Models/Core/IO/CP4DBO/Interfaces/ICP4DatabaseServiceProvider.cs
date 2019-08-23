@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using System;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
+using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 
-namespace ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces
+namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces
 {
     internal interface ICP4DatabaseServiceProvider
     {

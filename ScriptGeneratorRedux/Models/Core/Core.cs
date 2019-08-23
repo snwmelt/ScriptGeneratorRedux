@@ -1,6 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core.Authentication;
 using ScriptGeneratorRedux.Models.Core.Authentication.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.Navigation;
 using ScriptGeneratorRedux.Models.Core.Navigation.Interfaces;

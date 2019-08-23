@@ -18,15 +18,15 @@ namespace ScriptGeneratorRedux.Models.Core
     {
         #region Private Variables
         private ICollection<ISQLServerProvider> _SQLServerProviders;
-        //private HashSet<ISQLServer>             _SecurityServers;
+        private HashSet<ICP4SecurityServer>     _SecurityServers;
         private HashSet<ICP4StudyServer>        _StudyServers;
         #endregion
 
         public DataContext( )
         {
             _SQLServerProviders = new List<ISQLServerProvider>( );
-            //_SecurityServers     = new HashSet<ISQLServer>( );
-            _StudyServers        = new HashSet<ICP4StudyServer>( );
+            _SecurityServers    = new HashSet<ICP4SecurityServer>( );
+            _StudyServers       = new HashSet<ICP4StudyServer>( );
         }
 
         public event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ISQLServer>>> OnServersLoaded;
@@ -71,7 +71,7 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public void UpdateServersList( )
         {
-            //_SecurityServers.Clear( );
+            _SecurityServers.Clear( );
             _StudyServers.Clear( );
 
             foreach( ISQLServerProvider SQLServerProvider in _SQLServerProviders )
@@ -84,12 +84,12 @@ namespace ScriptGeneratorRedux.Models.Core
                     if( SQLServer is ICP4StudyServer )
                         _StudyServers.Add( SQLServer as ICP4StudyServer );
 
-                    //if( SQLServer is ICP4StudyServer )
-                    //    _SecurityServers.Add( SQLServer );
+                    if( SQLServer is ICP4SecurityServer )
+                        _SecurityServers.Add( SQLServer as ICP4SecurityServer );
                 }
             }
 
-            OnServersLoaded?.Invoke( this, new LoadingEventArgs<IReadOnlyCollection<ISQLServer>>( ELoadingState.Completed, _StudyServers ) );
+            OnServersLoaded?.Invoke( this, new LoadingEventArgs<IReadOnlyCollection<ISQLServer>>( ELoadingState.Completed, new HashSet<ISQLServer>( _StudyServers ) ) );
         }
 
         public void Initialise( )

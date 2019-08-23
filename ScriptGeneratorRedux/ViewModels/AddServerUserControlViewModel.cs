@@ -115,13 +115,14 @@ namespace ScriptGeneratorRedux.ViewModels
         
         public event EventHandler<ILoadingEventArgs<IEnumerable<ISQLServer>>> OnDataLoaded;
         public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
         
         public String Password
         {
             get;
             set;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public String SecurityDBName
         {
