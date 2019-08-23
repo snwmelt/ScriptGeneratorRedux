@@ -79,16 +79,13 @@ namespace ScriptGeneratorRedux.Models.Core
                 if ( SQLServerProvider.Status != EIOState.Available )
                     SQLServerProvider.LoadData( );
 
-                if( SQLServerProvider.Status == EIOState.Available )
+                foreach( ISQLServer SQLServer in SQLServerProvider )
                 {
-                    foreach( ISQLServer SQLServer in SQLServerProvider )
-                    {
-                        if( SQLServer is ICP4StudyServer )
-                            _StudyServers.Add( SQLServer as ICP4StudyServer );
+                    if( SQLServer is ICP4StudyServer )
+                        _StudyServers.Add( SQLServer as ICP4StudyServer );
 
-                        //if( SQLServer is ICP4StudyServer )
-                        //    _SecurityServers.Add( SQLServer );
-                    }
+                    //if( SQLServer is ICP4StudyServer )
+                    //    _SecurityServers.Add( SQLServer );
                 }
             }
 

@@ -2,8 +2,9 @@
 {
     internal enum EIOState
     {
-        Available,
+        Uninitialised,
         Invalid,
+        Available,
         Empty
     }
 }

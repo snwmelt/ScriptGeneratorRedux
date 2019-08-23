@@ -11,14 +11,17 @@ using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.Models.Core.Events;
 using ScriptGeneratorRedux.Models.Core.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO;
+using System.ComponentModel;
+using Walkways.MVVM.View_Model;
 
 namespace ScriptGeneratorRedux.ViewModels
 {
-    internal sealed class AddServerUserControlViewModel : ISQLServerProvider
+    internal sealed class AddServerUserControlViewModel : ISQLServerProvider, INotifyPropertyChanged
     {
         #region Private Variables
         private EIOState _Status;
         private IEnumerable<ISQLServer> _Servers;
+        INPCInvoker _INPCInvoker;
         #endregion
 
         private void ClearData( )
@@ -29,6 +32,13 @@ namespace ScriptGeneratorRedux.ViewModels
             SecurityDBName = String.Empty;
             SecurityServer = String.Empty;
             Username       = String.Empty;
+
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( Name ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( TargetServer ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( Password ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( SecurityDBName ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( SecurityServer ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( Username ) );
 
             Status = EIOState.Empty;
         }
@@ -55,14 +65,12 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             UseWindowsAuthentication = true;
             Core.DataContext.RegisterServerDetailsProvider( this );
+            _INPCInvoker = new INPCInvoker( this );
         }
         
-        public event EventHandler<ILoadingEventArgs<IEnumerable<ISQLServer>>> OnDataLoaded;
-        public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
-
         public IEnumerator<ISQLServer> GetEnumerator( )
         {
-            return _Servers.GetEnumerator( );
+            return _Servers?.GetEnumerator( );
         }
 
         IEnumerator IEnumerable.GetEnumerator( )
@@ -92,18 +100,23 @@ namespace ScriptGeneratorRedux.ViewModels
             }
 
             CreateServers( );
-            ClearData( );
-
+            
             if ( Status == EIOState.Available )
                 OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ISQLServer>>( ELoadingState.Completed, this ) );
+
+            ClearData( );
         }
-        
+
         public String Name
         {
             get;
             set;
         }
-
+        
+        public event EventHandler<ILoadingEventArgs<IEnumerable<ISQLServer>>> OnDataLoaded;
+        public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
+        
         public String Password
         {
             get;
