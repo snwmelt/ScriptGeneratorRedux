@@ -44,10 +44,9 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public IEnumerable<String> GetEnvironmentNames( String ServerName )
         {
-            // Need to add data paths for this to execute as expected
-            yield return null;// ( _StudyServers as IEnumerableDataSource<ECP4DepoplymentEnvironment> ).Select( x => x.ToString( ) );   
         }
 
+        //TODO I Have no idea what to do here right now
         public IEnumerable<String> GetSecurityDBNames( String ServerName )
         {
             return null;
@@ -61,14 +60,8 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName = null )
         {
-            return null;
         }
-
-        public IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName, String SecurityDBName )
-        {
-            throw new NotImplementedException( );
-        }
-
+        
         public void RegisterServerDetailsProvider( ISQLServerProvider SQLServerProvider )
         {
             _SQLServerProviders.Add( SQLServerProvider );
@@ -81,9 +74,10 @@ namespace ScriptGeneratorRedux.Models.Core
 
             foreach( ISQLServerProvider SQLServerProvider in _SQLServerProviders )
             {
-                SQLServerProvider.LoadData( );
+                if ( SQLServerProvider.Status != EIOState.Available )
+                    SQLServerProvider.LoadData( );
 
-                if( SQLServerProvider.Status == EIOState.Valid )
+                if( SQLServerProvider.Status == EIOState.Available )
                 {
                     foreach( ISQLServer SQLServer in SQLServerProvider )
                     {

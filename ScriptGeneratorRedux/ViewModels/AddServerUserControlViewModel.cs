@@ -18,7 +18,38 @@ namespace ScriptGeneratorRedux.ViewModels
     {
         #region Private Variables
         private EIOState _Status;
+        private IEnumerable<ISQLServer> _Servers;
         #endregion
+
+        private void ClearData( )
+        {                            
+            Name           = String.Empty;
+            TargetServer   = String.Empty;
+            Password       = String.Empty;
+            SecurityDBName = String.Empty;
+            SecurityServer = String.Empty;
+            Username       = String.Empty;
+
+            Status = EIOState.Empty;
+        }
+
+        private void CreateServers( )
+        {
+            HashSet<ISQLServer> _ServersHashSet = new HashSet<ISQLServer>( );
+
+            if( !String.IsNullOrWhiteSpace( TargetServer ) )
+            {
+                _ServersHashSet.Add( new CP4StudyServer( new SQLConnectionCredentials( TargetServer, UseWindowsAuthentication, Username, Password ),
+                                                         Name ) );
+            }
+
+            if( !String.IsNullOrWhiteSpace( SecurityServer ) )
+            {
+                //TODO Add Security Server Logic and Supporting Classes
+            }
+
+            _Servers = _ServersHashSet;
+        }
 
         public AddServerUserControlViewModel( )
         {
@@ -31,17 +62,7 @@ namespace ScriptGeneratorRedux.ViewModels
 
         public IEnumerator<ISQLServer> GetEnumerator( )
         {
-            if( !String.IsNullOrWhiteSpace( TargetServer ) )
-            {
-                yield return new CP4StudyServer( new SQLConnectionCredentials( TargetServer, UseWindowsAuthentication, Username, Password ),
-                                                 Name );
-            }
-
-            if( !String.IsNullOrWhiteSpace( SecurityServer ) )
-            {
-                yield return null;
-            }
-
+            return _Servers.GetEnumerator( );
         }
 
         IEnumerator IEnumerable.GetEnumerator( )
@@ -66,15 +87,17 @@ namespace ScriptGeneratorRedux.ViewModels
                 }
                 else
                 {
-                    Status = EIOState.Valid;
+                    Status = EIOState.Available;
                 }
             }
-            
 
-            if ( Status == EIOState.Valid )
+            CreateServers( );
+            ClearData( );
+
+            if ( Status == EIOState.Available )
                 OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ISQLServer>>( ELoadingState.Completed, this ) );
         }
-
+        
         public String Name
         {
             get;
