@@ -44,7 +44,7 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public IEnumerable<String> GetEnvironmentNames( String ServerName )
         {
-            return Core.CP4DatabaseService.GetEnvironments( ( _StudyServers.Where( x => x.Name == ServerName ).FirstOrDefault( ) ) )?.Select( x => x.ToString( ) );
+            return Core.CP4DatabaseService?.GetEnvironments( ( _StudyServers.Where( x => x.Name == ServerName ).FirstOrDefault( ) ) )?.Select( x => x.ToString( ) );
         }
 
         //TODO I Have no idea what to do here right now
@@ -61,7 +61,7 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName = null )
         {
-            return Core.CP4DatabaseService.GetStudyIDs( ServerName )?.Select( x => x.ID );
+            return Core.CP4DatabaseService?.GetStudyIDs( ServerName )?.Select( x => x.ID );
         }
         
         public void RegisterServerDetailsProvider( ISQLServerProvider SQLServerProvider )
