@@ -59,7 +59,7 @@ namespace ScriptGeneratorRedux.Models.Core
                                 .ToList( );
         }
 
-        public IEnumerable<Int64> GetStudyIDs( String EnvironmentName, String SecurityDBName )
+        public IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName = null )
         {
             return null;
         }

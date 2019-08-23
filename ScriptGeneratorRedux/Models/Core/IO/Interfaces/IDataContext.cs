@@ -13,9 +13,9 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
         void CopyToClipboard( FlowDocument currentDocument );
         void ExportToFile( FlowDocument FlowDocument );
         IEnumerable<String> GetEnvironmentNames( String ServerName );
-        IEnumerable<String> GetSecurityDBNames( String ServerName );
+        IEnumerable<String> GetSecurityDBNames( String ServerName = null );
         ICollection<String> GetServerNames( );
-        IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName, String SecurityDBName );
+        IEnumerable<Int64> GetStudyIDs( String ServerName, String EnvironmentName = null );
         void Initialise( );
         event EventHandler<ILoadingEventArgs> OnInitialised;
         event EventHandler<ILoadingEventArgs<IReadOnlyCollection<ISQLServer>>> OnServersLoaded;

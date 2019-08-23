@@ -11,14 +11,10 @@ namespace ScriptGeneratorRedux.ViewModels
     internal sealed class EnvironmentSelectorUserControlViewModel : INotifyPropertyChanged
     {
         #region Private Variables
-        private IEnumerable<String> _CP4Environments;
-        private IEnumerable<String> _CP4SecurityDatabases;
-        private IEnumerable<Int64>  _CP4StudyIDs;
-        private INPCInvoker         _INPCInvoker;
-        private String              _SelectedCP4Environment;
-        private String              _SelectedCP4SecurityDatabase;
-        private String              _SelectedServer;
-        private ICollection<String> _Servers;
+        private INPCInvoker _INPCInvoker;
+        private String      _SelectedCP4Environment;
+        private String      _SelectedCP4SecurityDatabase;
+        private String      _SelectedServer;
         #endregion
 
         public EnvironmentSelectorUserControlViewModel( )
@@ -48,11 +44,7 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             get
             {
-                return _CP4Environments;
-            }
-            private set
-            {
-                _INPCInvoker.AssignPropertyValue( ref PropertyChanged, ref _CP4Environments, value );
+                return Core.DataContext.GetEnvironmentNames( SelectedServer );
             }
         }
 
@@ -60,23 +52,16 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             get
             {
-                return _CP4StudyIDs;
-            }
-            private set
-            {
-                _INPCInvoker.AssignPropertyValue( ref PropertyChanged, ref _CP4StudyIDs, value );
+                return Core.DataContext.GetStudyIDs( SelectedServer, SelectedCP4Environment );
             }
         }
 
+        // TODO Implement data flow path for selecting what group of security servers will be assosiated with a selection
         public IEnumerable<String> CP4SecurityDatabases
         {
             get
             {
-                return _CP4SecurityDatabases;
-            }
-            private set
-            {
-                _INPCInvoker.AssignPropertyValue( ref PropertyChanged, ref _CP4SecurityDatabases, value );
+                return Core.DataContext.GetSecurityDBNames( SelectedServer );
             }
         }
 
@@ -89,8 +74,11 @@ namespace ScriptGeneratorRedux.ViewModels
 
             set
             {
-                CP4StudyIDs             = Core.DataContext.GetStudyIDs( SelectedServer, value, SelectedCP4SecurityDatabase );
-                _SelectedCP4Environment = value;
+                if( _SelectedCP4Environment != value )
+                {
+                    _SelectedCP4Environment = value;
+                    _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4StudyIDs ) );
+                }
             }
         }
 
@@ -103,8 +91,11 @@ namespace ScriptGeneratorRedux.ViewModels
 
             set
             {
-                CP4StudyIDs                  = Core.DataContext.GetStudyIDs( SelectedServer, SelectedCP4Environment, value  );
-                _SelectedCP4SecurityDatabase = value;
+                if ( _SelectedCP4SecurityDatabase != value )
+                {
+                    _SelectedCP4SecurityDatabase = value;
+                    _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4StudyIDs ) );
+                }
             }
         }
 
@@ -123,12 +114,14 @@ namespace ScriptGeneratorRedux.ViewModels
 
             set
             {
-                CP4Environments      = Core.DataContext.GetEnvironmentNames( value );
-                CP4SecurityDatabases = Core.DataContext.GetSecurityDBNames( value );
-                _SelectedServer      = value;
+                if( _SelectedServer != value )
+                {
+                    _SelectedServer = value;
+                    _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4Environments ) );
+                    _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4StudyIDs ) );
+                }
             }
         }
-
         public ICollection<String> Servers
         {
             get
