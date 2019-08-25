@@ -27,6 +27,10 @@ namespace ScriptGeneratorRedux.ViewModels
         private void DataContext_OnServersLoaded( Object sender, ILoadingEventArgs<IReadOnlyCollection<ISQLServer>> e )
         {
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( HasData ) );
+
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4StudyIDs ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4Environments ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( SelectedCP4SecurityDatabase ) );
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( Servers ) );
         }
 
