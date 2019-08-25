@@ -71,6 +71,9 @@
     <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs%271.cs" />
     <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs.cs" />
     <Compile Include="Models\Core\Events\Interfaces\ISGREventArgs.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTable.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTableColumnValue.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTableKey.cs" />
     <Compile Include="Models\Core\IO\Database\SQLDatabase.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\CP4SecurityServer.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\CP4StudyServer.cs" />
@@ -84,7 +87,7 @@
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLConnectionCredentials.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLDatabase.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLServer.cs" />
-    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTabelKey.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTableColumnKey.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLServerProvider.cs" />
     <Compile Include="Models\Core\IO\Database\SQLConnectionCredentials.cs" />
     <Compile Include="Models\Core\IO\Events\Enums\EIOState.cs" />
