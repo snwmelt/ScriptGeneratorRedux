@@ -1,6 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core;
+using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
 using System.Windows;
-using ScriptGeneratorRedux.Models.Core.Events.Enums;
 
 namespace ScriptGeneratorRedux
 {

@@ -1,8 +1,8 @@
-﻿using ScriptGeneratorRedux.Models.Core.Events.Enums;
-using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
+﻿using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
+using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
 using System;
 
-namespace ScriptGeneratorRedux.Models.Core.Events
+namespace ScriptGeneratorRedux.Models.Core.IO.Events
 {
     internal sealed class LoadingEventArgs<T> : LoadingEventArgs, ILoadingEventArgs<T>
     {

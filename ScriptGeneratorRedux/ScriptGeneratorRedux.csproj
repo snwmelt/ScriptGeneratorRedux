@@ -67,9 +67,9 @@
     </ApplicationDefinition>
     <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
     <Compile Include="Models\Core\DataContext.cs" />
-    <Compile Include="Models\Core\Events\Enums\ELoadingState.cs" />
-    <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs%271.cs" />
-    <Compile Include="Models\Core\Events\Interfaces\ILoadingEventArgs.cs" />
+    <Compile Include="Models\Core\IO\Events\Enums\ELoadingState.cs" />
+    <Compile Include="Models\Core\IO\Events\Interfaces\ILoadingEventArgs%271.cs" />
+    <Compile Include="Models\Core\IO\Events\Interfaces\ILoadingEventArgs.cs" />
     <Compile Include="Models\Core\Events\Interfaces\ISGREventArgs.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTable.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTableColumnValue.cs" />
@@ -81,8 +81,8 @@
     <Compile Include="Models\Core\IO\CP4DBO\Interfaces\ICP4SecurityServer.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\Interfaces\ICP4StudyServer.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\Interfaces\ICP4Study.cs" />
-    <Compile Include="Models\Core\Events\LoadingEventArgs.cs" />
-    <Compile Include="Models\Core\Events\LoadingEventArgs`1.cs" />
+    <Compile Include="Models\Core\IO\Events\LoadingEventArgs.cs" />
+    <Compile Include="Models\Core\IO\Events\LoadingEventArgs`1.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\Interfaces\ICP4DatabaseServiceProvider.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLConnectionCredentials.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLDatabase.cs" />
@@ -206,6 +206,7 @@
     <Folder Include="Legacy\Code Files\" />
     <Folder Include="Legacy\Demo\" />
     <Folder Include="Legacy\Scripts\" />
+    <Folder Include="Models\Core\Events\Enums\" />
     <Folder Include="Models\Scripting\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
-using ScriptGeneratorRedux.Models.Core.Events;
-using ScriptGeneratorRedux.Models.Core.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using System.Collections;
 

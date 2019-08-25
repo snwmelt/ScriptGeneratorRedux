@@ -1,15 +1,12 @@
 ﻿using ScriptGeneratorRedux.Models.Core;
 using ScriptGeneratorRedux.Models.Core.IO.Database;
 using System;
-using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
 using ScriptGeneratorRedux.Models.Core.IO.Events;
-using ScriptGeneratorRedux.Models.Core.Events;
-using ScriptGeneratorRedux.Models.Core.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO;
 using System.ComponentModel;
 using Walkways.MVVM.View_Model;

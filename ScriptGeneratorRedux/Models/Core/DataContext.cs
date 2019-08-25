@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Documents;
-using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
-using ScriptGeneratorRedux.Models.Core.Events.Enums;
-using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
-using ScriptGeneratorRedux.Models.Core.Events;
-using ScriptGeneratorRedux.Models.Core.IO.Database;
-using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using System.Linq;
+using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
-using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
+using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Events;
 
 namespace ScriptGeneratorRedux.Models.Core
 {

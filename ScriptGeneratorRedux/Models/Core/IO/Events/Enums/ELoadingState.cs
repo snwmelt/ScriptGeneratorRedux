@@ -1,4 +1,4 @@
-﻿namespace ScriptGeneratorRedux.Models.Core.Events.Enums
+﻿namespace ScriptGeneratorRedux.Models.Core.IO.Events.Enums
 {
     internal enum ELoadingState
     {

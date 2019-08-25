@@ -1,7 +1,5 @@
-﻿using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Database;
-using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+﻿using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Windows.Documents;
