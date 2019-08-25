@@ -30,10 +30,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 
         public CP4StudyServer( ISQLConnectionCredentials SQLConnectionCredentials, String Name = null )
         {
-            if( SQLConnectionCredentials == null )
-                throw new ArgumentOutOfRangeException( "Connection String Cannot Be Null, Empty, Or Whitespace." );
-
-            this.SQLConnectionCredentials = SQLConnectionCredentials;
+            this.SQLConnectionCredentials = SQLConnectionCredentials ?? throw new ArgumentOutOfRangeException( "Connection String Cannot Be Null, Empty, Or Whitespace." );
             this.Name                     = Name ?? SQLConnectionCredentials.ConnectionString;
         }
 

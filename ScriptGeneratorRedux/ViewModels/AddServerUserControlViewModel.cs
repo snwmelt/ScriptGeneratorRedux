@@ -55,7 +55,9 @@ namespace ScriptGeneratorRedux.ViewModels
 
             if( !String.IsNullOrWhiteSpace( SecurityServer ) )
             {
-                //TODO Add Security Server Logic and Supporting Classes
+                _ServersHashSet.Add( new CP4SecurityServer( new SQLConnectionCredentials( SecurityServer, UseWindowsAuthentication, Username, Password ),
+                                                            Name,
+                                                            SecurityDBName ) );
             }
 
             _Servers = _ServersHashSet;
