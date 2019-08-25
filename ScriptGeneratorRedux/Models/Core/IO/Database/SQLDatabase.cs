@@ -1,5 +1,4 @@
-﻿using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+﻿using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
@@ -42,7 +41,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 
         public void LoadData( )
         {
-            throw new NotImplementedException( );
+            OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<KeyValuePair<ISQLTableKey, ISQLTable>>>( ELoadingState.Failed, this, new NotImplementedException( ) ) );
         }
 
         public string Name
