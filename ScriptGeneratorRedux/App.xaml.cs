@@ -11,7 +11,7 @@ namespace ScriptGeneratorRedux
     {
         protected override void OnStartup( StartupEventArgs e )
         {
-            Core.DataContext.OnInitialised += ( se, ev ) =>
+            Core.DataContext.OnDataLoaded += ( se, ev ) =>
             {
                 switch( ev.State )
                 {
@@ -24,7 +24,7 @@ namespace ScriptGeneratorRedux
                 }
             };
 
-            Core.DataContext.Initialise( );
+            Core.DataContext.LoadData( );
         }
     }
 }

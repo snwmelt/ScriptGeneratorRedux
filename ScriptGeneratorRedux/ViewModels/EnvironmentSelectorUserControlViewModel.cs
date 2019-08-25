@@ -1,6 +1,9 @@
 ﻿using ScriptGeneratorRedux.Models.Core;
-using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
+using ScriptGeneratorRedux.Models.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,17 +24,17 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             _INPCInvoker = new INPCInvoker( this );
 
-            Core.DataContext.OnServersLoaded += DataContext_OnServersLoaded;
+            ( Core.DataContext as IEnumerableDataSource<ISQLServer> ).OnDataLoaded += DataContext_OnDataLoaded; ;
         }
 
-        private void DataContext_OnServersLoaded( Object sender, ILoadingEventArgs<IReadOnlyCollection<ISQLServer>> e )
+        private void DataContext_OnDataLoaded( object sender, ILoadingEventArgs<IEnumerable<ISQLServer>> e )
         {
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( HasData ) );
 
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4StudyIDs ) );
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4Environments ) );
-            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( SelectedCP4SecurityDatabase ) );
-            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( Servers ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4SecurityDatabases ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( CP4StudyServers ) );
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -40,7 +43,7 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             get
             {
-                return ( Servers?.Count > 0 );
+                return ( CP4StudyServers?.Count > 0 );
             }
         }
 
@@ -56,7 +59,7 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             get
             {
-                return Core.DataContext.GetStudyIDs( SelectedServer, SelectedCP4Environment );
+                return Core.DataContext.GetStudyIDs( SelectedServer, SelectedCP4Environment.MatchEnum<ECP4DepoplymentEnvironment>( ) );
             }
         }
 
@@ -126,11 +129,11 @@ namespace ScriptGeneratorRedux.ViewModels
                 }
             }
         }
-        public ICollection<String> Servers
+        public ICollection<String> CP4StudyServers
         {
             get
             {
-                return Core.DataContext.GetServerNames( );
+                return new List<String>( Core.DataContext.GetServerNames( ) );
             }
         }
     }

@@ -1,5 +1,4 @@
-﻿using ScriptGeneratorRedux.Models.Core.Events.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
+﻿using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
 using System;
 

@@ -123,7 +123,7 @@
                         </vcs:AddServerUserControl>
 
                         <vcs:EnvironmentSelectorUserControl Grid.Row="0"
-                                                            ServerList="{Binding Path=Servers}"
+                                                            ServerList="{Binding Path=CP4StudyServers}"
                                                             SelectedServer="{Binding Path=SelectedServer}"
                                                             CP4EnvironmentList="{Binding Path=CP4Environments}"
                                                             SelectedCP4Environment="{Binding Path=SelectedCP4Environment}"

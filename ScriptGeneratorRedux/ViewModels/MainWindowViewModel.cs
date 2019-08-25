@@ -18,7 +18,7 @@ namespace ScriptGeneratorRedux.ViewModels
         public MainWindowViewModel( )
         {
             _INPCInvoke = new INPCInvoker( this );
-            CurrentView = new LoginPageView( );
+            CurrentView = new MainPageView( );
         }
 
         public FrameworkElement CurrentView
