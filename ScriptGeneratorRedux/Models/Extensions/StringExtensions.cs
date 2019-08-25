@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ScriptGeneratorRedux.Models.Extensions
 {
-    internal static class ExString
+    internal static class StringExtensions
     {
         public static String EntangledUpdate( this String Target, String Source )
         {
@@ -44,6 +44,17 @@ namespace ScriptGeneratorRedux.Models.Extensions
             }
 
             return _StringBuilder.ToString( );
+        }
+
+        /// <summary>
+        /// Attempts to match a string to a value from an Enum of type T.
+        /// </summary>
+        /// <typeparam name="T">Enum Type To Match Against.</typeparam>
+        /// <param name="This">String To Be Matched Against Enum Of Type T.</param>
+        /// <returns></returns>
+        public static T MatchEnum<T>( this String This ) where T : struct, IConvertible
+        {
+            return ( T )Enum.Parse( typeof( T ), This );
         }
     }
 }
