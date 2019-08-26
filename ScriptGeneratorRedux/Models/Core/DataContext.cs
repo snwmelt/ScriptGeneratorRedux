@@ -18,15 +18,19 @@ namespace ScriptGeneratorRedux.Models.Core
     {
         #region Private Variables
         HashSet<ICP4SecurityServer>  _ICP4SecurityServers;
-        HashSet<ICP4StudyServer>     _ICP4StudyServer;
+        Object                       _ICP4SecurityServersLock;
+        HashSet<ICP4StudyServer>     _ICP4StudyServers;
+        Object                       _ICP4StudyServersLock;
         HashSet<ISQLServerProvider>  _SQLServerProviders;
         #endregion
 
         public DataContext( )
         {
-            _ICP4SecurityServers = new HashSet<ICP4SecurityServer>( );
-            _ICP4StudyServer     = new HashSet<ICP4StudyServer>( );
-            _SQLServerProviders  = new HashSet<ISQLServerProvider>( );
+            _ICP4SecurityServers     = new HashSet<ICP4SecurityServer>( );
+            _ICP4SecurityServersLock = new Object( );
+            _ICP4StudyServers        = new HashSet<ICP4StudyServer>( );
+            _ICP4StudyServersLock    = new Object( );
+            _SQLServerProviders      = new HashSet<ISQLServerProvider>( );
         }
 
         public EIOState Status => throw new NotImplementedException( );
@@ -46,10 +50,10 @@ namespace ScriptGeneratorRedux.Models.Core
         
         public IEnumerable<String> GetEnvironmentNames( String ServerName = null )
         {
-            //if( String.IsNullOrWhiteSpace( ServerName ) )
-            //    return _ICP4SecurityServers?.Select( x => x.SecurityDB.Where( y => y.Key.Name == "Studies" ).Select( y => y.Value ) )
-            //                                .Select( x => x.);
-            yield return null;
+            if( String.IsNullOrEmpty( ServerName ) )
+                return Core.CP4DatabaseService?.GetEnvironments( this )?.Select( x => x.ToString( ) );
+
+            return Core.CP4DatabaseService?.GetEnvironments( this.Where( x => x.Name == ServerName ) )?.Select( x => x.ToString( ) ); ;
         }
 
         public IEnumerator<ISQLServer> GetEnumerator( )
@@ -57,7 +61,7 @@ namespace ScriptGeneratorRedux.Models.Core
             foreach( ICP4SecurityServer ICP4SecurityServer in _ICP4SecurityServers )
                 yield return ICP4SecurityServer as ISQLServer;
 
-            foreach( ICP4StudyServer ICP4StudyServer in _ICP4StudyServer )
+            foreach( ICP4StudyServer ICP4StudyServer in _ICP4StudyServers )
                 yield return ICP4StudyServer as ISQLServer;
         }
 
@@ -69,9 +73,9 @@ namespace ScriptGeneratorRedux.Models.Core
         public IEnumerable<String> GetSecurityDBNames( String ServerName = null )
         {
             if( String.IsNullOrWhiteSpace( ServerName ) )
-                return _ICP4SecurityServers.Select( x => x.SecurityDB.Name );
+                return _ICP4SecurityServers?.Select( x => x.SecurityDB.Name );
 
-            return _ICP4SecurityServers.Where( x => x.Name == ServerName )
+            return _ICP4SecurityServers?.Where( x => x.Name == ServerName )
                                        ?.Select( x => x.SecurityDB.Name );
         }
 
@@ -83,22 +87,30 @@ namespace ScriptGeneratorRedux.Models.Core
         public IEnumerable<long> GetStudyIDs( String ServerName, ECP4DepoplymentEnvironment Environment )
         {
             if( String.IsNullOrWhiteSpace( ServerName ) )
-                return Core.CP4DatabaseService.GetStudyIDs( _ICP4SecurityServers, Environment );
+                return Core.CP4DatabaseService?.GetStudyIDs( this, Environment );
 
-            return Core.CP4DatabaseService.GetStudyIDs( _ICP4SecurityServers?.Where( x => x.Name == ServerName ), Environment );
+            return Core.CP4DatabaseService?.GetStudyIDs( this?.Where( x => x.Name == ServerName ), Environment );
         }
 
         public IEnumerable<long> GetStudyIDs( String ServerName = null )
         {
             if( String.IsNullOrWhiteSpace( ServerName ) )
-                return Core.CP4DatabaseService.GetStudyIDs( _ICP4SecurityServers );
+                return Core.CP4DatabaseService?.GetStudyIDs( this );
 
-            return Core.CP4DatabaseService.GetStudyIDs( _ICP4SecurityServers?.Where( x => x.Name == ServerName ) );
+            return Core.CP4DatabaseService?.GetStudyIDs( this?.Where( x => x.Name == ServerName ) );
         }
 
         public void LoadData( )
         {
-            throw new NotImplementedException( );
+            if( _SQLServerProviders.Count < 1 )
+                OnStatusChanged?.Invoke( this, new IOStateChange( EIOState.Empty ) );
+
+            if( _SQLServerProviders.Count > 0 )
+            {
+                UpdateServersList( );
+
+                OnStatusChanged?.Invoke( this, new IOStateChange( EIOState.Available ) );
+            }
         }
 
         public void RegisterServerDetailsProvider( ISQLServerProvider SQLServerProvider )
@@ -118,27 +130,30 @@ namespace ScriptGeneratorRedux.Models.Core
                                           if( ISQLServer is ICP4StudyServer )
                                           {
                                               ICP4StudyServer ICP4StudyServer = ISQLServer as ICP4StudyServer;
-                                              
-                                              if( _ICP4StudyServer.Contains( ICP4StudyServer ) )
-                                                  _ICP4StudyServer.Remove( ICP4StudyServer );
 
-                                              _ICP4StudyServer.Add( ICP4StudyServer );
+                                              lock ( _ICP4StudyServersLock )
+                                              {
+                                                  if ( _ICP4StudyServers.Contains( ICP4StudyServer ) )
+                                                      _ICP4StudyServers.Remove( ICP4StudyServer );
+
+                                                  _ICP4StudyServers.Add( ICP4StudyServer );
+                                              }
                                           }
 
                                           if( ISQLServer is ICP4SecurityServer )
                                           {
                                               ICP4SecurityServer ICP4SecurityServer = ISQLServer as ICP4SecurityServer;
 
-                                              if( _ICP4SecurityServers.Contains( ICP4SecurityServer ) )
-                                                  _ICP4SecurityServers.Remove( ICP4SecurityServer );
-
-                                              ICP4SecurityServer.SecurityDB.OnDataLoaded += ( s, e ) =>
-                                              {
-                                                  if( e.State == ELoadingState.Completed )
-                                                      _ICP4SecurityServers.Add( ICP4SecurityServer );
-                                              };
-
                                               ICP4SecurityServer.SecurityDB?.LoadData( );
+
+                                              lock ( _ICP4SecurityServersLock )
+                                              {
+                                                  if ( _ICP4SecurityServers.Contains( ICP4SecurityServer ) )
+                                                      _ICP4SecurityServers.Remove( ICP4SecurityServer );
+
+                                                  _ICP4SecurityServers.Add( ICP4SecurityServer );
+
+                                              }
                                           }
                                       }
                                   };

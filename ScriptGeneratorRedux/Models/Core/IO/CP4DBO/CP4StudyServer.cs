@@ -39,7 +39,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 
         public void LoadData( )
         {
-            Studies = Core.CP4DatabaseService?.GetStudies( this );
+            Studies = new List<ICP4Study>( Core.CP4DatabaseService?.GetStudies( this ) );
 
             if( Studies?.Count > 0 )
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
 {
-    internal interface IEnumerableDataSource<T> : IDataSource<IEnumerable<T>>, IEnumerable<T>, IEnumerable
+    internal interface IEnumerableDataSource<T> : IDataSource<IEnumerable<T>>, IEnumerable<T>, IDataSource, IEnumerable
     {
     }
 }

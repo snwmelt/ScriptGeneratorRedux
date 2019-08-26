@@ -4,11 +4,9 @@ using System;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
 {
-    internal interface IDataSource<T>
+    internal interface IDataSource<T> : IDataSource
     {
-        void LoadData( );
         event EventHandler<ILoadingEventArgs<T>> OnDataLoaded;
         event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
-        EIOState Status { get; }
     }
 }

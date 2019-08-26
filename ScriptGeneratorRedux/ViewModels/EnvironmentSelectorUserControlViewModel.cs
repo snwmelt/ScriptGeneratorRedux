@@ -59,7 +59,8 @@ namespace ScriptGeneratorRedux.ViewModels
         {
             get
             {
-                return Core.DataContext.GetStudyIDs( SelectedServer, SelectedCP4Environment.MatchEnum<ECP4DepoplymentEnvironment>( ) );
+                return ( SelectedCP4Environment == null ) ? Core.DataContext.GetStudyIDs( SelectedServer )
+                                                          : Core.DataContext.GetStudyIDs( SelectedServer, SelectedCP4Environment.MatchEnum<ECP4DepoplymentEnvironment>( ) );
             }
         }
 

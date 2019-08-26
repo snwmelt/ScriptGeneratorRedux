@@ -5,6 +5,7 @@
         Uninitialised,
         Invalid,
         Available,
-        Empty
+        Empty,
+        Fallback
     }
 }

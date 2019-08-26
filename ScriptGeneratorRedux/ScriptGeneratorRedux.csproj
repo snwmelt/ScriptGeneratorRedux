@@ -93,6 +93,7 @@
     <Compile Include="Models\Core\IO\Events\Enums\EIOState.cs" />
     <Compile Include="Models\Core\IO\Events\Interfaces\IIOStateChangedEventArgs.cs" />
     <Compile Include="Models\Core\IO\Events\IOStateChange.cs" />
+    <Compile Include="Models\Core\IO\Interfaces\IDataSource.cs" />
     <Compile Include="Models\Core\IO\Interfaces\IDataSource`1.cs" />
     <Compile Include="Models\Core\IO\Interfaces\IEnumerableDataSource`1.cs" />
     <Compile Include="Models\Extensions\StringExtensions.cs" />

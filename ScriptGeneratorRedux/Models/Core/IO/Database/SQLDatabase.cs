@@ -15,6 +15,11 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
         private HashSet<KeyValuePair<ISQLTableKey, ISQLTable>> _Data;
         #endregion
 
+        private void InvokeDataLoaded( ELoadingState LoadingState, Exception Exception = null )
+        {
+            OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<KeyValuePair<ISQLTableKey, ISQLTable>>>( LoadingState, this, Exception ) );
+        }
+
         private void InvokStatusChanged( EIOState EIOState, Exception Exception = null )
         {
             _Status = EIOState;
@@ -41,7 +46,19 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 
         public void LoadData( )
         {
-            OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<KeyValuePair<ISQLTableKey, ISQLTable>>>( ELoadingState.Failed, this, new NotImplementedException( ) ) );
+            try
+            {
+                _Data = new HashSet<KeyValuePair<ISQLTableKey, ISQLTable>>( Core.CP4DatabaseService.GetData( this ) );
+
+                InvokeDataLoaded( ELoadingState.Completed );
+            }
+            catch ( Exception Ex )
+            {
+                Status = ( _Data?.Count > 0 ) ? EIOState.Fallback
+                                              : EIOState.Empty;
+
+                InvokeDataLoaded( ELoadingState.Failed, Ex );
+            }
         }
 
         public string Name
