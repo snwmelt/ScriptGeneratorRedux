@@ -50,6 +50,9 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             {
                 _Data = new HashSet<KeyValuePair<ISQLTableKey, ISQLTable>>( Core.CP4DatabaseService.GetData( this ) );
 
+                Status = ( _Data?.Count > 0 ) ? EIOState.Populated
+                                              : EIOState.Empty;
+
                 InvokeDataLoaded( ELoadingState.Completed );
             }
             catch ( Exception Ex )

@@ -1,6 +1,5 @@
 ﻿using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Windows.Documents;

@@ -1,5 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core.Authentication;
 using ScriptGeneratorRedux.Models.Core.Authentication.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.CP4DBO;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.Navigation;
@@ -17,15 +18,16 @@ namespace ScriptGeneratorRedux.Models.Core
         private static readonly Core        _Instance                = new Core( );
         IUserAuthenticator                  _IUserAuthenticator;
         private Lazy<INavigationHandler>    _LazyINavigationHandler;
-        private ICP4DatabaseServiceProvider _IDatabaseCP4ServiceProvider;
+        private ICP4DatabaseServiceProvider _ICP4DatabaseServiceProvider;
 
         #endregion
 
         private Core( )
         {
-            _IDataContext           = new DataContext( );
-            _IUserAuthenticator     = new DummyAuthManager( );
-            _LazyINavigationHandler = new Lazy<INavigationHandler>( ( ) => new NavigationHandler( ( ( INavigationServiceProvider )App.Current.MainWindow ).NavigationService ) );
+            _IDataContext                = new DataContext( );
+            _ICP4DatabaseServiceProvider = new CP4DatabaseServiceProvider( );
+            _IUserAuthenticator          = new DummyAuthManager( );
+            _LazyINavigationHandler      = new Lazy<INavigationHandler>( ( ) => new NavigationHandler( ( ( INavigationServiceProvider )App.Current.MainWindow ).NavigationService ) );
         }
 
         public static INavigationHandler NavigationHandler
@@ -56,7 +58,7 @@ namespace ScriptGeneratorRedux.Models.Core
         {
             get
             {
-                return _Instance._IDatabaseCP4ServiceProvider;
+                return _Instance._ICP4DatabaseServiceProvider;
             }
         }
     }
