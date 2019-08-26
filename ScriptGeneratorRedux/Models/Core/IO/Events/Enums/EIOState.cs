@@ -6,6 +6,7 @@
         Invalid,
         Available,
         Empty,
-        Fallback
+        Fallback,
+        Populated
     }
 }
