@@ -8,8 +8,14 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
     {
         public CP4SecurityServer( ISQLConnectionCredentials SQLConnectionCredentials, String Name, String SecurityDBName )
         {
-            this.SQLConnectionCredentials = SQLConnectionCredentials ?? throw new ArgumentNullException( "SQLConnectionCredentials Cannot Be Null." );
-            this.Name                     = Name ?? throw new ArgumentNullException( "Server Name Cannot Be Null." );
+            if( SQLConnectionCredentials == null )
+                throw new ArgumentNullException( "SQLConnectionCredentials Cannot Be Null." );
+
+            if( String.IsNullOrWhiteSpace( Name ) )
+                throw new ArgumentOutOfRangeException( "Server Name Cannot Be Null Or Whitespace." );
+
+            this.SQLConnectionCredentials = SQLConnectionCredentials;
+            this.Name                     = Name;
             
             SecurityDB = new SQLDatabase( SecurityDBName, this );
         }

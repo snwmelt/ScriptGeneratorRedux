@@ -28,8 +28,14 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
         
         public SQLDatabase( String Name, ISQLServer Server )
         {
-            this.Name   = Name ?? throw new ArgumentNullException( "Database Name Cannot Be Null." );
-            this.Server = Server ?? throw new ArgumentNullException( "Server Cannot Be Null." );
+            if( String.IsNullOrWhiteSpace( Name ) )
+                throw new ArgumentOutOfRangeException( "Database Name Cannot Be Null or Whitespace." );
+
+            if ( Server == null )
+                throw new ArgumentNullException( "Server Cannot Be Null." );
+
+            this.Name   = Name;
+            this.Server = Server;
 
             _Data = new HashSet<KeyValuePair<ISQLTableKey, ISQLTable>>( );
         }

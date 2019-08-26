@@ -33,7 +33,13 @@ namespace ScriptGeneratorRedux.Models.Core
             _SQLServerProviders      = new HashSet<ISQLServerProvider>( );
         }
 
-        public EIOState Status => throw new NotImplementedException( );
+        public EIOState Status
+        {
+            get
+            {
+                throw new NotImplementedException( );
+            }
+        }
 
         public event EventHandler<ILoadingEventArgs<IEnumerable<ISQLServer>>> OnDataLoaded;
         public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
