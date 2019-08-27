@@ -69,6 +69,9 @@
     <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
     <Compile Include="Models\Core\DataContext.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\CP4DatabaseServiceProvider.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLConnectionManager.cs" />
+    <Compile Include="Models\Core\IO\Database\MSSQLConnectionManager.cs" />
+    <Compile Include="Models\Core\IO\Database\SQLServer.cs" />
     <Compile Include="Models\Core\IO\Events\Enums\ELoadingState.cs" />
     <Compile Include="Models\Core\IO\Events\Interfaces\ILoadingEventArgs%271.cs" />
     <Compile Include="Models\Core\IO\Events\Interfaces\ILoadingEventArgs.cs" />

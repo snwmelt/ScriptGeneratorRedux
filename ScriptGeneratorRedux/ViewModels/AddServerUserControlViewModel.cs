@@ -46,13 +46,15 @@ namespace ScriptGeneratorRedux.ViewModels
 
             if( !String.IsNullOrWhiteSpace( TargetServer ) )
             {
-                _ServersHashSet.Add( new CP4StudyServer( new SQLConnectionCredentials( TargetServer, UseWindowsAuthentication, Username, Password ),
+                _ServersHashSet.Add( new CP4StudyServer( UseWindowsAuthentication ? new SQLConnectionCredentials( TargetServer )
+                                                                                  : new SQLConnectionCredentials( TargetServer, Username, Password ),
                                                          Name ) );
             }
 
             if( !String.IsNullOrWhiteSpace( SecurityServer ) )
             {
-                _ServersHashSet.Add( new CP4SecurityServer( new SQLConnectionCredentials( SecurityServer, UseWindowsAuthentication, Username, Password ),
+                _ServersHashSet.Add( new CP4SecurityServer( UseWindowsAuthentication ? new SQLConnectionCredentials( TargetServer )
+                                                                                     : new SQLConnectionCredentials( TargetServer, Username, Password ),
                                                             Name,
                                                             SecurityDBName ) );
             }
