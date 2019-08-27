@@ -30,13 +30,13 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
         {
             if( String.IsNullOrWhiteSpace( ConnectionString ) )
                 throw new ArgumentOutOfRangeException( "SQL Connection String Cannot Be Null Or Whitespace." );
-
-            this.ConnectionString = ConnectionString;
-
+            
             Password                 = String.Empty;
             Username                 = String.Empty;
             EnableIntegratedSecurity = true;
             PersistSecurityInfo      = true;
+
+            this.ConnectionString = ConnectionString;
         }
 
         public String ConnectionString
@@ -50,7 +50,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
                 _ConnectionString = ( value.EndsWith(";") ? value
                                                           : value + ";" )  +
                                     $"persist security info={PersistSecurityInfo.ToString( )};" +
-                                    ( EnableIntegratedSecurity ? "Integrated Security=true;"
+                                    ( EnableIntegratedSecurity ? $"Integrated Security={EnableIntegratedSecurity.ToString( )};"
                                                                : $"User ID={Username};" +
                                                                  ( String.IsNullOrEmpty( Password ) ? String.Empty
                                                                                                     : $"Password={Password};"));
