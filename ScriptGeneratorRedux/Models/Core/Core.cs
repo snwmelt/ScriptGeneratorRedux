@@ -1,5 +1,6 @@
 ﻿using ScriptGeneratorRedux.Models.Core.Authentication;
 using ScriptGeneratorRedux.Models.Core.Authentication.Interfaces;
+using ScriptGeneratorRedux.Models.Core.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
@@ -15,6 +16,7 @@ namespace ScriptGeneratorRedux.Models.Core
         #region Private  Variables
 
         private IDataContext                _IDataContext;
+        private IDiagnosticsHandler         _IDiagnosticsHandler;
         private static readonly Core        _Instance                = new Core( );
         IUserAuthenticator                  _IUserAuthenticator;
         private Lazy<INavigationHandler>    _LazyINavigationHandler;
@@ -25,6 +27,7 @@ namespace ScriptGeneratorRedux.Models.Core
         private Core( )
         {
             _IDataContext                = new DataContext( );
+            _IDiagnosticsHandler         = new DiagnosticsHandler( );
             _ICP4DatabaseServiceProvider = new CP4DatabaseServiceProvider( );
             _IUserAuthenticator          = new DummyAuthManager( );
             _LazyINavigationHandler      = new Lazy<INavigationHandler>( ( ) => new NavigationHandler( ( ( INavigationServiceProvider )App.Current.MainWindow ).NavigationService ) );
@@ -59,6 +62,14 @@ namespace ScriptGeneratorRedux.Models.Core
             get
             {
                 return _Instance._ICP4DatabaseServiceProvider;
+            }
+        }
+
+        public static IDiagnosticsHandler Diagnostics
+        {
+            get
+            {
+                return _Instance._IDiagnosticsHandler;
             }
         }
     }

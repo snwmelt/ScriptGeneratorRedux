@@ -1,6 +1,7 @@
 ﻿using System;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
+using System.Diagnostics;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Events
 {
@@ -14,7 +15,8 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Events
         {
             this.State     = State;
             this.Exception = Exception;
-        }
 
+            Core.Diagnostics.Log( this );
+        }
     }
 }
