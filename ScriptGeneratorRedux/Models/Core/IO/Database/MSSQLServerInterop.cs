@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 using System.Data;
 using ScriptGeneratorRedux.Models.Extensions;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Enums;
-using ScriptGeneratorRedux.Models.Core.IO.Database;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Database
 {
@@ -46,6 +45,9 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
 
         public ISQLDatabase GetDatabaseData( ISQLConnectionCredentials ServerConnectionCredentials, String DatabaseName )
         {
+            //IEnumerable<KeyValuePair<ISQLTableKey, ISQLTable>>
+            //011010\SQL_2012_SP4
+
             ISQLDatabase Reuslt = new SQLDatabase( DatabaseName, new SQLServer( null, ServerConnectionCredentials ) );
 
             Reuslt.LoadData( );
@@ -53,9 +55,9 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             return Reuslt;
         }
 
-        public IEnumerable<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>> GetTableData( ISQLTable SQLTable )
+        public IEnumerable<ISQLTableColumn> GetTableData( ISQLTable SQLTable )
         {
-            var       Result = new List<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>>( );
+            var       Result = new List<SQLTableColumn>( );
             DataTable Schema = ConnectionManager.GetSchema( SQLTable.ConnectionCredentials, 
                                                             EMSSQLSchemaType.TColumns, 
                                                             new ColumnSchemaRestrictions( ) { Table = SQLTable.Name } );
@@ -65,14 +67,14 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             {
                 ISQLTableColumnKey ISQLTableColumnKey = new SQLTableColumnKey( ColumnName );
 
-                Result.Add( new KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>( ISQLTableColumnKey, new SQLTableColumnValues( ISQLTableColumnKey ) ) );
+                Result.Add( new SQLTableColumn( ColumnName, SQLTable ) );
             }
             
             foreach( String[ ] SQLResultRow in ExecuteSQL( SQLTable.ConnectionCredentials, $"SELECT * FROM {SQLTable.Name}" ) )
             {
                 for( int i = 0; i < SQLResultRow.Length; i++ )
                 {
-                    Result[ i ].Value.AddValue( SQLResultRow[ i ] );
+                    Result[ i ].AddValue( SQLResultRow[ i ] );
                 }
             }
 

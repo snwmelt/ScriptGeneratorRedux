@@ -55,7 +55,7 @@ namespace ScriptGeneratorRedux.ViewModels
             }
         }
 
-        public IEnumerable<long> CP4StudyIDs
+        public IEnumerable<int> CP4StudyIDs
         {
             get
             {

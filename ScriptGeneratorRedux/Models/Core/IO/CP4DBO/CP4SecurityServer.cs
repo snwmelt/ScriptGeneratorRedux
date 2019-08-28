@@ -2,10 +2,11 @@
 using ScriptGeneratorRedux.Models.Core.IO.Database;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 {
-    internal sealed class CP4SecurityServer : ICP4SecurityServer
+    internal sealed class CP4SecurityServer : AIEnumerableDataSource<ISQLDatabase>, ICP4SecurityServer
     {
         public CP4SecurityServer( ISQLConnectionCredentials SQLConnectionCredentials, String Name, String SecurityDBName )
         {
@@ -34,6 +35,16 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
         public ISQLConnectionCredentials ConnectionCredentials
         {
             get;
+        }
+
+        public override IEnumerator<ISQLDatabase> GetEnumerator( )
+        {
+            throw new NotImplementedException( );
+        }
+
+        public override void LoadData( )
+        {
+            throw new NotImplementedException( );
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Collections;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 {
+    // TODO Remove
     internal sealed class CP4StudyServer : ICP4StudyServer
     {
         #region EventHandler Backing Fields
@@ -104,6 +105,19 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             }
         }
 
+        event EventHandler<ILoadingEventArgs<IEnumerable<ISQLDatabase>>> IDataSource<IEnumerable<ISQLDatabase>>.OnDataLoaded
+        {
+            add
+            {
+                throw new NotImplementedException( );
+            }
+
+            remove
+            {
+                throw new NotImplementedException( );
+            }
+        }
+
         public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
 
         public ISQLConnectionCredentials ConnectionCredentials
@@ -175,6 +189,11 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
         {
             yield return Studies?.GetEnumerator( );
             yield return Environments?.GetEnumerator( );
+        }
+
+        IEnumerator<ISQLDatabase> IEnumerable<ISQLDatabase>.GetEnumerator( )
+        {
+            throw new NotImplementedException( );
         }
 
         public IReadOnlyCollection<ICP4Study> Studies

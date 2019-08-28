@@ -9,6 +9,6 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces
         IEnumerable<String[ ]> ExecuteSQL( ISQLConnectionCredentials ConnectionCredentials, String Query );
         ISQLDatabase GetDatabaseData( ISQLConnectionCredentials ServerConnectionCredentials, String DatabaseName );
         IEnumerable<String> GetTableNames( ISQLDatabase SQLDatabase );
-        IEnumerable<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>> GetTableData( ISQLTable SQLTable );
+        IEnumerable<ISQLTableColumn> GetTableData( ISQLTable iSQLTable );
     }
 }

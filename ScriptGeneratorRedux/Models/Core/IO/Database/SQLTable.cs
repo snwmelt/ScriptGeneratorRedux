@@ -1,41 +1,35 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
-using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Events;
-using System.Linq;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Database
 {
-    internal sealed class SQLTable : ISQLTable
+    internal sealed class SQLTable : AIEnumerableDataSource<ISQLTableColumn>, ISQLTable
     {
         #region Private Variables
-        private EIOState                                                         _Status;
-        private HashSet<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>> _Data;
+        private HashSet<ISQLTableColumn> _Data;
         #endregion
 
-        private void InvokeDataLoaded( ELoadingState LoadingState, Exception Exception = null )
+        public SQLTable( String Name, ISQLTableKey TableKey, ISQLDatabase Database ) : this( Name, Database )
         {
-            OnDataLoaded?.Invoke( this, 
-                                  new LoadingEventArgs<IEnumerable<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>>>( LoadingState, this, Exception ) );
-        }
+            if( TableKey == null )
+                throw new ArgumentOutOfRangeException( "SQL Table TableKey Cannot Be Null Or Whitespace." );
 
-        private void InvokStatusChanged( EIOState EIOState, Exception Exception = null )
-        {
-            _Status = EIOState;
-            OnStatusChanged?.Invoke( this, new IOStateChange( EIOState, Exception ) );
+            this.TableKey = TableKey;
         }
 
         public SQLTable( String Name, ISQLDatabase Database )
         {
             if( String.IsNullOrWhiteSpace( Name ) )
-                throw new ArgumentOutOfRangeException( "Name Cannot Be Null Or Whitespace." );
+                throw new ArgumentOutOfRangeException( "SQL Table Name Cannot Be Null Or Whitespace." );
+
+            if( Database == null )
+                throw new ArgumentOutOfRangeException( "SQL Table Database Cannot Be Null Or Whitespace." );
 
             this.Name     = Name;
             this.Database = Database;
-
+            
             ConnectionCredentials = Database.ConnectionCredentials;
         }
 
@@ -49,21 +43,16 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             get;
         }
 
-        public IEnumerator<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>> GetEnumerator( )
+        public override IEnumerator<ISQLTableColumn> GetEnumerator( )
         {
             return _Data.GetEnumerator( );
         }
 
-        IEnumerator IEnumerable.GetEnumerator( )
-        {
-            return GetEnumerator( );
-        }
-
-        public void LoadData( )
+        public override void LoadData( )
         {
             try
             {
-                _Data = new HashSet<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>>( Core.CP4DatabaseService.GetData( this ) );
+                _Data = new HashSet<ISQLTableColumn>( Core.CP4DatabaseService.GetData( this ) );
 
                 Status = ( _Data?.Count > 0 ) ? EIOState.Populated
                                               : EIOState.Empty;
@@ -84,30 +73,9 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             get;
         }
 
-        public event EventHandler<ILoadingEventArgs<IEnumerable<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>>>> OnDataLoaded;
-        public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
-
-        public EIOState Status
+        public ISQLTableKey TableKey
         {
-            get
-            {
-                return _Status;
-            }
-
-            private set
-            {
-                if( _Status != value )
-                    InvokStatusChanged( value );
-
-            }
-        }
-
-        public IEnumerable<ISQLTableColumnValues> Columns
-        {
-            get
-            {
-                return this.Select( x => x.Value );
-            }
+            get;
         }
     }
 }

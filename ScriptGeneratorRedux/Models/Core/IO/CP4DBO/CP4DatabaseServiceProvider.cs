@@ -11,11 +11,6 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
     {
         ISQLServerInterop _ISQLServerInterop = new MSSQLServerInterop( );
 
-        public IEnumerable<KeyValuePair<ISQLTableKey, ISQLTable>> GetData( ISQLDatabase Database )
-        {
-            return _ISQLServerInterop.GetDatabaseData( Database.Server.ConnectionCredentials, Database.Name );
-        }
-
         public IEnumerable<ECP4DepoplymentEnvironment> GetEnvironments( IEnumerable<ISQLServer> Servers )
         {
             return null;
@@ -56,9 +51,24 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             return _ISQLServerInterop.GetTableNames( SQLDatabase );
         }
 
-        public IEnumerable<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>> GetData( ISQLTable ISQLTable )
+        public IEnumerable<dynamic> GetData( ISQLTableColumn TableColumn )
+        {
+            throw new NotImplementedException( );
+        }
+
+        public IEnumerable<ISQLTableColumn> GetData( ISQLTable ISQLTable )
         {
             return _ISQLServerInterop.GetTableData( ISQLTable );
+        }
+
+        public IEnumerable<ISQLDatabase> GetData( ISQLServer SQLServer )
+        {
+            throw new NotImplementedException( );
+        }
+
+        public IEnumerable<ISQLTable> GetData( ISQLDatabase SQLDatabase )
+        {
+            throw new NotImplementedException( );
         }
     }
 }

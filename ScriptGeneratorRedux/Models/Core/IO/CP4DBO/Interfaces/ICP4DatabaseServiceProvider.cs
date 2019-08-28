@@ -2,13 +2,11 @@
 using System;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Database;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces
 {
     internal interface ICP4DatabaseServiceProvider
     {
-        IEnumerable<KeyValuePair<ISQLTableKey, ISQLTable>> GetData( ISQLDatabase Database );
         IEnumerable<ECP4DepoplymentEnvironment> GetEnvironments( IEnumerable<ISQLServer> Servers );
         IEnumerable<ECP4DepoplymentEnvironment> GetEnvironments( ISQLServer Server );
         IEnumerable<ICP4Study> GetStudies( ISQLServer Server );
@@ -17,6 +15,9 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces
         IEnumerable<long> GetStudyIDs( IEnumerable<ISQLServer> Servers );
         IEnumerable<long> GetStudyIDs( ISQLServer Server );
         IEnumerable<String> GetTableNames( ISQLDatabase SQLDatabase );
-        IEnumerable<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>> GetData( ISQLTable ISQLTable );
+        IEnumerable<ISQLDatabase> GetData( ISQLServer SQLServer );
+        IEnumerable<ISQLTable> GetData( ISQLDatabase SQLDatabase );
+        IEnumerable<ISQLTableColumn> GetData( ISQLTable SQLDatabase );
+        IEnumerable<dynamic> GetData( ISQLTableColumn SQLDatabase );
     }
 }

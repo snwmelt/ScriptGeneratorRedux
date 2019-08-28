@@ -161,20 +161,28 @@ namespace ScriptGeneratorRedux.Models.Core
             return this.Select( x => x.Name );
         }
 
-        public IEnumerable<long> GetStudyIDs( String ServerName, ECP4DepoplymentEnvironment Environment )
+        public IEnumerable<int> GetStudyIDs( String ServerName, ECP4DepoplymentEnvironment Environment )
         {
-            if( String.IsNullOrWhiteSpace( ServerName ) )
-                return Core.CP4DatabaseService?.GetStudyIDs( this, Environment );
-
-            return Core.CP4DatabaseService?.GetStudyIDs( this?.Where( x => x.Name == ServerName ), Environment );
+            return null;
         }
 
-        public IEnumerable<long> GetStudyIDs( String ServerName = null )
+        public IEnumerable<int> GetStudyIDs( String ServerName = null )
         {
-            if( String.IsNullOrWhiteSpace( ServerName ) )
-                return Core.CP4DatabaseService?.GetStudyIDs( this );
+            IEnumerable<ISQLTable> SecurityDBs = _ICP4SecurityServers?.Where( x => x.Name == ServerName )
+                                                                     ?.SelectMany( x => x.SecurityDB );
 
-            return Core.CP4DatabaseService?.GetStudyIDs( this?.Where( x => x.Name == ServerName ) );
+            if( SecurityDBs != null )
+            {
+                List<int> StudyIDs = new List<int>( SecurityDBs?.Where( x => x.Name == "Studies" )
+                                                               ?.SelectMany( x => x )
+                                                               ?.Where( x => x.Name == "StudyID" )
+                                                               ?.SelectMany( x => x )
+                                                               ?.Select( x => int.Parse( x.ToString( ) ) ) );
+
+                return StudyIDs;
+            }
+
+            return null;
         }
 
         public void LoadData( )
