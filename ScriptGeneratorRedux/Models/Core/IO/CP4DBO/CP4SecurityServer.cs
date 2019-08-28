@@ -1,4 +1,5 @@
 ﻿using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Database;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
 using System;
 
@@ -14,7 +15,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             if( String.IsNullOrWhiteSpace( Name ) )
                 throw new ArgumentOutOfRangeException( "Server Name Cannot Be Null Or Whitespace." );
 
-            this.SQLConnectionCredentials = SQLConnectionCredentials;
+            this.ConnectionCredentials = SQLConnectionCredentials;
             this.Name                     = Name;
             
             SecurityDB = new SQLDatabase( SecurityDBName, this );
@@ -30,7 +31,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             get;
         }
 
-        public ISQLConnectionCredentials SQLConnectionCredentials
+        public ISQLConnectionCredentials ConnectionCredentials
         {
             get;
         }

@@ -6,26 +6,37 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
+namespace ScriptGeneratorRedux.Models.Core.IO.Database
 {
     internal sealed class SQLDatabase : ISQLDatabase
     {
         #region Private Variables
-        private EIOState _Status;
-        private HashSet<KeyValuePair<ISQLTableKey, ISQLTable>> _Data;
+        private EIOState                                       _Status;
+        private HashSet<KeyValuePair<ISQLTableKey, ISQLTable>> _Data   = new HashSet<KeyValuePair<ISQLTableKey, ISQLTable>>( );
         #endregion
 
-        private void InvokeDataLoaded( ELoadingState LoadingState, Exception Exception = null )
+        private void _InvokeDataLoaded( ELoadingState LoadingState, Exception Exception = null )
         {
             OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<KeyValuePair<ISQLTableKey, ISQLTable>>>( LoadingState, this, Exception ) );
         }
 
-        private void InvokStatusChanged( EIOState EIOState, Exception Exception = null )
+        private void _InvokeStatusChanged( EIOState EIOState, Exception Exception = null )
         {
             _Status = EIOState;
             OnStatusChanged?.Invoke( this, new IOStateChange( EIOState, Exception ) );
         }
-        
+
+        private KeyValuePair<ISQLTableKey, ISQLTable> _LoadTable( String TableName )
+        {
+            ISQLTable    ISQLTable    = new SQLTable( TableName, this );
+            ISQLTableKey ISQLTableKey = new SQLTableKey( TableName );
+
+            ISQLTable.LoadData( );
+
+            return new KeyValuePair<ISQLTableKey, ISQLTable>( ISQLTableKey, ISQLTable );
+        }
+
+
         public SQLDatabase( String Name, ISQLServer Server )
         {
             if( String.IsNullOrWhiteSpace( Name ) )
@@ -37,7 +48,12 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             this.Name   = Name;
             this.Server = Server;
 
-            _Data = new HashSet<KeyValuePair<ISQLTableKey, ISQLTable>>( );
+            ConnectionCredentials = new SQLConnectionCredentials( Server, $"Database={Name}" );
+        }
+
+        public ISQLConnectionCredentials ConnectionCredentials
+        {
+            get;
         }
 
         public IEnumerator<KeyValuePair<ISQLTableKey, ISQLTable>> GetEnumerator( )
@@ -54,20 +70,55 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
         {
             try
             {
-                _Data = new HashSet<KeyValuePair<ISQLTableKey, ISQLTable>>( Core.CP4DatabaseService.GetData( this ) );
+                if( _Data.Count > 0 )
+                    _Data.Clear( );
+
+                _Data = new HashSet<KeyValuePair<ISQLTableKey, ISQLTable>>( );
+
+                foreach( String TableName in Core.CP4DatabaseService.GetTableNames( this ) )
+                {
+                    _Data.Add( _LoadTable( TableName ) );
+                }
 
                 Status = ( _Data?.Count > 0 ) ? EIOState.Populated
                                               : EIOState.Empty;
 
-                InvokeDataLoaded( ELoadingState.Completed );
+                _InvokeDataLoaded( ELoadingState.Completed );
             }
             catch ( Exception Ex )
             {
                 Status = ( _Data?.Count > 0 ) ? EIOState.Fallback
                                               : EIOState.Empty;
 
-                InvokeDataLoaded( ELoadingState.Failed, Ex );
+                _InvokeDataLoaded( ELoadingState.Failed, Ex );
             }
+        }
+
+        public void LoadTable( String TableName )
+        {
+            try
+            {
+                KeyValuePair<ISQLTableKey, ISQLTable> Table = _LoadTable( TableName );
+
+                if( _Data.Contains( Table ) )
+                    _Data.Remove( Table );
+
+                _Data.Add( Table );
+
+                Status = ( _Data?.Count > 0 ) ? EIOState.Populated
+                                              : EIOState.Empty;
+
+                _InvokeDataLoaded( ELoadingState.Completed );
+            }
+            catch( Exception Ex )
+            {
+                Status = ( _Data?.Count > 0 ) ? EIOState.Fallback
+                                              : EIOState.Empty;
+
+                _InvokeDataLoaded( ELoadingState.Failed, Ex );
+            }
+            
+            
         }
 
         public string Name
@@ -93,7 +144,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             private set
             {
                 if( _Status != value )
-                    InvokStatusChanged( value );
+                    _InvokeStatusChanged( value );
 
             }
         }

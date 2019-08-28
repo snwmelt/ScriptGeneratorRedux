@@ -6,17 +6,34 @@ using Microsoft.Win32;
 using System.Linq;
 using System.Threading;
 using System.Diagnostics;
+using ScriptGeneratorRedux.Models.Extensions;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Database
 {
     internal sealed class MSSQLConnectionManager : ISQLConnectionManager
     {
         #region Private Variables
-        private static readonly String _SQLHiveKeyDefaultName = "MSSQLSERVER";
-        private static readonly String _SQLHiveKeyName        = @"Software\Microsoft\Microsoft SQL Server";
-        private static readonly String _SQLHiveKeyValueName   = "InstalledInstances";
-        private static          Random _RandomWaitTime        = new Random( );
-        private static readonly Object _ThreadLock            = new Object( );
+        private static readonly String    _SQLHiveKeyDefaultName = "MSSQLSERVER";
+        private static readonly String    _SQLHiveKeyName        = @"Software\Microsoft\Microsoft SQL Server";
+        private static readonly String    _SQLHiveKeyValueName   = "InstalledInstances";
+        private static          Random    _RandomWaitTime        = new Random( );
+        private static readonly Object    _ThreadLock            = new Object( );
+        public static readonly Int64[ ]   _SQLExceptionExeptions = new Int64[] 
+                                                                       {
+                                                                           -2,
+                                                                           67
+                                                                       };
+        private static readonly String[ ] _DefaultRestictions    = new String[ ]
+                                                                       {
+                                                                           "model",
+                                                                           "ASPState",
+                                                                           "tempdb",
+                                                                           "master",
+                                                                           "msdb",
+                                                                           "CodebreakQueue",
+                                                                           "CP4CAT",
+                                                                           "_sbCP4EventsInitiator"
+                                                                       };
         #endregion
 
         private IEnumerable<String> _GetLocalServerNames( RegistryKey _BaseHive )
@@ -50,6 +67,19 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             }
         }
 
+        private dynamic _GetSchema( ISQLConnectionCredentials _ConnectionCredentials, Enum _SchemaType, ISchemaRestrictions _SchemaRestrictions )
+        {
+            using( SqlConnection _SqlConnection = new SqlConnection( _ConnectionCredentials.ToString( ) ) )
+            {
+                _OpenSQLConnection( _SqlConnection );
+
+                //System.Diagnostics.Debug.WriteLine( $"{_SchemaType?.GetDescription( )} _ { String.Join(", ", _SchemaRestrictions?.ToArray( ) ) }" );
+
+                return ( _SchemaRestrictions == null ) ? _SqlConnection.GetSchema( _SchemaType.GetDescription( ) )
+                                                       : _SqlConnection.GetSchema( _SchemaType.GetDescription( ), _SchemaRestrictions.ToArray( ) );
+            }
+        }
+
         private static void _OpenSQLConnection( SqlConnection _SqlConnection )
         {
             try
@@ -58,7 +88,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             }
             catch( SqlException SEx )
             {
-                if( SEx.Number != -2 )
+                if( !_SQLExceptionExeptions.Contains( SEx.Number ) )
                     throw SEx;
 
                 int _Attempts;
@@ -94,7 +124,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
 
         public SqlConnection CreateConnection( ISQLConnectionCredentials ConnectionCredentials )
         {
-            return new SqlConnection( ConnectionCredentials.ConnectionString );
+            return new SqlConnection( ConnectionCredentials.ToString( ) );
         }
 
 
@@ -109,13 +139,13 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
                 {
                     foreach( String _InstanceName in _GetLocalServerNames( _BaseHiveX64 ) )
                     {
-                        yield return new SQLServer( $"X64_{YieldIndex}_{_InstanceName}", new SQLConnectionCredentials( _InstanceName ) );
+                        yield return new SQLServer( $"X64_{YieldIndex}_{_InstanceName}", new SQLConnectionCredentials( $"Server={_InstanceName}" ) );
                         YieldIndex++;
                     }
 
                     foreach( String _InstanceName in _GetLocalServerNames( _BaseHiveX86 ) )
                     {
-                        yield return new SQLServer( $"X86_{YieldIndex}_{_InstanceName}", new SQLConnectionCredentials( _InstanceName ) );
+                        yield return new SQLServer( $"X86_{YieldIndex}_{_InstanceName}", new SQLConnectionCredentials( $"Server={_InstanceName}" ) );
                         YieldIndex++;
                     }
                 }
@@ -124,15 +154,20 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             {
                 foreach( String _InstanceName in _GetLocalServerNames( Registry.LocalMachine ) )
                 {
-                    yield return new SQLServer( $"X86_{YieldIndex}_{_InstanceName}", new SQLConnectionCredentials( _InstanceName ) );
+                    yield return new SQLServer( $"X86_{YieldIndex}_{_InstanceName}", new SQLConnectionCredentials( $"Server={_InstanceName}" ) );
                     YieldIndex++;
                 }
             }
         }
 
+        public dynamic GetSchema( ISQLConnectionCredentials ConnectionCredentials, Enum SchemaType, ISchemaRestrictions SchemaRestrictions = null )
+        {
+            return _GetSchema( ConnectionCredentials, SchemaType, SchemaRestrictions );
+        }
+
         public SqlConnection OpenConnection( ISQLConnectionCredentials ConnectionCredentials )
         {
-            SqlConnection SqlConnection = new SqlConnection( ConnectionCredentials.ConnectionString );
+            SqlConnection SqlConnection = new SqlConnection( ConnectionCredentials.ToString( ) );
             _OpenSQLConnection( SqlConnection );
 
             return SqlConnection;

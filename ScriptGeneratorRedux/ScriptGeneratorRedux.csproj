@@ -68,16 +68,30 @@
     </ApplicationDefinition>
     <Compile Include="Models\Core\Authentication\DummyAuthManager.cs" />
     <Compile Include="Models\Core\DataContext.cs" />
+    <Compile Include="Models\Core\DiagnosticsHandler.cs" />
+    <Compile Include="Models\Core\Interfaces\IDiagnosticsHandler.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\CP4DatabaseServiceProvider.cs" />
+    <Compile Include="Models\Core\IO\Database\AMSSQLSchemaRestrictions.cs" />
+    <Compile Include="Models\Core\IO\Database\ColumnSchemaRestrictions.cs" />
+    <Compile Include="Models\Core\IO\Database\Enums\EMSSQLSchemaType.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLConnectionCredentialsProvider.cs" />
+    <Compile Include="Models\Core\IO\Database\SQLTable.cs" />
+    <Compile Include="Models\Core\IO\Database\SQLTableColumnValues.cs" />
+    <Compile Include="Models\Core\IO\Database\SQLTableKey.cs" />
+    <Compile Include="Models\Core\IO\Database\SQLTableColumnKey.cs" />
+    <Compile Include="Models\Extensions\DataTableExtensions.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISchemaRestrictions.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLConnectionManager.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLServerInterop.cs" />
     <Compile Include="Models\Core\IO\Database\MSSQLConnectionManager.cs" />
     <Compile Include="Models\Core\IO\Database\SQLServer.cs" />
+    <Compile Include="Models\Core\IO\Database\MSSQLServerInterop.cs" />
     <Compile Include="Models\Core\IO\Events\Enums\ELoadingState.cs" />
     <Compile Include="Models\Core\IO\Events\Interfaces\ILoadingEventArgs%271.cs" />
     <Compile Include="Models\Core\IO\Events\Interfaces\ILoadingEventArgs.cs" />
     <Compile Include="Models\Core\Events\Interfaces\ISGREventArgs.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTable.cs" />
-    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTableColumnValue.cs" />
+    <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTableColumnValues.cs" />
     <Compile Include="Models\Core\IO\Database\Interfaces\ISQLTableKey.cs" />
     <Compile Include="Models\Core\IO\Database\SQLDatabase.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\CP4SecurityServer.cs" />
@@ -101,6 +115,7 @@
     <Compile Include="Models\Core\IO\Interfaces\IDataSource.cs" />
     <Compile Include="Models\Core\IO\Interfaces\IDataSource`1.cs" />
     <Compile Include="Models\Core\IO\Interfaces\IEnumerableDataSource`1.cs" />
+    <Compile Include="Models\Extensions\EnumExtensions.cs" />
     <Compile Include="Models\Extensions\StringExtensions.cs" />
     <Compile Include="Models\Core\IO\Interfaces\IDataContext.cs" />
     <Compile Include="Models\Core\Navigation\Enums\EUIContent.cs" />
@@ -213,6 +228,7 @@
     <Folder Include="Legacy\Demo\" />
     <Folder Include="Legacy\Scripts\" />
     <Folder Include="Models\Core\Events\Enums\" />
+    <Folder Include="Models\Core\IO\Database\Extensions\" />
     <Folder Include="Models\Scripting\" />
   </ItemGroup>
   <ItemGroup>

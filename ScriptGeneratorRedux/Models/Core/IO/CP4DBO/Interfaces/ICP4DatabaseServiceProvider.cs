@@ -2,6 +2,7 @@
 using System;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Database;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces
 {
@@ -15,5 +16,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces
         IEnumerable<long> GetStudyIDs( ISQLServer Server, ECP4DepoplymentEnvironment Environment );
         IEnumerable<long> GetStudyIDs( IEnumerable<ISQLServer> Servers );
         IEnumerable<long> GetStudyIDs( ISQLServer Server );
+        IEnumerable<String> GetTableNames( ISQLDatabase SQLDatabase );
+        IEnumerable<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>> GetData( ISQLTable ISQLTable );
     }
 }

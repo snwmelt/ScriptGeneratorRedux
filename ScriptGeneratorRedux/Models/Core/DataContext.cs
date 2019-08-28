@@ -22,7 +22,71 @@ namespace ScriptGeneratorRedux.Models.Core
         HashSet<ICP4StudyServer>     _ICP4StudyServers;
         Object                       _ICP4StudyServersLock;
         HashSet<ISQLServerProvider>  _SQLServerProviders;
+        EIOState                     _Status;
         #endregion
+
+
+        private void _InvokeDataLoaded( ELoadingState LoadingState, Exception Exception = null )
+        {
+            OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ISQLServer>>( LoadingState, this, Exception ) );
+        }
+        
+        private void _OnServerProviderDataLoaded( Object Sender, ILoadingEventArgs<IEnumerable<ISQLServer>> EventArgs )
+        {
+            foreach( ISQLServer ISQLServer in EventArgs.Payload )
+            {
+                if( ISQLServer is ICP4StudyServer )
+                {
+                    ICP4StudyServer ICP4StudyServer = ISQLServer as ICP4StudyServer;
+
+                    lock( _ICP4StudyServersLock )
+                    {
+                        if( _ICP4StudyServers.Contains( ICP4StudyServer ) )
+                            _ICP4StudyServers.Remove( ICP4StudyServer );
+
+                        _ICP4StudyServers.Add( ICP4StudyServer );
+                    }
+                }
+
+                if( ISQLServer is ICP4SecurityServer )
+                {
+                    ICP4SecurityServer ICP4SecurityServer = ISQLServer as ICP4SecurityServer;
+
+                    ICP4SecurityServer.SecurityDB?.LoadTable( "Studies" );
+
+                    lock( _ICP4SecurityServersLock )
+                    {
+                        if( _ICP4SecurityServers.Contains( ICP4SecurityServer ) )
+                            _ICP4SecurityServers.Remove( ICP4SecurityServer );
+
+                        _ICP4SecurityServers.Add( ICP4SecurityServer );
+
+                    }
+                }
+            }
+        }
+
+        private void _ProcessSQLServerProviders( )
+        {
+            Parallel.ForEach( _SQLServerProviders,
+                              ( ISQLServerProvider ) =>
+                              {
+                                  try
+                                  {
+                                      ISQLServerProvider.LoadData( );
+                                  }
+                                  catch ( Exception Ex )
+                                  {
+                                      _InvokeDataLoaded( ELoadingState.PartialError, Ex );
+                                  }
+                              } );
+        }
+
+        private void _InvokStatusChanged( EIOState EIOState, Exception Exception = null )
+        {
+            _Status = EIOState;
+            OnStatusChanged?.Invoke( this, new IOStateChange( EIOState, Exception ) );
+        }
 
         public DataContext( )
         {
@@ -37,7 +101,14 @@ namespace ScriptGeneratorRedux.Models.Core
         {
             get
             {
-                throw new NotImplementedException( );
+                return _Status;
+            }
+
+            private set
+            {
+                if( _Status != value )
+                    _InvokStatusChanged( value );
+
             }
         }
 
@@ -121,53 +192,31 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public void RegisterServerDetailsProvider( ISQLServerProvider SQLServerProvider )
         {
-            _SQLServerProviders.Add( SQLServerProvider );
+            if( !_SQLServerProviders.Contains( SQLServerProvider ) )
+            {
+                SQLServerProvider.OnDataLoaded += _OnServerProviderDataLoaded;
+
+                _SQLServerProviders.Add( SQLServerProvider );
+            }
         }
 
         public void UpdateServersList( )
         {
-            Parallel.ForEach( _SQLServerProviders, 
-                              ( ISQLServerProvider ) =>
-                              {
-                                  ISQLServerProvider.OnDataLoaded += ( se, ev ) =>
-                                  {
-                                      foreach( ISQLServer ISQLServer in ev.Payload )
-                                      {
-                                          if( ISQLServer is ICP4StudyServer )
-                                          {
-                                              ICP4StudyServer ICP4StudyServer = ISQLServer as ICP4StudyServer;
+            try
+            {
+                _ProcessSQLServerProviders( );
 
-                                              lock ( _ICP4StudyServersLock )
-                                              {
-                                                  if ( _ICP4StudyServers.Contains( ICP4StudyServer ) )
-                                                      _ICP4StudyServers.Remove( ICP4StudyServer );
+                Status = ( _ICP4SecurityServers.Count > 0 || _ICP4StudyServers.Count > 0 ) ? EIOState.Fallback
+                                                                                           : EIOState.Empty;
 
-                                                  _ICP4StudyServers.Add( ICP4StudyServer );
-                                              }
-                                          }
-
-                                          if( ISQLServer is ICP4SecurityServer )
-                                          {
-                                              ICP4SecurityServer ICP4SecurityServer = ISQLServer as ICP4SecurityServer;
-
-                                              ICP4SecurityServer.SecurityDB?.LoadData( );
-
-                                              lock ( _ICP4SecurityServersLock )
-                                              {
-                                                  if ( _ICP4SecurityServers.Contains( ICP4SecurityServer ) )
-                                                      _ICP4SecurityServers.Remove( ICP4SecurityServer );
-
-                                                  _ICP4SecurityServers.Add( ICP4SecurityServer );
-
-                                              }
-                                          }
-                                      }
-                                  };
-
-                                  ISQLServerProvider.LoadData( );
-                              } );
-
-            OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ISQLServer>>( ELoadingState.Completed, this ) );
+                _InvokeDataLoaded( ELoadingState.Completed );
+            }
+            catch( Exception Ex )
+            {
+                Status = ( _ICP4SecurityServers.Count > 0 || _ICP4StudyServers.Count > 0 ) ? EIOState.Fallback
+                                                                                           : EIOState.Empty;
+                _InvokeDataLoaded( ( Status == EIOState.Empty ) ? ELoadingState.Failed : ELoadingState.Partial, Ex );
+            }
         }
     }
 }

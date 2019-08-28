@@ -8,7 +8,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
         public SQLServer( String Name, ISQLConnectionCredentials SQLConnectionCredentials )
         {
             this.Name                     = Name;
-            this.SQLConnectionCredentials = SQLConnectionCredentials;
+            this.ConnectionCredentials = SQLConnectionCredentials;
         }
         
         public String Name
@@ -16,7 +16,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             get;
         }
 
-        public ISQLConnectionCredentials SQLConnectionCredentials
+        public ISQLConnectionCredentials ConnectionCredentials
         {
             get;
         }

@@ -2,9 +2,8 @@
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces
 {
-    interface ISQLServer
+    interface ISQLServer : ISQLConnectionCredentialsProvider
     {
         String Name { get; }
-        ISQLConnectionCredentials SQLConnectionCredentials { get; }
     }
 }

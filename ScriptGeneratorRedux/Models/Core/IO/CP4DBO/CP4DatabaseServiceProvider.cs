@@ -2,14 +2,18 @@
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Database;
+using System;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 {
     internal sealed class CP4DatabaseServiceProvider : ICP4DatabaseServiceProvider
     {
+        ISQLServerInterop _ISQLServerInterop = new MSSQLServerInterop( );
+
         public IEnumerable<KeyValuePair<ISQLTableKey, ISQLTable>> GetData( ISQLDatabase Database )
         {
-            return null;
+            return _ISQLServerInterop.GetDatabaseData( Database.Server.ConnectionCredentials, Database.Name );
         }
 
         public IEnumerable<ECP4DepoplymentEnvironment> GetEnvironments( IEnumerable<ISQLServer> Servers )
@@ -45,6 +49,16 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
         public IEnumerable<long> GetStudyIDs( ISQLServer Server )
         {
             return null;
+        }
+
+        public IEnumerable<String> GetTableNames( ISQLDatabase SQLDatabase )
+        {
+            return _ISQLServerInterop.GetTableNames( SQLDatabase );
+        }
+
+        public IEnumerable<KeyValuePair<ISQLTableColumnKey, ISQLTableColumnValues>> GetData( ISQLTable ISQLTable )
+        {
+            return _ISQLServerInterop.GetTableData( ISQLTable );
         }
     }
 }

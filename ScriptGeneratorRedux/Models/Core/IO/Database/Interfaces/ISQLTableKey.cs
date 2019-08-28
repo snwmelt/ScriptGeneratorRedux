@@ -2,6 +2,6 @@
 {
     internal interface ISQLTableKey
     {
-        string Name { get; set; }
+        string Name { get; }
     }
 }

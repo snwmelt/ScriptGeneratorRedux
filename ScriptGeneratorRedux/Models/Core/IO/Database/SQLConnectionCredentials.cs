@@ -9,14 +9,14 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
         private String _ConnectionString;
         #endregion
 
-        public SQLConnectionCredentials( String ConnectionString, String Username, String Password = null, Boolean PersistSecurityInfo = true ) : this ( ConnectionString )
+        public SQLConnectionCredentials( String ConnectionString, String Username, String Password = null, Boolean PersistSecurityInfo = true ) : this( ConnectionString )
         {
             if( String.IsNullOrWhiteSpace( Username ) )
                 throw new ArgumentOutOfRangeException( "Username Cannot Be Null Or Whitespace." );
-            
+
             this.PersistSecurityInfo = PersistSecurityInfo;
-            this.Password            = Password ?? String.Empty;
-            this.Username            = Username;
+            this.Password = Password ?? String.Empty;
+            this.Username = Username;
 
             EnableIntegratedSecurity = false;
         }
@@ -25,6 +25,30 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
         {
             this.PersistSecurityInfo = PersistSecurityInfo;
         }
+
+        public SQLConnectionCredentials( ISQLConnectionCredentialsProvider CredentialsProvider, params String[ ] ConnectionStringAdditions ) : this( CredentialsProvider.ConnectionCredentials, ConnectionStringAdditions )
+        {
+
+        }
+
+        public SQLConnectionCredentials( ISQLConnectionCredentials SQLConnectionCredentials, params String[ ] ConnectionStringAdditions )
+        {
+            String _BaseConnectionString = ( SQLConnectionCredentials.ConnectionString.EndsWith(";") ) ? SQLConnectionCredentials.ConnectionString.Substring( 0, ( SQLConnectionCredentials.ConnectionString.Length - 1 ) )
+                                                                                                       : SQLConnectionCredentials.ConnectionString;
+
+            ConnectionString = _BaseConnectionString;
+
+            foreach( String Addition in ConnectionStringAdditions )
+            {
+                ConnectionString = String.Join( ";", ConnectionString, Addition );
+            }
+            
+            Password                 = SQLConnectionCredentials.Password;
+            Username                 = SQLConnectionCredentials.Username;
+            EnableIntegratedSecurity = SQLConnectionCredentials.EnableIntegratedSecurity;
+            PersistSecurityInfo      = SQLConnectionCredentials.PersistSecurityInfo;
+        }
+
 
         public SQLConnectionCredentials( String ConnectionString )
         {
@@ -47,13 +71,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             }
             set
             {
-                _ConnectionString = ( value.EndsWith(";") ? value
-                                                          : value + ";" )  +
-                                    $"persist security info={PersistSecurityInfo.ToString( )};" +
-                                    ( EnableIntegratedSecurity ? $"Integrated Security={EnableIntegratedSecurity.ToString( )};"
-                                                               : $"User ID={Username};" +
-                                                                 ( String.IsNullOrEmpty( Password ) ? String.Empty
-                                                                                                    : $"Password={Password};"));
+                _ConnectionString = value;
             }
         }
 
@@ -74,7 +92,13 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
 
         public override String ToString( )
         {
-            return ConnectionString;
+            return ( ConnectionString.EndsWith( ";" ) ? ConnectionString
+                                                      : ConnectionString + ";" ) +
+                   $"persist security info={PersistSecurityInfo.ToString( )};"   +
+                   ( EnableIntegratedSecurity ? $"Integrated Security={EnableIntegratedSecurity.ToString( )};"
+                                              : $"User ID={Username};" +
+                                                ( String.IsNullOrEmpty( Password ) ? String.Empty
+                                                                                   : $"Password={Password};" ) );
         }
 
         public String Username

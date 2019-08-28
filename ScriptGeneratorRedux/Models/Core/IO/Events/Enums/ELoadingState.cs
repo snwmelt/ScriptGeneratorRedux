@@ -3,6 +3,8 @@
     internal enum ELoadingState
     {
         Completed,
-        Failed
+        Failed,
+        Partial,
+        PartialError
     }
 }

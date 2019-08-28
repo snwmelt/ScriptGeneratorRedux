@@ -30,7 +30,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
             if( SQLConnectionCredentials == null )
                 throw new ArgumentNullException( "SQL Connection Credentials Cannot Be Null." );
 
-            this.SQLConnectionCredentials = SQLConnectionCredentials;
+            this.ConnectionCredentials = SQLConnectionCredentials;
             this.Name                     = Name ?? SQLConnectionCredentials.ConnectionString;
         }
 
@@ -106,7 +106,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.CP4DBO
 
         public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
 
-        public ISQLConnectionCredentials SQLConnectionCredentials
+        public ISQLConnectionCredentials ConnectionCredentials
         {
             get;
         }
