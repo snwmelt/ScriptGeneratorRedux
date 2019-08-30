@@ -168,21 +168,31 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public IEnumerable<int> GetStudyIDs( String ServerName = null )
         {
-            IEnumerable<ISQLTable> SecurityDBs = _ICP4SecurityServers?.Where( x => x.Name == ServerName )
-                                                                     ?.SelectMany( x => x.SecurityDB );
+            IEnumerable<ISQLTable> SecurityDBTables = null;
+            IEnumerable<int>       Result           = null;
 
-            if( SecurityDBs != null )
+            if ( String.IsNullOrWhiteSpace( ServerName ) )
             {
-                List<int> StudyIDs = new List<int>( SecurityDBs?.Where( x => x.Name == "Studies" )
-                                                               ?.SelectMany( x => x )
-                                                               ?.Where( x => x.Name == "StudyID" )
-                                                               ?.SelectMany( x => x )
-                                                               ?.Select( x => int.Parse( x.ToString( ) ) ) );
-
-                return StudyIDs;
+                SecurityDBTables = _ICP4SecurityServers.SelectMany( x => x.SecurityDB );
+            }
+            else
+            {
+                SecurityDBTables = _ICP4SecurityServers?.Where( x => x.Name == ServerName )
+                                                       ?.SelectMany( x => x.SecurityDB );
             }
 
-            return null;
+            if( SecurityDBTables != null )
+            {
+                Result = SecurityDBTables?.Where( x => x.Name == "Studies" )
+                                         ?.SelectMany( x => x )
+                                         ?.Where( x => x.Name == "StudyID" )
+                                         ?.SelectMany( x => x )
+                                         ?.Select( x => int.Parse( x.ToString( ) ) );
+
+                return Result;
+            }
+
+            return Result;
         }
 
         public void LoadData( )
