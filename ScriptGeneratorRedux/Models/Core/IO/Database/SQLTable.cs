@@ -45,7 +45,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
 
         public override IEnumerator<ISQLTableColumn> GetEnumerator( )
         {
-            return _Data.GetEnumerator( );
+            return _Data?.GetEnumerator( );
         }
 
         public override void LoadData( )
