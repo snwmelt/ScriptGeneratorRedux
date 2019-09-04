@@ -12,9 +12,9 @@ namespace ScriptGeneratorRedux.Models.Core
             {
                 if( EventArgs.Exception != null )
                 {
-                    Debug.WriteLine( $"Exception _> {EventArgs.Exception}" );
-                    Debug.WriteLine( $"Message   _> {EventArgs.Exception.Message}" );
-                    Debug.WriteLine( $"Stack     _> {EventArgs.Exception.StackTrace}" );
+                    Debug.WriteLine( $"EXCEPTION   _> \n\t\t {EventArgs.Exception}" );
+                    Debug.WriteLine( $"MESSAGE     _> \n\t\t {EventArgs.Exception.Message}" );
+                    Debug.WriteLine( $"STACK TRACE _> \n\t\t {EventArgs.Exception.StackTrace}" );
                 }
             }
         }

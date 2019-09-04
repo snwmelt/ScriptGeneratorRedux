@@ -16,14 +16,18 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
         
         protected void InvokeDataLoaded( ELoadingState LoadingState, Exception Exception = null )
         {
-            OnDataLoaded?.Invoke( this,
-                                  new LoadingEventArgs<IEnumerable<T>>( LoadingState, this, Exception ) );
+            LoadingEventArgs<IEnumerable<T>> LEA = new LoadingEventArgs<IEnumerable<T>>( LoadingState, this, Exception );
+
+            OnDataLoaded?.Invoke( this, LEA );
         }
 
         protected void InvokStatusChanged( EIOState EIOState, Exception Exception = null )
         {
             _Status = EIOState;
-            OnStatusChanged?.Invoke( this, new IOStateChange( EIOState, Exception ) );
+
+            IOStateChange IOSC = new IOStateChange( EIOState, Exception );
+
+            OnStatusChanged?.Invoke( this, IOSC );
         }
 
         public EIOState Status

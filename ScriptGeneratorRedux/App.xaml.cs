@@ -11,6 +11,7 @@ namespace ScriptGeneratorRedux
     {
         protected override void OnStartup( StartupEventArgs e )
         {
+            // TODO FIX
             Core.DataContext.OnDataLoaded += ( se, ev ) =>
             {
                 switch( ev.State )
