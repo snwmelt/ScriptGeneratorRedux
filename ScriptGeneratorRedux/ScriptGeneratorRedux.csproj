@@ -71,8 +71,6 @@
     <Compile Include="Models\Core\DiagnosticsHandler.cs" />
     <Compile Include="Models\Core\Interfaces\IDiagnosticsHandler.cs" />
     <Compile Include="Models\Core\IO\CP4DBO\CP4DatabaseServiceProvider.cs" />
-    <Compile Include="Models\Core\IO\CP4DBO\CP4StudyServer.cs" />
-    <Compile Include="Models\Core\IO\CP4DBO\Interfaces\ICP4StudyServer.cs" />
     <Compile Include="Models\Core\IO\Database\AIEnumerableDataSource`1.cs" />
     <Compile Include="Models\Core\IO\Database\AMSSQLSchemaRestrictions.cs" />
     <Compile Include="Models\Core\IO\Database\ColumnSchemaRestrictions.cs" />

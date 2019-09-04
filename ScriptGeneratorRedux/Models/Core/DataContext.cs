@@ -19,9 +19,7 @@ namespace ScriptGeneratorRedux.Models.Core
     {
         #region Private Variables
         HashSet<ICP4SecurityServer>  _ICP4SecurityServers;
-        Object                       _ICP4SecurityServersLock;
-        HashSet<ICP4StudyServer>     _ICP4StudyServers;
-        Object                       _ICP4StudyServersLock;
+        readonly Object              _ICP4SecurityServersLock;
         HashSet<ISQLServerProvider>  _SQLServerProviders;
         EIOState                     _Status;
         #endregion
@@ -61,19 +59,6 @@ namespace ScriptGeneratorRedux.Models.Core
         {
             foreach( ISQLServer ISQLServer in EventArgs.Payload )
             {
-                if( ISQLServer is ICP4StudyServer )
-                {
-                    ICP4StudyServer ICP4StudyServer = ISQLServer as ICP4StudyServer;
-
-                    lock( _ICP4StudyServersLock )
-                    {
-                        if( _ICP4StudyServers.Contains( ICP4StudyServer ) )
-                            _ICP4StudyServers.Remove( ICP4StudyServer );
-
-                        _ICP4StudyServers.Add( ICP4StudyServer );
-                    }
-                }
-
                 if( ISQLServer is ICP4SecurityServer )
                 {
                     ICP4SecurityServer ICP4SecurityServer = ISQLServer as ICP4SecurityServer;
@@ -86,7 +71,6 @@ namespace ScriptGeneratorRedux.Models.Core
                             _ICP4SecurityServers.Remove( ICP4SecurityServer );
 
                         _ICP4SecurityServers.Add( ICP4SecurityServer );
-
                     }
                 }
             }
@@ -113,8 +97,6 @@ namespace ScriptGeneratorRedux.Models.Core
         {
             _ICP4SecurityServers     = new HashSet<ICP4SecurityServer>( );
             _ICP4SecurityServersLock = new Object( );
-            _ICP4StudyServers        = new HashSet<ICP4StudyServer>( );
-            _ICP4StudyServersLock    = new Object( );
             _SQLServerProviders      = new HashSet<ISQLServerProvider>( );
         }
 
@@ -168,9 +150,6 @@ namespace ScriptGeneratorRedux.Models.Core
         {
             foreach( ICP4SecurityServer ICP4SecurityServer in _ICP4SecurityServers )
                 yield return ICP4SecurityServer as ISQLServer;
-
-            foreach( ICP4StudyServer ICP4StudyServer in _ICP4StudyServers )
-                yield return ICP4StudyServer as ISQLServer;
         }
 
         IEnumerator IEnumerable.GetEnumerator( )
@@ -235,15 +214,16 @@ namespace ScriptGeneratorRedux.Models.Core
             {
                 _ProcessSQLServerProviders( );
 
-                Status = ( _ICP4SecurityServers.Count > 0 || _ICP4StudyServers.Count > 0 ) ? EIOState.Fallback
-                                                                                           : EIOState.Empty;
+                Status = ( _ICP4SecurityServers.Count > 0 ) ? EIOState.Fallback
+                                                            : EIOState.Empty;
 
                 _InvokeDataLoaded( ELoadingState.Completed );
             }
             catch( Exception Ex )
             {
-                Status = ( _ICP4SecurityServers.Count > 0 || _ICP4StudyServers.Count > 0 ) ? EIOState.Fallback
-                                                                                           : EIOState.Empty;
+                Status = ( _ICP4SecurityServers.Count > 0 ) ? EIOState.Fallback
+                                                            : EIOState.Empty;
+
                 _InvokeDataLoaded( ( Status == EIOState.Empty ) ? ELoadingState.Failed : ELoadingState.Partial, Ex );
             }
         }

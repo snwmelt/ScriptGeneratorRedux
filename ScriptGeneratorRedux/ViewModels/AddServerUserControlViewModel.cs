@@ -17,7 +17,7 @@ namespace ScriptGeneratorRedux.ViewModels
     {
         #region Private Variables
         private EIOState _Status;
-        private IEnumerable<ISQLServer> _Servers;
+        CP4SecurityServer _Server;
         INPCInvoker _INPCInvoker;
         #endregion
 
@@ -42,24 +42,10 @@ namespace ScriptGeneratorRedux.ViewModels
 
         private void CreateServers( )
         {
-            HashSet<ISQLServer> _ServersHashSet = new HashSet<ISQLServer>( );
-
-            if( !String.IsNullOrWhiteSpace( TargetServer ) )
-            {
-                _ServersHashSet.Add( new CP4StudyServer( UseWindowsAuthentication ? new SQLConnectionCredentials( $"Server={TargetServer}" )
-                                                                                  : new SQLConnectionCredentials( $"Server={TargetServer}", Username, Password ),
-                                                         Name ) );
-            }
-
-            if( !String.IsNullOrWhiteSpace( SecurityServer ) )
-            {
-                _ServersHashSet.Add( new CP4SecurityServer( UseWindowsAuthentication ? new SQLConnectionCredentials( $"Server={SecurityServer}" )
-                                                                                     : new SQLConnectionCredentials( $"Server={SecurityServer}", Username, Password ),
-                                                            Name,
-                                                            SecurityDBName ) );
-            }
-
-            _Servers = _ServersHashSet;
+            _Server = new CP4SecurityServer( UseWindowsAuthentication ? new SQLConnectionCredentials( $"Server={SecurityServer}" )
+                                                                      : new SQLConnectionCredentials( $"Server={SecurityServer}", Username, Password ),
+                                             Name,
+                                             SecurityDBName );
         }
 
         public AddServerUserControlViewModel( )
@@ -71,7 +57,7 @@ namespace ScriptGeneratorRedux.ViewModels
         
         public IEnumerator<ISQLServer> GetEnumerator( )
         {
-            return _Servers?.GetEnumerator( );
+            yield return _Server;
         }
 
         IEnumerator IEnumerable.GetEnumerator( )
