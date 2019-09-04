@@ -25,7 +25,7 @@ namespace ScriptGeneratorRedux.Views.Controls
         public static readonly DependencyProperty SecurityServerPlaceholderTextProperty = DependencyProperty.Register( nameof( SecurityServerPlaceholderText ),
                                                                                                                        typeof( String ),
                                                                                                                        typeof( AddServerUserControl ),
-                                                                                                                       new PropertyMetadata( "Security Server" ) );
+                                                                                                                       new PropertyMetadata( "Security Server Location" ) );
         
         public static readonly DependencyProperty SecurityDBNamePlaceholderTextProperty = DependencyProperty.Register( nameof( SecurityDBNamePlaceholderText ),
                                                                                                                        typeof( String ),
@@ -50,71 +50,26 @@ namespace ScriptGeneratorRedux.Views.Controls
                                                                                                         typeof( String ),
                                                                                                         typeof( AddServerUserControl ),
                                                                                                         new FrameworkPropertyMetadata( String.Empty,
-                                                                                                                                       FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, 
-                                                                                                                                       SecurityServerChangedCallback ) );
+                                                                                                                                       FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
         public static readonly DependencyProperty ServerNamePlaceholderTextProperty = DependencyProperty.Register( nameof( ServerNamePlaceholderText ),
                                                                                                                    typeof( String ),
                                                                                                                    typeof( AddServerUserControl ),
-                                                                                                                   new PropertyMetadata( "Server Name" ) );
+                                                                                                                   new PropertyMetadata( "Security Server Name" ) );
 
         public static readonly DependencyProperty ServerNameProperty = DependencyProperty.Register( nameof( ServerName ),
                                                                                                     typeof( String ),
                                                                                                     typeof( AddServerUserControl ),
                                                                                                     new FrameworkPropertyMetadata( String.Empty,
                                                                                                                                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
-
-        public static readonly DependencyProperty TargetServerProperty = DependencyProperty.Register( nameof( TargetServer ),
-                                                                                                      typeof( String ),
-                                                                                                      typeof( AddServerUserControl ),
-                                                                                                      new FrameworkPropertyMetadata( String.Empty,
-                                                                                                                                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                                                                                                                                     TargetServerChangedCallback ) );
-
-        public static readonly DependencyProperty TargetServerPlaceholderTextProperty = DependencyProperty.Register( nameof( TargetServerPlaceholderText ),
-                                                                                                                     typeof( String ),
-                                                                                                                     typeof( AddServerUserControl ),
-                                                                                                                     new PropertyMetadata( "CP4 Server" ) );
-
+        
         public static readonly DependencyProperty UsernameProperty = DependencyProperty.Register( nameof( Username ),
                                                                                                   typeof( String ),
                                                                                                   typeof( AddServerUserControl ),
                                                                                                   new FrameworkPropertyMetadata( String.Empty,
                                                                                                                                  FrameworkPropertyMetadataOptions.BindsTwoWayByDefault ) );
 
-        #region Callbacks
-
-        private static void SecurityServerChangedCallback( DependencyObject d, DependencyPropertyChangedEventArgs e )
-        {
-            AddServerUserControl Instance       = ( d as AddServerUserControl );
-            String               SecurityServer = ( e.NewValue as String );
-
-            if( String.IsNullOrWhiteSpace( SecurityServer ) )
-            {
-                Instance.SecurityServerIsCustom = false;
-                Instance.SecurityServer         = Instance.TargetServer;
-            }
-            else 
-            {
-                if( SecurityServer != Instance.TargetServer )
-                {
-                    Instance.SecurityServerIsCustom = true;
-                }
-            }
-        }
-
-        private static void TargetServerChangedCallback( DependencyObject d, DependencyPropertyChangedEventArgs e )
-        {
-            AddServerUserControl Instance = ( d as AddServerUserControl );
-
-            if( !Instance.SecurityServerIsCustom )
-            {
-                Instance.SecurityServer = ( e.NewValue as String );
-            }
-        }
-
-        #endregion
-
+        
         #region Accessors
         public String Password
         {
@@ -170,18 +125,6 @@ namespace ScriptGeneratorRedux.Views.Controls
             set { SetValue( ServerNamePlaceholderTextProperty, value ); }
         }
 
-        public String TargetServerPlaceholderText
-        {
-            get { return ( String )GetValue( TargetServerPlaceholderTextProperty ); }
-            set { SetValue( TargetServerPlaceholderTextProperty, value ); }
-        }
-
-        public String TargetServer
-        {
-            get { return ( String )GetValue( TargetServerProperty ); }
-            set { SetValue( TargetServerProperty, value ); }
-        }
-
         public String Username
         {
             get { return ( String )GetValue( UsernameProperty ); }
@@ -195,12 +138,6 @@ namespace ScriptGeneratorRedux.Views.Controls
         public AddServerUserControl( )
         {
             InitializeComponent( );
-        }
-
-        public Boolean SecurityServerIsCustom
-        {
-            get;
-            private set;
         }
     }
 }

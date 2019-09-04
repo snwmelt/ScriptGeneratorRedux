@@ -32,21 +32,16 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <wc:ModernTextBox Grid.Row="0" x:Name="ServerNameTextBox" 
                               PlaceholderText="{Binding Path=ServerNamePlaceholderText}"
                               Text="{Binding Path=ServerName}"/>
             
-            <wc:ModernTextBox Grid.Row="1" x:Name="TargetServerTextBox" 
-                              PlaceholderText="{Binding Path=TargetServerPlaceholderText}"
-                              Text="{Binding Path=TargetServer, UpdateSourceTrigger=PropertyChanged}"/>
-            
-            <wc:ModernTextBox Grid.Row="2" x:Name="SecurityServerTextBox" Margin="0,3"
+            <wc:ModernTextBox Grid.Row="1" x:Name="SecurityServerTextBox" Margin="0,3"
                               PlaceholderText="{Binding Path=SecurityServerPlaceholderText}"
                               Text="{Binding Path=SecurityServer, UpdateSourceTrigger=PropertyChanged}"/>
             
-            <wc:ModernTextBox Grid.Row="3" x:Name="SecurityDBNameTextBox" 
+            <wc:ModernTextBox Grid.Row="2" x:Name="SecurityDBNameTextBox" 
                               PlaceholderText="{Binding Path=SecurityDBNamePlaceholderText}"
                               Text="{Binding Path=SecurityDBName}"/>
         </Grid>

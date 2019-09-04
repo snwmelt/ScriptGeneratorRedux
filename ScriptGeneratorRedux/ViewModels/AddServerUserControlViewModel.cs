@@ -13,25 +13,22 @@ using Walkways.MVVM.View_Model;
 
 namespace ScriptGeneratorRedux.ViewModels
 {
-    internal sealed class AddServerUserControlViewModel : ISQLServerProvider, INotifyPropertyChanged
+    internal sealed class AddServerUserControlViewModel : AIEnumerableDataSource<ISQLServer>, ISQLServerProvider, INotifyPropertyChanged
     {
         #region Private Variables
-        private EIOState _Status;
+        INPCInvoker       _INPCInvoker;
         CP4SecurityServer _Server;
-        INPCInvoker _INPCInvoker;
         #endregion
 
         private void ClearData( )
         {                            
-            Name           = String.Empty;
-            TargetServer   = String.Empty;
+            ServerName     = String.Empty;
             Password       = String.Empty;
             SecurityDBName = String.Empty;
             SecurityServer = String.Empty;
             Username       = String.Empty;
 
-            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( Name ) );
-            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( TargetServer ) );
+            _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( ServerName ) );
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( Password ) );
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( SecurityDBName ) );
             _INPCInvoker.NotifyPropertyChanged( ref PropertyChanged, nameof( SecurityServer ) );
@@ -40,11 +37,11 @@ namespace ScriptGeneratorRedux.ViewModels
             Status = EIOState.Empty;
         }
 
-        private void CreateServers( )
+        private void CreateServer( )
         {
             _Server = new CP4SecurityServer( UseWindowsAuthentication ? new SQLConnectionCredentials( $"Server={SecurityServer}" )
                                                                       : new SQLConnectionCredentials( $"Server={SecurityServer}", Username, Password ),
-                                             Name,
+                                             ServerName,
                                              SecurityDBName );
         }
 
@@ -55,7 +52,7 @@ namespace ScriptGeneratorRedux.ViewModels
             _INPCInvoker = new INPCInvoker( this );
         }
         
-        public IEnumerator<ISQLServer> GetEnumerator( )
+        public override IEnumerator<ISQLServer> GetEnumerator( )
         {
             yield return _Server;
         }
@@ -65,15 +62,13 @@ namespace ScriptGeneratorRedux.ViewModels
             return GetEnumerator( );
         }
 
-        public void LoadData( )
+        public override void LoadData( )
         {
-            if( String.IsNullOrWhiteSpace( TargetServer ) &&
-                String.IsNullOrWhiteSpace( SecurityServer ) )
+            if( String.IsNullOrWhiteSpace( SecurityServer ) )
             {
                 Status = EIOState.Invalid;
             }
-            else if( !String.IsNullOrWhiteSpace( TargetServer ) ||
-                     !String.IsNullOrWhiteSpace( SecurityServer ) )
+            else if( !String.IsNullOrWhiteSpace( SecurityServer ) )
             {
                 if( !UseWindowsAuthentication &&
                     String.IsNullOrWhiteSpace( Username ) )
@@ -86,23 +81,32 @@ namespace ScriptGeneratorRedux.ViewModels
                 }
             }
 
-            CreateServers( );
-            
             if ( Status == EIOState.Available )
-                OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ISQLServer>>( ELoadingState.Completed, this ) );
+            {
+                try
+                {
+                    CreateServer( );
+
+                    InvokeDataLoaded( ELoadingState.Completed );
+                }
+                catch ( Exception Ex )
+                {
+                    InvokeDataLoaded( ELoadingState.Failed, Ex );
+                }
+            }
+            else
+            {
+                InvokeDataLoaded( ELoadingState.Failed, new InvalidOperationException( "AddServerUserControlViewModel" ) );
+            }
 
             ClearData( );
         }
 
-        public String Name
+        public String ServerName
         {
             get;
             set;
         }
-        
-        public event EventHandler<ILoadingEventArgs<IEnumerable<ISQLServer>>> OnDataLoaded;
-        public event EventHandler<IIOStateChangedEventArgs> OnStatusChanged;
-        
         public String Password
         {
             get;
@@ -118,29 +122,6 @@ namespace ScriptGeneratorRedux.ViewModels
         }
 
         public String SecurityServer
-        {
-            get;
-            set;
-        }
-
-        public EIOState Status
-        {
-            get
-            {
-                return _Status;
-            }
-
-            private set
-            {
-                if( _Status != value )
-                {
-                    _Status = value;
-                    OnStatusChanged?.Invoke( this, new IOStateChange( Status ) );
-                }
-            }
-        }
-
-        public String TargetServer
         {
             get;
             set;

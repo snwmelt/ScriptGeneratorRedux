@@ -105,8 +105,7 @@
                         </Grid.RowDefinitions>
 
                         <vcs:AddServerUserControl Grid.Row="0" Margin="2,2,2,6"
-                                                  ServerName="{Binding Path=Name}"
-                                                  TargetServer="{Binding Path=TargetServer}"
+                                                  ServerName="{Binding Path=ServerName}"
                                                   SecurityServer="{Binding Path=SecurityServer}"
                                                   SecurityDBName="{Binding Path=SecurityDBName}"
                                                   SecurityModeCheckBoxTicked="{Binding Path=UseWindowsAuthentication}"
