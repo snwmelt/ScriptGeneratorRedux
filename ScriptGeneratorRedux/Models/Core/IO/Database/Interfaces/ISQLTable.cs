@@ -1,6 +1,5 @@
 ﻿using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
 using System;
-using System.Collections.Generic;
 
 namespace ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces
 {

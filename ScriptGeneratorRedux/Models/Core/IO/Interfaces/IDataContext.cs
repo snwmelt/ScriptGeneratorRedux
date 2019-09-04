@@ -15,6 +15,7 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Interfaces
         IEnumerable<String> GetServerNames( );
         IEnumerable<int> GetStudyIDs( String ServerName, ECP4DepoplymentEnvironment EnvironmentName );
         IEnumerable<int> GetStudyIDs( String ServerName = null );
+        IEnumerable<int> GetStudyIDs( ECP4DepoplymentEnvironment EnvironmentName );
         void RegisterServerDetailsProvider( ISQLServerProvider SQLServerProvider );
         void UpdateServersList( );
     }

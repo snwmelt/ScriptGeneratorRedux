@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Windows.Documents;
+﻿using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Interfaces;
 using ScriptGeneratorRedux.Models.Core.IO.Database.Interfaces;
+using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Enums;
 using ScriptGeneratorRedux.Models.Core.IO.Events.Interfaces;
-using ScriptGeneratorRedux.Models.Core.IO.Events;
 using ScriptGeneratorRedux.Models.Core.IO.Interfaces;
+using ScriptGeneratorRedux.Models.Extensions;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using ScriptGeneratorRedux.Models.Core.IO.CP4DBO.Enums;
+using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace ScriptGeneratorRedux.Models.Core
 {
@@ -25,12 +26,37 @@ namespace ScriptGeneratorRedux.Models.Core
         EIOState                     _Status;
         #endregion
 
+        private IEnumerable<ISQLTableColumn> _GetStudyIDColumns( )
+        {
+            return _GetStudyTables( )?.SelectMany( x => x.Where( y => y.Name == "StudyID" ) );
+        }
+
+        private IEnumerable<int> _GetStudyIDs( String ServerName = null, IEnumerable<ISQLTableColumn> StudyIDColumns = null )
+        {
+            StudyIDColumns = StudyIDColumns ?? _GetStudyIDColumns( );
+
+            return ( String.IsNullOrWhiteSpace( ServerName ) ) ? StudyIDColumns?.SelectMany( x => x.Select( y => int.Parse( y.ToString( ) ) ) )
+                                                               : StudyIDColumns?.Where( x => x.Table.Database.Server.Name == ServerName )
+                                                                               ?.SelectMany( x => x.Select( y => int.Parse( y.ToString( ) ) ) );
+        }
+
+        private IEnumerable<ISQLTable> _GetStudyTables( )
+        {
+            return _ICP4SecurityServers?.SelectMany( x => x.SecurityDB )
+                                       ?.Where( x => x.Name == "Studies" );
+        }
 
         private void _InvokeDataLoaded( ELoadingState LoadingState, Exception Exception = null )
         {
             OnDataLoaded?.Invoke( this, new LoadingEventArgs<IEnumerable<ISQLServer>>( LoadingState, this, Exception ) );
         }
-        
+
+        private void _InvokStatusChanged( EIOState EIOState, Exception Exception = null )
+        {
+            _Status = EIOState;
+            OnStatusChanged?.Invoke( this, new IOStateChange( EIOState, Exception ) );
+        }
+
         private void _OnServerProviderDataLoaded( Object Sender, ILoadingEventArgs<IEnumerable<ISQLServer>> EventArgs )
         {
             foreach( ISQLServer ISQLServer in EventArgs.Payload )
@@ -82,11 +108,6 @@ namespace ScriptGeneratorRedux.Models.Core
                               } );
         }
 
-        private void _InvokStatusChanged( EIOState EIOState, Exception Exception = null )
-        {
-            _Status = EIOState;
-            OnStatusChanged?.Invoke( this, new IOStateChange( EIOState, Exception ) );
-        }
 
         public DataContext( )
         {
@@ -127,10 +148,20 @@ namespace ScriptGeneratorRedux.Models.Core
         
         public IEnumerable<String> GetEnvironmentNames( String ServerName = null )
         {
-            if( String.IsNullOrEmpty( ServerName ) )
-                return Core.CP4DatabaseService?.GetEnvironments( this )?.Select( x => x.ToString( ) );
+            IEnumerable<ISQLTable> StudyTables = ( ServerName == null ) ? _GetStudyTables( )
+                                                                        : _GetStudyTables( )?.Where( x => x.Database.Server.Name == ServerName );
 
-            return Core.CP4DatabaseService?.GetEnvironments( this.Where( x => x.Name == ServerName ) )?.Select( x => x.ToString( ) ); ;
+            if ( StudyTables.Any( t => t.Any( c => c.Name == "BuildVersionID" && c.Any( v => double.Parse( v?.ToString( ) ) > 0 ) ) ) )
+                yield return ECP4DepoplymentEnvironment.Build.GetDescription( );
+
+            if ( StudyTables.Any( t => t.Any( c => c.Name == "LiveVersionID" && c.Any( v => double.Parse( v?.ToString( ) ) > 0 ) ) ) )
+                yield return ECP4DepoplymentEnvironment.Live.GetDescription( );
+
+            if ( StudyTables.Any( t => t.Any( c => c.Name == "TestVersionID" && c.Any( v => double.Parse( v?.ToString( ) ) > 0 ) ) ) )
+                yield return ECP4DepoplymentEnvironment.Test.GetDescription( );
+
+            if ( StudyTables.Any( t => t.Any( c => c.Name == "UATVersionID" && c.Any( v => double.Parse( v?.ToString( ) ) > 0 ) ) ) )
+                yield return ECP4DepoplymentEnvironment.UAT.GetDescription( );
         }
 
         public IEnumerator<ISQLServer> GetEnumerator( )
@@ -149,16 +180,20 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public IEnumerable<String> GetSecurityDBNames( String ServerName = null )
         {
-            if( String.IsNullOrWhiteSpace( ServerName ) )
-                return _ICP4SecurityServers?.Select( x => x.SecurityDB.Name );
-
-            return _ICP4SecurityServers?.Where( x => x.Name == ServerName )
-                                       ?.Select( x => x.SecurityDB.Name );
+            return ( String.IsNullOrWhiteSpace( ServerName ) ) ? _ICP4SecurityServers?.Select( x => x.SecurityDB.Name )
+                                                               : _ICP4SecurityServers?.Where( x => x.Name == ServerName )
+                                                                                     ?.Select( x => x.SecurityDB.Name );
         }
 
         public IEnumerable<String> GetServerNames( )
         {
             return this.Select( x => x.Name );
+        }
+
+
+        public IEnumerable<int> GetStudyIDs( ECP4DepoplymentEnvironment Environment )
+        {
+            return GetStudyIDs( null, Environment );
         }
 
         public IEnumerable<int> GetStudyIDs( String ServerName, ECP4DepoplymentEnvironment Environment )
@@ -168,31 +203,7 @@ namespace ScriptGeneratorRedux.Models.Core
 
         public IEnumerable<int> GetStudyIDs( String ServerName = null )
         {
-            IEnumerable<ISQLTable> SecurityDBTables = null;
-            IEnumerable<int>       Result           = null;
-
-            if ( String.IsNullOrWhiteSpace( ServerName ) )
-            {
-                SecurityDBTables = _ICP4SecurityServers.SelectMany( x => x.SecurityDB );
-            }
-            else
-            {
-                SecurityDBTables = _ICP4SecurityServers?.Where( x => x.Name == ServerName )
-                                                       ?.SelectMany( x => x.SecurityDB );
-            }
-
-            if( SecurityDBTables != null )
-            {
-                Result = SecurityDBTables?.Where( x => x.Name == "Studies" )
-                                         ?.SelectMany( x => x )
-                                         ?.Where( x => x.Name == "StudyID" )
-                                         ?.SelectMany( x => x )
-                                         ?.Select( x => int.Parse( x.ToString( ) ) );
-
-                return Result;
-            }
-
-            return Result;
+            return _GetStudyIDs( ServerName );
         }
 
         public void LoadData( )

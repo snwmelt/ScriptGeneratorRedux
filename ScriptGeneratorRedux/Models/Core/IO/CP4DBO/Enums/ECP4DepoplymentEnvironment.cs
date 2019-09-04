@@ -2,5 +2,9 @@
 {
     internal enum ECP4DepoplymentEnvironment
     {
+        Build,
+        Live,
+        Test,
+        UAT
     }
 }
