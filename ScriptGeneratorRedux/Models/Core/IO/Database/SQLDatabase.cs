@@ -78,15 +78,21 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             {
                 ISQLTable Table = _LoadTable( TableName );
 
-                if( _Data.Contains( Table ) )
+                if ( _Data.Contains( Table ) )
                     _Data.Remove( Table );
 
                 _Data.Add( Table );
 
-                Status = ( _Data?.Count > 0 ) ? EIOState.Populated
-                                              : EIOState.Empty;
+                Status = EIOState.Populated;
 
-                InvokeDataLoaded( ELoadingState.Completed );
+                if ( Table.Status != EIOState.Populated )
+                {
+                    InvokeDataLoaded( ELoadingState.Failed );
+                }
+                else
+                {
+                    InvokeDataLoaded( ELoadingState.Completed );
+                }
             }
             catch( Exception Ex )
             {
@@ -95,8 +101,6 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
 
                 InvokeDataLoaded( ELoadingState.Failed, Ex );
             }
-            
-            
         }
 
         public string Name

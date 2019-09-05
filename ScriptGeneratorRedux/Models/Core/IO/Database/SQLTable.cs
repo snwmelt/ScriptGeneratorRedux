@@ -54,15 +54,15 @@ namespace ScriptGeneratorRedux.Models.Core.IO.Database
             {
                 _Data = new HashSet<ISQLTableColumn>( Core.CP4DatabaseService.GetData( this ) );
 
-                Status = ( _Data?.Count > 0 ) ? EIOState.Populated
-                                              : EIOState.Empty;
+                Status = ( _Data.Count > 0 ) ? EIOState.Populated
+                                             : EIOState.Empty;
 
                 InvokeDataLoaded( ELoadingState.Completed );
             }
             catch( Exception Ex )
             {
                 Status = ( _Data?.Count > 0 ) ? EIOState.Fallback
-                                              : EIOState.Empty;
+                                              : EIOState.Invalid;
 
                 InvokeDataLoaded( ELoadingState.Failed, Ex );
             }
